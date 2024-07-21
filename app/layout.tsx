@@ -1,3 +1,5 @@
+import { ThemeProvider } from "@/lib/styles/theme-provider"
+
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
@@ -19,9 +21,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
-          {children}
-        </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="min-h-screen flex flex-col items-center">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
