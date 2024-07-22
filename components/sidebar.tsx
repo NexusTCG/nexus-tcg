@@ -1,8 +1,34 @@
+"use client"
+
 import React from "react";
 // Utils
 import Link from "next/link";
+// Shadcn components
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+// Custom components
 import UserAvatar from "@/components/user-avatar"
+import { 
+  MdHome, 
+  MdDesignServices, 
+  MdOutlineLayers, 
+  MdNotifications,
+  MdOutlinePeople,
+  MdOutlineBook,
+  MdChevronRight,
+} from "react-icons/md";
+import { GoSidebarCollapse } from "react-icons/go";
+
+const userName = "John"; // Replace with fetched data
 
 export default function Sidebar() {
   return (
@@ -17,8 +43,7 @@ export default function Sidebar() {
         min-w-[240px]
         min-h-screen
         border-r
-        px-4
-        py-6
+        p-4
       "
     >
       <div
@@ -41,8 +66,11 @@ export default function Sidebar() {
           "
         >
           <div>Logo</div>
-          <div>Collapse</div>
+          <Button variant="ghost" size="icon">
+            <GoSidebarCollapse className="text-lg" />
+          </Button>
         </div>
+        <Separator />
         <div
           id="nav-primary"
           className="
@@ -53,26 +81,63 @@ export default function Sidebar() {
           "
         >
           <Link href="/home">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdHome className="mr-2 h-4 w-4" />
               Home
             </Button>
           </Link>
           <Link href="/create">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdDesignServices className="mr-2 h-4 w-4" />
               Create
             </Button>
           </Link>
           <Link href="/cards">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdOutlineLayers className="mr-2 h-4 w-4" />
               Cards
             </Button>
           </Link>
           <Link href="/notifications">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdNotifications className="mr-2 h-4 w-4" />
               Notifications
             </Button>
           </Link>
         </div>
+        <Separator />
         <div
           id="nav-secondary"
           className="
@@ -83,12 +148,30 @@ export default function Sidebar() {
           "
         >
           <Link href="/learn">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdOutlineBook className="mr-2 h-4 w-4" />
               Learn
             </Button>
           </Link>
           <Link href="/play">
-            <Button className="w-full">
+            <Button
+              variant="ghost"
+              className="
+                flex
+                flex-row
+                justify-start
+                w-full
+              "
+            >
+              <MdOutlinePeople className="mr-2 h-4 w-4" />
               Play
             </Button>
           </Link>
@@ -104,8 +187,48 @@ export default function Sidebar() {
           w-full
         "
       >
-        <UserAvatar />
-        <div>Logout</div>
+        <div
+          id="avatar-username-container"
+          className="
+            flex
+            flex-row
+            justify-start
+            items-center
+            w-full
+            gap-2
+          "
+        >
+          <UserAvatar />
+          <p className="hover:cursor-pointer hover:text-zinc-200">
+            {userName}
+          </p>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MdChevronRight className="text-lg" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="hover:cursor-pointer">
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )
