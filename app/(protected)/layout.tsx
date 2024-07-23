@@ -42,6 +42,7 @@ export default function ProtectedRoutesLayout({
           h-full
           py-4
           px-8
+          gap-4
         "
       >
         <div
@@ -54,7 +55,6 @@ export default function ProtectedRoutesLayout({
             w-full
           "
         >
-          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

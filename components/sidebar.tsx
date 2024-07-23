@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 // Custom components
 import UserAvatar from "@/components/user-avatar"
+// Icons
 import { 
   MdHome, 
   MdDesignServices, 
@@ -25,10 +26,14 @@ import {
   MdOutlinePeople,
   MdOutlineBook,
   MdChevronRight,
+  MdOutlinePerson,
+  MdOutlinePayment,
+  MdOutlineSettings,
 } from "react-icons/md";
 import { GoSidebarCollapse } from "react-icons/go";
 
 const userName = "John"; // Replace with fetched data
+const stripeUrl = "https://stripe.com"; // Replace with actual URL
 
 export default function Sidebar() {
   return (
@@ -67,7 +72,7 @@ export default function Sidebar() {
         >
           <div>Logo</div>
           <Button variant="ghost" size="icon">
-            <GoSidebarCollapse className="text-lg" />
+            <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
           </Button>
         </div>
         <Separator />
@@ -90,7 +95,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdHome className="mr-2 h-4 w-4" />
+              <MdHome className="mr-2 h-[1.2rem] w-[1.2rem]" />
               Home
             </Button>
           </Link>
@@ -104,7 +109,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdDesignServices className="mr-2 h-4 w-4" />
+              <MdDesignServices className="mr-2 h-[1.2rem] w-[1.2rem]" />
               Create
             </Button>
           </Link>
@@ -118,7 +123,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdOutlineLayers className="mr-2 h-4 w-4" />
+              <MdOutlineLayers className="mr-2 h-[1.2rem] w-[1.2rem]" />
               Cards
             </Button>
           </Link>
@@ -132,7 +137,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdNotifications className="mr-2 h-4 w-4" />
+              <MdNotifications className="mr-2 h-[1.2rem] w-[1.2rem]" />
               Notifications
             </Button>
           </Link>
@@ -157,7 +162,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdOutlineBook className="mr-2 h-4 w-4" />
+              <MdOutlineBook className="mr-2h-[1.2rem] w-[1.2rem]" />
               Learn
             </Button>
           </Link>
@@ -171,7 +176,7 @@ export default function Sidebar() {
                 w-full
               "
             >
-              <MdOutlinePeople className="mr-2 h-4 w-4" />
+              <MdOutlinePeople className="mr-2 h-[1.2rem] w-[1.2rem]" />
               Play
             </Button>
           </Link>
@@ -196,34 +201,43 @@ export default function Sidebar() {
             items-center
             w-full
             gap-2
+            hover:opacity-80
           "
         >
           <UserAvatar />
-          <p className="hover:cursor-pointer hover:text-zinc-200">
-            {userName}
-          </p>
+          <p>{userName}</p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              <MdChevronRight className="text-lg" />
+              <MdChevronRight className="h-[1.2rem] w-[1.2rem]" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                Profile
+              <DropdownMenuItem>
+                <Link href="/profile" className="flex flex-row justify-start items-center gap-1">
+                  <MdOutlinePerson className="h-[1.2rem] w-[1.2rem]" />
+                  Profile
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="hover:cursor-pointer">
-                Billing
+                <a href={stripeUrl} target="_blank" rel="noopener noreferrer" className="flex flex-row justify-start items-center gap-1">
+                  <MdOutlinePayment className="h-[1.2rem] w-[1.2rem]" />
+                  Billing
+                </a>
               </DropdownMenuItem>
               <DropdownMenuItem className="hover:cursor-pointer">
-                Settings
+                <Link href="/settings" className="flex flex-row justify-start items-center gap-1">
+                  <MdOutlineSettings className="h-[1.2rem] w-[1.2rem]" />
+                  Settings
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            {/* TODO: Add logout logic */}
             <DropdownMenuItem className="hover:cursor-pointer">
               Log out
             </DropdownMenuItem>
