@@ -53,6 +53,11 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      backgroundImage: {
+        "hero-img-1": "url('/images/hero-img-1.webp')",
+        "hero-img-2": "url('/images/hero-img-2.webp')",
+        "hero-img-3": "url('/images/hero-img-3.webp')",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

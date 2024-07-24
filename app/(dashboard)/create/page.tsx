@@ -21,7 +21,7 @@ export default function Create() {
         autoExpire={false}
       />
       <div className="border p-4 w-full rounded-sm">
-      Create page
+        Create page
       </div>
     </div>
   )

@@ -3,6 +3,7 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+import Image from "next/image";
 // Shadcn components
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 // Custom components
 import UserAvatar from "@/components/user-avatar"
+import NexusIconWhite from "@/public/nexus-icon-white.svg"
 // Icons
 import { 
   MdHome, 
@@ -70,7 +72,50 @@ export default function Sidebar() {
             w-full
           "
         >
-          <div>Logo</div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Image
+                src={NexusIconWhite}
+                alt="Nexus TCG icon"
+                width={32}
+                height={32}
+                className="
+                  transition-transform duration-300 ease-in-out 
+                  hover:rotate-45
+                  hover:cursor-pointer
+                "
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <Link href="/profile" className="flex flex-row justify-start items-center gap-1">
+                    <MdOutlinePerson className="h-[1.2rem] w-[1.2rem]" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <a href={stripeUrl} target="_blank" rel="noopener noreferrer" className="flex flex-row justify-start items-center gap-1">
+                    <MdOutlinePayment className="h-[1.2rem] w-[1.2rem]" />
+                    Billing
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Link href="/settings" className="flex flex-row justify-start items-center gap-1">
+                    <MdOutlineSettings className="h-[1.2rem] w-[1.2rem]" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              {/* TODO: Add logout logic */}
+              <DropdownMenuItem className="hover:cursor-pointer">
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="ghost" size="icon">
             <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
           </Button>
@@ -213,7 +258,7 @@ export default function Sidebar() {
               <MdChevronRight className="h-[1.2rem] w-[1.2rem]" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

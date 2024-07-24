@@ -12,7 +12,7 @@ import { FaSteam } from "react-icons/fa";
 
 const steamUrl = "https://steamcommunity.com/sharedfiles/filedetails/?id=3279618215";
 
-export default function ProtectedRoutesLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode

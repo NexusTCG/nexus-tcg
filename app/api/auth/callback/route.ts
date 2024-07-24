@@ -1,19 +1,38 @@
-import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
+"use server";
 
-export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
+import { createClient } from "@/app/utils/supabase/server";
+import type { NextRequest } from "next/server";
+import { cookies } from "next/headers";
+
+export async function GET(
+  request: NextRequest
+) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const origin = requestUrl.origin;
 
   if (code) {
-    const supabase = createClient();
-    await supabase.auth.exchangeCodeForSession(code);
-  }
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
-  // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/protected`);
-}
+    const {
+      data,
+      error
+    } = await supabase
+      .auth
+      .exchangeCodeForSession(code);
+
+    if (error) {
+      return Response.redirect(
+        `${requestUrl.origin}/login?error=${encodeURIComponent(error.message)}`
+      );
+    }
+
+    if (data.session.user) {
+      return Response.redirect(`${requestUrl.origin}/home`);
+    } else {
+      return Response.redirect(
+        `${requestUrl.origin}/login?error=No user found in session.`
+      );
+    };
+  };
+};
