@@ -1,24 +1,24 @@
 "use client"
 
-import React from "react";
+import React, { useState } from "react";
 // Utils
 import Link from "next/link";
-import Image from "next/image";
+import clsx from "clsx";
+// Data
+import { policyLinks } from "@/app/lib/data/data";
 // Shadcn components
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 // Custom components
 import UserAvatar from "@/components/user-avatar"
-import NexusIconWhite from "@/public/nexus-icon-white.svg"
+import SidebarPopoverIcon from "@/components/sidebar-popover-icon"
+import SidebarProfileMenu from "@/components/sidebar-profile-menu"
 // Icons
 import { 
   MdHome, 
@@ -27,268 +27,192 @@ import {
   MdNotifications,
   MdOutlinePeople,
   MdOutlineBook,
-  MdChevronRight,
-  MdOutlinePerson,
-  MdOutlinePayment,
-  MdOutlineSettings,
 } from "react-icons/md";
 import { GoSidebarCollapse } from "react-icons/go";
 
 const userName = "John"; // Replace with fetched data
-const stripeUrl = "https://stripe.com"; // Replace with actual URL
+
+const navItems = [
+  { href: "/home", icon: MdHome, label: "Home" },
+  { href: "/create", icon: MdDesignServices, label: "Create" },
+  { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
+  { href: "/notifications", icon: MdNotifications, label: "Notifications" },
+];
+
+const secondaryNavItems = [
+  { href: "/learn", icon: MdOutlineBook, label: "Learn" },
+  { href: "/play", icon: MdOutlinePeople, label: "Play" },
+];
 
 export default function Sidebar() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  function toggleSidebar() {
+    setIsCollapsed(!isCollapsed)
+  };
+
+  function renderNavItems(items: { 
+    href: string; 
+    icon: React.ElementType; 
+    label: string 
+  }[]) {
+    return items.map((item) => (
+      <TooltipProvider key={item.href}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link href={item.href}>
+              <Button
+                variant="ghost"
+                size={isCollapsed ? "icon" : "default"}
+                className={clsx(
+                  "w-full",
+                  isCollapsed ? "justify-center" : "justify-start"
+                )}
+              >
+                <item.icon className={clsx(
+                  "h-[1.2rem] w-[1.2rem]",
+                  isCollapsed ? "m-0" : "mr-2"
+                )} />
+                {!isCollapsed && item.label}
+              </Button>
+            </Link>
+          </TooltipTrigger>
+          {isCollapsed && (
+            <TooltipContent side="right">
+              <p>{item.label}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
+    ));
+  }
+
   return (
     <div
       id="sidebar"
-      className="
+      className={`
         flex
         flex-col
         justify-between
         items-center
-        w-[240px]
-        min-w-[240px]
+        ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}
         min-h-screen
         border-r
         p-4
-      "
+        transition-all
+        duration-300
+      `}
     >
       <div
         id="sidebar-content"
-        className="
-          flex
-          flex-col
-          w-full
-          gap-4
-        "
+        className="flex flex-col w-full gap-4"
       >
         <div
           id="sidebar-header"
-          className="
-            flex
-            flex-row
-            justify-between
-            items-center
-            w-full
-          "
+          className="flex flex-row justify-between items-center w-full"
         >
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Image
-                src={NexusIconWhite}
-                alt="Nexus TCG icon"
-                width={32}
-                height={32}
+          {!isCollapsed && <SidebarPopoverIcon />}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                  <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{isCollapsed ? "Expand" : "Collapse"} sidebar</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <Separator />
+        <div id="nav-primary" className="flex flex-col w-full gap-1">
+          {renderNavItems(navItems)}
+        </div>
+        <Separator />
+        <div id="nav-secondary" className="flex flex-col w-full gap-1">
+          {renderNavItems(secondaryNavItems)}
+        </div>
+        <Separator />
+        {!isCollapsed && (
+          <div
+            id="nav-links"
+            className="
+              flex 
+              flex-wrap 
+              w-full 
+              gap-x-1.5
+              gap-y-0.5
+            "
+          >
+            {Object.values(policyLinks).map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: "0.65rem" }}
                 className="
-                  transition-transform duration-300 ease-in-out 
-                  hover:rotate-45
-                  hover:cursor-pointer
+                  text-zinc-500
+                  hover:underline 
+                  opacity-40 
+                  hover:opacity-50
+                  transition-all
                 "
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Link href="/profile" className="flex flex-row justify-start items-center gap-1">
-                    <MdOutlinePerson className="h-[1.2rem] w-[1.2rem]" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  <a href={stripeUrl} target="_blank" rel="noopener noreferrer" className="flex flex-row justify-start items-center gap-1">
-                    <MdOutlinePayment className="h-[1.2rem] w-[1.2rem]" />
-                    Billing
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  <Link href="/settings" className="flex flex-row justify-start items-center gap-1">
-                    <MdOutlineSettings className="h-[1.2rem] w-[1.2rem]" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              {/* TODO: Add logout logic */}
-              <DropdownMenuItem className="hover:cursor-pointer">
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button variant="ghost" size="icon">
-            <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
-          </Button>
-        </div>
-        <Separator />
-        <div
-          id="nav-primary"
-          className="
-            flex
-            flex-col
-            w-full
-            gap-1
-          "
-        >
-          <Link href="/home">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdHome className="mr-2 h-[1.2rem] w-[1.2rem]" />
-              Home
-            </Button>
-          </Link>
-          <Link href="/create">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdDesignServices className="mr-2 h-[1.2rem] w-[1.2rem]" />
-              Create
-            </Button>
-          </Link>
-          <Link href="/cards">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdOutlineLayers className="mr-2 h-[1.2rem] w-[1.2rem]" />
-              Cards
-            </Button>
-          </Link>
-          <Link href="/notifications">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdNotifications className="mr-2 h-[1.2rem] w-[1.2rem]" />
-              Notifications
-            </Button>
-          </Link>
-        </div>
-        <Separator />
-        <div
-          id="nav-secondary"
-          className="
-            flex
-            flex-col
-            w-full
-            gap-1
-          "
-        >
-          <Link href="/learn">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdOutlineBook className="mr-2h-[1.2rem] w-[1.2rem]" />
-              Learn
-            </Button>
-          </Link>
-          <Link href="/play">
-            <Button
-              variant="ghost"
-              className="
-                flex
-                flex-row
-                justify-start
-                w-full
-              "
-            >
-              <MdOutlinePeople className="mr-2 h-[1.2rem] w-[1.2rem]" />
-              Play
-            </Button>
-          </Link>
-        </div>
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
       <div
         id="sidebar-footer"
         className="
           flex
-          flex-row
-          justify-between
+          flex-col
+          justify-center
           items-center
           w-full
+          gap-2
         "
       >
         <div
-          id="avatar-username-container"
-          className="
-            flex
-            flex-row
-            justify-start
-            items-center
-            w-full
-            gap-2
-            hover:opacity-80
-          "
+          id="sidebar-profile"
+          className={clsx(
+            "flex flex-row items-center w-full",
+            isCollapsed ? "justify-center" : "justify-between"
+          )}
         >
-          <UserAvatar />
-          <p>{userName}</p>
+          {!isCollapsed && (
+            <div
+              id="avatar-username-container"
+              className="flex flex-row justify-start items-center w-full gap-2"
+            >
+              <UserAvatar />
+              <p>{userName}</p>
+            </div>
+          )}
+          {isCollapsed ? (
+            <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <SidebarProfileMenu />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Profile Menu
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          ) : (
+            <div>
+              <SidebarProfileMenu />
+            </div>
+          )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MdChevronRight className="h-[1.2rem] w-[1.2rem]" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="start">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Link href="/profile" className="flex flex-row justify-start items-center gap-1">
-                  <MdOutlinePerson className="h-[1.2rem] w-[1.2rem]" />
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <a href={stripeUrl} target="_blank" rel="noopener noreferrer" className="flex flex-row justify-start items-center gap-1">
-                  <MdOutlinePayment className="h-[1.2rem] w-[1.2rem]" />
-                  Billing
-                </a>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer">
-                <Link href="/settings" className="flex flex-row justify-start items-center gap-1">
-                  <MdOutlineSettings className="h-[1.2rem] w-[1.2rem]" />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            {/* TODO: Add logout logic */}
-            <DropdownMenuItem className="hover:cursor-pointer">
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </div>
-  )
+  );
 }
