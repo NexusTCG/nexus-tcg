@@ -116,7 +116,7 @@ export default function NavBar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href={socialChannels.twitter}
+                href={socialChannels.twitter.href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -134,7 +134,7 @@ export default function NavBar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href={socialChannels.discord}
+                href={socialChannels.discord.href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -152,7 +152,7 @@ export default function NavBar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href={socialChannels.steam}
+                href={socialChannels.steam.href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
