@@ -19,14 +19,14 @@ export default function NexusCardForm() {
           items-center
           w-full
           h-full
-          px-1.5
+          px-2
           border-x
         "
       >
         {/* Was w-[340px] */}
         <AspectRatio
           ratio={4 / 3}
-          style={{borderRadius: "0 0 1rem 1rem" }}
+          style={{borderRadius: "0 0 8px 8px" }}
           className="
             w-full
             border-2
@@ -96,20 +96,6 @@ export default function NexusCardForm() {
             </div>
           </div>
         </div>
-        {/* <div
-          id="card-footer-container"
-          className="
-            flex
-            flex-row
-            justify-between
-            items-center
-            w-full
-          "
-        >
-          <span>Attack</span>
-          <span>Grade</span>
-          <span>Defense</span>
-        </div> */}
       </div>
     </NexusCardContainer>
   )

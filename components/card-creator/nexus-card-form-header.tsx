@@ -19,7 +19,7 @@ export default function NexusCardFormHeader() {
         w-full
         h-[40px]
         gap-2
-        px-1
+        pl-0.5
         bg-yellow-50
         text-black
         border

@@ -14,49 +14,49 @@ export const socialChannels = {
     icon: FaDiscord,
     href: "https://discord.gg/nexus",
     label: "Discord",
-    linkColor: "text-indigo-400"
+    linkColor: "indigo"
   },
   github: {
     icon: FaGithub,
     href: "https://github.com/NexusTCG/nexus/wiki",
     label: "GitHub",
-    linkColor: "text-slate-400"
+    linkColor: "slate"
   },
   linkedin: {
     icon: FaLinkedin,
     href: "https://www.linkedin.com/company/nexus-tcg",
     label: "LinkedIn",
-    linkColor: "text-blue-400"
+    linkColor: "blue"
   },
   reddit: {
     icon: FaReddit,
     href: "https://www.reddit.com/r/playnexus/",
     label: "Reddit",
-    linkColor: "text-orange-400"
+    linkColor: "orange"
   },
   steam: {
     icon: FaSteam,
     href: "https://store.steampowered.com/app/1516030/Nexus/",
     label: "Steam",
-    linkColor: "text-stone-600"
+    linkColor: "stone"
   },
   twitch: {
     icon: FaTwitch,
     href: "https://twitch.tv/nexus_tcg/about",
     label: "Twitch",
-    linkColor: "text-purple-400"
+    linkColor: "purple"
   },
   youtube: {
     icon: FaYoutube,
     href: "https://youtube.com/@PlayNexusTCG",
     label: "YouTube",
-    linkColor: "text-red-400"
+    linkColor: "red"
   },
   twitter: {
     icon: FaXTwitter,
     href: "https://twitter.com/PlayNexusTcg",
     label: "Twitter",
-    linkColor: "text-sky-400"
+    linkColor: "sky"
   }
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import Image from "next/image";
-import { MdDesignServices } from "react-icons/md";
-
+// Custom components
+import NexusCardFormFooter from "@/components/card-creator/nexus-card-form-footer";
+import NexusCardFormStats from "@/components/card-creator/nexus-card-form-stats";
 
 type NexusCardContainerProps = {
   children: React.ReactNode;
@@ -22,11 +22,9 @@ export default function NexusCardContainer({
   return (
     <div
       id="nexus-card-container"
-      style={{
-        borderRadius: "16px",
-
-      }}
+      style={{ borderRadius: "16px" }}
       className="
+        relative
         flex
         flex-col
         items-center
@@ -36,8 +34,7 @@ export default function NexusCardContainer({
         overflow-hidden
         pt-3
         px-3
-        border
-        border-white/20
+        shadow-lg
       "
     >
       <div
@@ -56,55 +53,10 @@ export default function NexusCardContainer({
       >
         {children}
       </div>
-      <div
-        id="nexus-card-footer-container"
-        style={{ fontSize: "0.75rem" }}
-        className="
-          flex
-          flex-row
-          justify-between
-          items-center
-          w-full
-          min-h-[24px]
-          py-1
-          gap-2
-          text-neutral-300
-          font-light
-        "
-      >
-        <span className="w-full flex justify-start"></span>
-        <small
-          id="card-creator"
-          className="
-            flex
-            flex-row
-            justify-center
-            items-center
-            w-full
-            gap-0.5
-          "
-        >
-          <MdDesignServices className="w-[0.75rem] h-[0.75rem]" />
-          {/* <span>Made by</span> */}
-          <span>Creator Name</span>
-        </small>
-        <small
-          id="fineprint"
-          style={{ fontSize: "0.6rem" }}
-          className="
-              flex
-              flex-col
-              justify-center
-              items-end
-              w-full
-              text-neutral-400
-              gap-0
-            "
-          >
-            {/* <span>Make cards at play.nexus</span> */}
-            <span>© Nexus Games 2024</span>
-        </small>
+      <div className="absolute bottom-0 left-0 z-10">
+        <NexusCardFormStats />
       </div>
+      <NexusCardFormFooter />
     </div>
   )
 }
