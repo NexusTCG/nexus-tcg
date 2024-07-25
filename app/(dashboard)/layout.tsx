@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Sidebar from "@/components/sidebar"
+import Sidebar from "@/components/sidebar/sidebar"
 import { Button } from "@/components/ui/button";
 import { FaSteam } from "react-icons/fa";
 

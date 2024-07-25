@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/tooltip"
 // Custom components
 import UserAvatar from "@/components/user-avatar"
-import SidebarPopoverIcon from "@/components/sidebar-popover-icon"
-import SidebarProfileMenu from "@/components/sidebar-profile-menu"
+import SidebarPopoverIcon from "@/components/sidebar/sidebar-popover-icon"
+import SidebarProfileMenu from "@/components/sidebar/sidebar-profile-menu"
 // Icons
 import { 
   MdHome, 
