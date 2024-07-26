@@ -19,7 +19,7 @@ import void12 from "@/public/icons/energy-icons/void-12.svg";
 import void13 from "@/public/icons/energy-icons/void-13.svg";
 import void14 from "@/public/icons/energy-icons/void-14.svg";
 import void15 from "@/public/icons/energy-icons/void-15.svg";
-import voidX from "@/public/icons/energy-icons/void-x.svg";
+import voidx from "@/public/icons/energy-icons/void-x.svg";
 
 export const energyIcons = {
   light,
@@ -29,8 +29,6 @@ export const energyIcons = {
   growth,
   void: [
     void0, void1, void2, void3, void4, void5, void6, void7,
-    void8, void9, void10, void11, void12, void13, void14, void15, voidX
+    void8, void9, void10, void11, void12, void13, void14, void15, voidx
   ]
 };
-
-export type EnergyType = keyof typeof energyIcons;

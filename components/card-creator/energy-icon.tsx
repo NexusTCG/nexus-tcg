@@ -1,8 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { energyIcons } from '@/app/lib/data/icons';
-
-type EnergyType = 'light' | 'storm' | 'dark' | 'chaos' | 'growth' | 'voidx' | `void${number}`;
+import { EnergyType } from '@/app/lib/types/components'
 
 type EnergyIconProps = {
   type: EnergyType;

@@ -1,0 +1,1 @@
+export type EnergyType = 'light' | 'storm' | 'dark' | 'chaos' | 'growth' | 'voidx' | `void${number}`;

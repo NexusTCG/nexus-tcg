@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useState } from 'react';
+// Types
+import { EnergyType } from '@/app/lib/types/components'
 // Components
 import { 
   Popover, 
@@ -10,8 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
-type EnergyType = 'Light' | 'Storm' | 'Dark' | 'Chaos' | 'Growth' | 'Void';
-const energyTypes = ['Light', 'Storm', 'Dark', 'Chaos', 'Growth', 'Void'];
+const energyTypes: EnergyType[] = ['light', 'storm', 'dark', 'chaos', 'growth', 'voidx'];
 
 export default function NexusCardFormCost() {
   const [speed, setSpeed] = useState(1);
@@ -25,7 +26,7 @@ export default function NexusCardFormCost() {
 
   const updateEnergyCost = (type: EnergyType, delta: number) => {
     setEnergyCosts(prev => {
-      const newValue = Math.max(0, Math.min(5, prev[type] + delta));
+      const newValue = Math.max(0, Math.min(5, (prev[type] || 0) + delta));
       return {...prev, [type]: newValue};
     });
   };
@@ -33,13 +34,13 @@ export default function NexusCardFormCost() {
   return (
     <div className="absolute top-1 left-1 flex flex-col items-start z-30">
       <Button variant="ghost" size="sm" onClick={cycleSpeed} className="mb-1 p-1">
-        <EnergyIcon type={`Void${speed}`} size="lg" />
+        <EnergyIcon type={`void${speed}`} />
       </Button>
       
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="sm" className="p-1">
-            <EnergyIcon type="VoidX" size="lg" />
+            <EnergyIcon type="voidx" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[300px]">
@@ -48,7 +49,7 @@ export default function NexusCardFormCost() {
             <div className="grid grid-cols-3 gap-4">
               {energyTypes.map(type => (
                 <div key={type} className="flex flex-col items-center bg-gray-800 p-2 rounded-md">
-                  <EnergyIcon type={type === 'Void' ? 'VoidX' : type as EnergyType} size="lg" />
+                  <EnergyIcon type={`void${speed}` as EnergyType} />
                   <div className="flex items-center mt-2">
                     <Button 
                       size="sm" 
@@ -80,7 +81,7 @@ export default function NexusCardFormCost() {
         {Object.entries(energyCosts).map(([type, cost]) => 
           cost > 0 && (
             <div key={type} className="flex items-center">
-              <EnergyIcon type={type as EnergyType} size="md" className="shadow-sm shadow-black" />
+              <EnergyIcon type={type as EnergyType} />
               <span className="ml-1 text-xs">{cost}</span>
             </div>
           )
