@@ -44,11 +44,16 @@ export default function LoginLayout(
           flex
           flex-col
           flex-grow
+          justify-start
+          items-center
+          min-h-screen
           w-full
           max-w-4xl
-          mx-auto
           relative
           z-10
+          lg:px-0
+          md:px-8
+          px-4
         "
       >
         <NavBar />

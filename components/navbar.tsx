@@ -44,11 +44,22 @@ export default function NavBar() {
     <div
       id="nav-bar-container"
       className="
+        absolute
+        top-0
+        left-0
+        right-0
+        z-50
         flex
         flex-row
         justify-between
         items-center
+        md:max-w-4xl
+        mt-4
         w-full
+        mx-auto
+        lg:px-0
+        md:px-8
+        px-4
       "
     >
       <div
@@ -81,30 +92,50 @@ export default function NavBar() {
           bg-zinc-900
           border
           border-zinc-700
+          
         "
       >
         <div>
-        <Link href="/cards">
-          <Button variant="ghost">Cards</Button>
-        </Link>
+          <Link href="/cards">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="font-medium"
+            >
+              Cards
+            </Button>
+          </Link>
         </div>
         <div>
-        <Link href="/learn">
-          <Button variant="ghost">Learn</Button>
-        </Link>
+          <Link href="/learn">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="font-medium"
+            >
+              Learn
+            </Button>
+          </Link>
         </div>
         {/* Separator is not showing */}
         <Separator orientation="vertical" />
         <div>
-        <Link href="/login">
-          <Button variant="ghost" size="sm">Login</Button>
-        </Link>
+          <Link href="/login">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="font-medium"
+            >
+              Login
+            </Button>
+          </Link>
         </div>
       </div>
       <div
         id="nav-social-container"
         className="
-          flex
+          hidden
+          md:flex
           flex-row
           justify-end
           items-center
