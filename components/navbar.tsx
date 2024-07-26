@@ -12,7 +12,7 @@ import Link from "next/link";
 // Data
 import { socialChannels } from "@/app/lib/data/data";
 // Components
-import NexusLogoWhite from "@/public/nexus-logo-white.svg";
+import NexusLogoWhite from "@/public/brand-assets/nexus-logo-white.svg";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 

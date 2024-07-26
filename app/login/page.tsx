@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import OAuthButton from "@/components/oauth-button";
-import NexusIconWhite from "@/public/nexus-icon-white.svg";
+import NexusIconWhite from "@/public/brand-assets/nexus-icon-white.svg";
 
 export default function LoginPage() {
   return (

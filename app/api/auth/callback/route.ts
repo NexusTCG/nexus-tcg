@@ -1,38 +1,57 @@
 "use server";
 
 import { createClient } from "@/app/utils/supabase/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(
-  request: NextRequest
-) {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get("code");
+export async function GET(req: NextRequest) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get("code");
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || url.origin;
 
   if (code) {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
+    
+    try {
+      // Exchange code for session
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    const {
-      data,
-      error
-    } = await supabase
-      .auth
-      .exchangeCodeForSession(code);
+      if (error) {
+        console.error("Error exchanging code for session:", error);
+        return NextResponse.redirect(
+          `${baseUrl}/login?error=${encodeURIComponent(error.message)}`
+        );
+      } 
+    
+      if (data?.session && data?.session.user) {
+        // Check if user has a profile
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", data.session.user.id)
+          .maybeSingle();
+      
+        if (profileError) {
+          console.error("Error fetching user profile:", profileError);
+        }
 
-    if (error) {
-      return Response.redirect(
-        `${requestUrl.origin}/login?error=${encodeURIComponent(error.message)}`
+        // If user has no profile, redirect to create profile
+        if (!profile) {
+          return NextResponse.redirect(`${baseUrl}/login/create-profile`);
+        }
+
+        // If user has profile, redirect to home
+        return NextResponse.redirect(`${baseUrl}/home`);
+      }
+    } catch (error) {
+      console.error("Unexpected error in auth callback:", error);
+      return NextResponse.redirect(
+        `${baseUrl}/login?error=An unexpected error occurred`
       );
     }
-
-    if (data.session.user) {
-      return Response.redirect(`${requestUrl.origin}/home`);
-    } else {
-      return Response.redirect(
-        `${requestUrl.origin}/login?error=No user found in session.`
-      );
-    };
-  };
-};
+  }
+  
+  // If no code, redirect to login
+  return NextResponse.redirect(`${baseUrl}/login`);
+}

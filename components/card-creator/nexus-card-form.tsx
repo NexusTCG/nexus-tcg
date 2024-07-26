@@ -1,15 +1,20 @@
 import React from "react"
-import Image from 'next/image';
-// Components
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 // Custom components
+import NexusCardArt from "@/components/card-creator/nexus-card-art"
 import NexusCardContainer from "@/components/card-creator/nexus-card-container";
 import NexusCardFormHeader from "@/components/card-creator/nexus-card-form-header"
+import NexusCardFormCost from "@/components/card-creator/nexus-card-form-cost"
+
+// TODO: Replace with dynamic data
+const cardArtUrl = "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/card-art/card-art/1721896579240-flda1vy7c69.png"
+const cardName = "Card Name"
+const cardCreator = "Card Creator"
 
 export default function NexusCardForm() {
   return (
     <NexusCardContainer>
       <NexusCardFormHeader />
+      <NexusCardFormCost />
       <div
         id="card-content-container"
         className="
@@ -23,26 +28,11 @@ export default function NexusCardForm() {
           border-x
         "
       >
-        {/* Was w-[340px] */}
-        <AspectRatio
-          ratio={4 / 3}
-          style={{borderRadius: "0 0 8px 8px" }}
-          className="
-            w-full
-            border-2
-            -mt-0.5
-            overflow-hidden
-            z-10
-            shadow-sm
-            shadow-black/50
-          "
-        >
-          <Image
-            src="https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/card-art/card-art/1721896579240-flda1vy7c69.png"
-            alt="Scrapraider Ratatazong by Schw4rtzee"
-            fill
-          />
-        </AspectRatio>
+        <NexusCardArt
+          cardArtUrl={cardArtUrl}
+          cardName={cardName}
+          cardCreator={cardCreator}
+        />
         {/* TODO: Turn into component. Keyword select + text input */}
         <div
           id="card-text-outer-container"

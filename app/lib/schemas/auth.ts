@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// TODO: Remove this and use OAuth instead
+
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,100}$/;
 
 // Schema: Register form

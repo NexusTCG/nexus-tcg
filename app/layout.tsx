@@ -7,14 +7,16 @@ import { Inter } from "next/font/google";
 import "@/app/lib/styles/globals.css";
 // Next
 import type { Metadata } from 'next'
-import dynamic from 'next/dynamic';
-// import Script from 'next/script';
 
 const inter = Inter({ subsets: ["latin"] });
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+  : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+const supabaseRedirectUrl = process.env.NODE_ENV === 'development'
+? `${defaultUrl}/api/auth/callback/supabase`
+: 'https://play.nexus/api/auth/callback';
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),

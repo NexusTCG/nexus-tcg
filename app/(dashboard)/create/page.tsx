@@ -1,6 +1,7 @@
 import React from "react";
 // Custom components
 import Banner from "@/components/banner";
+import EnergyIcon from "@/components/card-creator/energy-icon";
 import NexusCardForm from "@/components/card-creator/nexus-card-form";
 import CardCreatorHeader from "@/components/card-creator/card-creator-header";
 import CardCreatorFooter from "@/components/card-creator/card-creator-footer";
@@ -50,6 +51,16 @@ export default function Create() {
             bg-zinc-800
           "
         >
+          <div className="flex flex-row gap-2 my-4">
+            <EnergyIcon type="light" />
+            <EnergyIcon type="storm" inline />
+            <EnergyIcon type="dark" inline />
+            <EnergyIcon type="chaos" />
+            <EnergyIcon type="growth" />
+            <EnergyIcon type="void0" />
+            <EnergyIcon type="voidx" />
+          </div>
+          
           {/* TODO: Add anomaly mode & functionality to switch between them */}
           <NexusCardForm />
         </div>

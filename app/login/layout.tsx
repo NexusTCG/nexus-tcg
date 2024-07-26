@@ -29,13 +29,15 @@ export default function LoginLayout(
         pt-4
       "
     >
-      <Image
-        src={heroImg ? heroImg : "/images/hero-img-1.webp"}
-        alt="Nexus TCG background image"
-        fill
-        style={{ objectFit: "cover" }}
-        className="opacity-40"
-      />
+      {heroImg && (
+        <Image
+          src={heroImg}
+          alt="Nexus TCG background image"
+          fill
+          style={{ objectFit: "cover" }}
+          className="opacity-40"
+        />
+      )}
       <div
         id="login-content-container"
         className="

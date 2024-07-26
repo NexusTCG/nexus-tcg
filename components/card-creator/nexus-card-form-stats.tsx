@@ -55,9 +55,25 @@ export default function NexusCardFormStats() {
           gap-0.5
         "
       >
-        <p className="font-extrabold text-xl text-orange-400">{statsAttack}</p>
+        <p
+          className="
+            font-bold 
+            text-xl 
+            text-orange-400
+          "
+        >
+          {statsAttack}
+        </p>
         <p className="text-neutral-300">/</p>
-        <p className="font-extrabold text-xl text-emerald-400">{statsAttack}</p>
+        <p
+          className="
+            font-bold 
+            text-xl 
+            text-emerald-400
+          "
+        >
+          {statsDefense}
+        </p>
       </div>
     </div>
   )

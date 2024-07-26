@@ -17,7 +17,7 @@ import {
 // Custom components
 import SocialLink from "@/components/social-link";
 // Icons
-import NexusIconWhite from "@/public/nexus-icon-white.svg"
+import NexusIconWhite from "@/public/brand-assets/nexus-icon-white.svg"
 
 export default function SidebarIcon() {
   const [isOpen, setIsOpen] = useState(false);

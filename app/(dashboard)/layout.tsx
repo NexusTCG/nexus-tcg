@@ -1,16 +1,19 @@
 import React from "react";
-import { ModeToggle } from "@/components/ui/mode-toggle"
+// Utils
+import { socialChannels } from "@/app/lib/data/data";
+// Components
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Sidebar from "@/components/sidebar/sidebar"
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ui/mode-toggle"
+// Custom components
+import Sidebar from "@/components/sidebar/sidebar"
+// Icons
 import { FaSteam } from "react-icons/fa";
-
-const steamUrl = "https://steamcommunity.com/sharedfiles/filedetails/?id=3279618215";
 
 export default function DashboardLayout({
   children,
@@ -58,7 +61,7 @@ export default function DashboardLayout({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <a href={steamUrl} target="_blank" rel="noopener noreferrer">
+                <a href={socialChannels.steam.href} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon">
                     <FaSteam className="h-[1.2rem] w-[1.2rem]" />
                   </Button>
