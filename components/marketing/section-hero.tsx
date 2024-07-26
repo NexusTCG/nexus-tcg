@@ -1,6 +1,7 @@
 import React from "react";
 // Utils
 import Image from "next/image";
+import Link from "next/link";
 // Components
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge"
@@ -97,19 +98,24 @@ export default function SectionHero() {
               gap-4
             "
           >
-            <Button
-              size="lg"
-              className="
-                text-lg
-                font-semibold
-                gap-2
-                bg-teal-400
-                hover:bg-teal-300
-              "
-            >
-              Join to create cards
-              <MdArrowForward className="w-[1.2rem] h-[1.2rem] font-bold" />
-            </Button>
+            <Link href="/login">
+              <Button
+                size="lg"
+                className="
+                  text-lg
+                  font-semibold
+                  gap-2
+                  bg-teal-400
+                  hover:bg-teal-300
+                  hover:shadow-lg
+                  hover:shadow-teal-300/10
+                  transition-all
+                "
+              >
+                Join to create cards
+                <MdArrowForward className="w-[1.2rem] h-[1.2rem] font-bold" />
+              </Button>
+            </Link>
             <small className="text-neutral-300 text-md">
               One-click with Google, Discord, and Twitch
             </small>

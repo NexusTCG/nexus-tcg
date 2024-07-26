@@ -37,7 +37,7 @@ export default function SectionIntroVideo() {
             justify-start
             items-start
             gap-4
-            max-w-xl
+            max-w-2xl
             w-full
             px-4
             sm:px-0

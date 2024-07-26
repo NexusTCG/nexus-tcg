@@ -101,6 +101,8 @@ export default function Sidebar() {
         p-4
         transition-all
         duration-300
+        sticky
+        top-0
       `}
     >
       <div

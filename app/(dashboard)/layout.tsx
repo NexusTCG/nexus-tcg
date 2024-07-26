@@ -31,6 +31,7 @@ export default function DashboardLayout({
         items-start
         w-full
         h-min-screen
+        overflow-y-auto
       "
     >
       <Sidebar />
@@ -39,16 +40,14 @@ export default function DashboardLayout({
         className="
           flex
           flex-col
-          justify-center
+          justify-start
           items-center
           w-full
-          h-full
-          py-4
-          px-8
-          gap-4
+          h-screen
         "
       >
-        <div
+        {/* TODO: Move darkmode toggle */}
+        {/* <div
           id="content-header"
           className="
             flex
@@ -73,7 +72,7 @@ export default function DashboardLayout({
             </Tooltip>
           </TooltipProvider>
           <ModeToggle />
-        </div>
+        </div> */}
         {children}
       </div>
     </div>

@@ -43,6 +43,8 @@ export default function SectionContainer({
       <div
         id={`${label}-content-container`}
         className="
+          absolute
+          inset-0
           flex
           flex-col
           items-center
@@ -59,7 +61,6 @@ export default function SectionContainer({
           sm:py-16
           md:py-20
           lg:py-24
-          relative
           z-10
         "
       >

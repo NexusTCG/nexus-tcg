@@ -1,7 +1,6 @@
 import React from "react";
 // Components
 import NavBar from "@/components/navbar";
-import SectionContainer from "@/components/marketing/section-container";
 import SectionHero from "@/components/marketing/section-hero";
 import SectionIntroVideo from "@/components/marketing/section-intro-video";
 import SectionFeaturedCards from "@/components/marketing/section-featured-cards";
@@ -22,13 +21,8 @@ export default function Marketing() {
       <SectionIntroVideo />
       <SectionFeaturedCards />
       <SectionSocialProof />
-      <SectionContainer label="social-proof" bgImage size="sm">
-        <h2 className="max-w-3xl text-3xl text-center">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-        </h2>
-      </SectionContainer>
-      <SectionAppUI />
       <SectionSteam />
+      <SectionAppUI />
       <SectionCTA />
       <SectionFooter />
     </div>
