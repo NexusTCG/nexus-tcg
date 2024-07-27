@@ -10,7 +10,7 @@ export default function LoginLayout(
   props: RootLayoutProps
 ) {
   const { children } = props;
-  const heroImg = `/images/hero-img-${Math.floor(Math.random() * 3) + 1}.webp`;
+  const heroImg = `/images/marketing/hero-bg/hero-img-${Math.floor(Math.random() * 25) + 1}.webp`;
 
   return (
     <div

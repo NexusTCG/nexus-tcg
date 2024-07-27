@@ -36,7 +36,7 @@ export const socialChannels = {
   },
   steam: {
     icon: FaSteam,
-    href: "https://store.steampowered.com/app/1516030/Nexus/",
+    href: "https://steamcommunity.com/sharedfiles/filedetails/?id=3279618215",
     label: "Steam",
     linkColor: "stone"
   },

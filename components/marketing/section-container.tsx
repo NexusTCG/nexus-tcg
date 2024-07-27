@@ -15,7 +15,7 @@ export default function SectionContainer({
   children, 
   size = "md" 
 }: SectionContainerProps) {
-  const randomBgImage = `/images/hero-img-${(Math.floor(Math.random() * 3) + 1)}.webp`
+  const randomBgImage = `/images/marketing/hero-bg/hero-img-${(Math.floor(Math.random() * 25) + 1)}.webp`
 
   return (
     <section
