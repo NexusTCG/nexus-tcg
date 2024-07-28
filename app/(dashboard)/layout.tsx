@@ -2,19 +2,8 @@ import React from "react";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
-// Components
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/ui/mode-toggle"
 // Custom components
 import Sidebar from "@/components/sidebar/sidebar"
-// Icons
-import { FaSteam } from "react-icons/fa";
 
 export default async function DashboardLayout({
   children,
