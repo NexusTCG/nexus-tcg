@@ -23,9 +23,8 @@ export default function LoginPage() {
         className="
           flex
           flex-col
-          
-          items-center
           justify-center
+          items-center
           max-w-[480px]
           w-full
           rounded-lg
@@ -85,6 +84,11 @@ export default function LoginPage() {
           <OAuthButton
             cta="Log in with Twitch"
             provider="twitch"
+            disabled={false}
+          />
+          <OAuthButton
+            cta="Log in with GitHub"
+            provider="github"
             disabled={false}
           />
         </div>

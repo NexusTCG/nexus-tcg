@@ -11,14 +11,15 @@ import { createClient } from "@/app/utils/supabase/client";
 import { Button } from "@/components/ui/button"
 // Icons
 import { 
-  FaGoogle,
   FaDiscord, 
-  FaTwitch 
+  FaGithub,
+  FaGoogle,
+  FaTwitch,
 } from "react-icons/fa";
 
 type NewAuthButtonProps = {
   cta: string | null;
-  provider: "google" | "discord" | "twitch" | null;
+  provider: "google" | "discord" | "twitch" | "github" | null;
   disabled?: boolean;
 };
 
@@ -53,11 +54,14 @@ export default function OAuthButton({
 
   useEffect(() => {
     switch (provider) {
-      case "google":
-        setProviderIcon(<FaGoogle className="h-[1.2rem] w-[1.2rem]" />);
-        break;
       case "discord":
         setProviderIcon(<FaDiscord className="h-[1.2rem] w-[1.2rem]" />);
+        break;
+      case "github":
+        setProviderIcon(<FaGithub className="h-[1.2rem] w-[1.2rem]" />);
+        break;
+      case "google":
+        setProviderIcon(<FaGoogle className="h-[1.2rem] w-[1.2rem]" />);
         break;
       case "twitch":
         setProviderIcon(<FaTwitch className="h-[1.2rem] w-[1.2rem]" />);
