@@ -88,7 +88,7 @@ export default function SectionFooter() {
           <small className="text-teal-500">Pages</small>
           <ul className="text-xs text-neutral-600 ">
             <li className="hover:text-neutral-400 hover:underline">
-              <Link href="/learn">Cards</Link>
+              <Link href="/cards">Cards</Link>
             </li>
             <li className="hover:text-neutral-400 hover:underline">
               <Link href="/learn">Learn</Link>

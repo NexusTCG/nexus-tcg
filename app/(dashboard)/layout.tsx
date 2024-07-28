@@ -1,6 +1,7 @@
 import React from "react";
-// Utils
-import { socialChannels } from "@/app/lib/data/data";
+// Server
+import { getCurrentUserId } from "@/app/server/auth";
+import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Components
 import {
   Tooltip,
@@ -15,11 +16,13 @@ import Sidebar from "@/components/sidebar/sidebar"
 // Icons
 import { FaSteam } from "react-icons/fa";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const currentUserId = await getCurrentUserId();
+  const userProfile = await getUserProfileDTO();
 
   return (
     <div
@@ -34,7 +37,7 @@ export default function DashboardLayout({
         overflow-y-auto
       "
     >
-      <Sidebar />
+      <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
       <div
         id="protected-routes-layout-content"
         className="
@@ -46,33 +49,6 @@ export default function DashboardLayout({
           h-screen
         "
       >
-        {/* TODO: Move darkmode toggle */}
-        {/* <div
-          id="content-header"
-          className="
-            flex
-            flex-row
-            justify-end
-            items-center
-            w-full
-          "
-        >
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a href={socialChannels.steam.href} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon">
-                    <FaSteam className="h-[1.2rem] w-[1.2rem]" />
-                  </Button>
-                </a>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Nexus on Steam</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <ModeToggle />
-        </div> */}
         {children}
       </div>
     </div>

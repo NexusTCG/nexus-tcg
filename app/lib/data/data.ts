@@ -1,3 +1,4 @@
+// Icons
 import { 
   FaDiscord, 
   FaGithub,
@@ -8,6 +9,26 @@ import {
   FaSteam,
   FaXTwitter 
 } from "react-icons/fa6"
+import { 
+  MdHome, 
+  MdDesignServices, 
+  MdOutlineLayers, 
+  MdNotifications,
+  MdOutlinePeople,
+  MdOutlineBook,
+} from "react-icons/md";
+
+export const navItems = [
+  { href: "/home", icon: MdHome, label: "Home" },
+  { href: "/create", icon: MdDesignServices, label: "Create" },
+  { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
+  { href: "/notifications", icon: MdNotifications, label: "Notifications" },
+];
+
+export const secondaryNavItems = [
+  { href: "/learn", icon: MdOutlineBook, label: "Learn" },
+  { href: "/play", icon: MdOutlinePeople, label: "Play" },
+];
 
 export const socialChannels = {
   discord: {

@@ -17,6 +17,9 @@ export default function Create() {
         items-center
         w-full
         gap-4
+        py-4
+        px-4
+        md:px-8
       "
     >
       <Banner

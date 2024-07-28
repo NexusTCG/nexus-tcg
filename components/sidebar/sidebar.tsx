@@ -4,8 +4,14 @@ import React, { useState } from "react";
 // Utils
 import Link from "next/link";
 import clsx from "clsx";
+// Types
+import { ProfileDTO } from "@/app/lib/types/dto";
 // Data
-import { policyLinks } from "@/app/lib/data/data";
+import { 
+  navItems, 
+  secondaryNavItems, 
+  policyLinks 
+} from "@/app/lib/data/data";
 // Shadcn components
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -20,31 +26,17 @@ import UserAvatar from "@/components/user-avatar"
 import SidebarPopoverIcon from "@/components/sidebar/sidebar-popover-icon"
 import SidebarProfileMenu from "@/components/sidebar/sidebar-profile-menu"
 // Icons
-import { 
-  MdHome, 
-  MdDesignServices, 
-  MdOutlineLayers, 
-  MdNotifications,
-  MdOutlinePeople,
-  MdOutlineBook,
-} from "react-icons/md";
 import { GoSidebarCollapse } from "react-icons/go";
 
-const userName = "John"; // Replace with fetched data
+const userName = "John"; // Replace with fetch
 
-const navItems = [
-  { href: "/home", icon: MdHome, label: "Home" },
-  { href: "/create", icon: MdDesignServices, label: "Create" },
-  { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
-  { href: "/notifications", icon: MdNotifications, label: "Notifications" },
-];
-
-const secondaryNavItems = [
-  { href: "/learn", icon: MdOutlineBook, label: "Learn" },
-  { href: "/play", icon: MdOutlinePeople, label: "Play" },
-];
-
-export default function Sidebar() {
+export default function Sidebar({ 
+  currentUserId,
+  userProfile,
+}: { 
+  currentUserId: string | null,
+  userProfile: ProfileDTO | null
+}) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   function toggleSidebar() {
@@ -64,6 +56,7 @@ export default function Sidebar() {
               <Button
                 variant="ghost"
                 size={isCollapsed ? "icon" : "default"}
+                disabled={!currentUserId === null}
                 className={clsx(
                   "w-full",
                   isCollapsed ? "justify-center" : "justify-start"
@@ -186,13 +179,19 @@ export default function Sidebar() {
             isCollapsed ? "justify-center" : "justify-between"
           )}
         >
-          {!isCollapsed && (
+          {!isCollapsed && userProfile?.username && (
             <div
               id="avatar-username-container"
               className="flex flex-row justify-start items-center w-full gap-2"
             >
-              <UserAvatar />
-              <p>{userName}</p>
+              {userProfile?.avatar_url && (
+                <UserAvatar
+                  avatarUrl={userProfile.avatar_url}
+                  userName={userProfile.username}
+                  size={"md"}
+                />
+              )}
+              <p>{userProfile?.username ? userProfile.username : "Username"}</p>
             </div>
           )}
           {isCollapsed ? (

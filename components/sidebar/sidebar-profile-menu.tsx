@@ -1,4 +1,6 @@
-import React from "react"
+"use client"
+
+import React, { useState } from "react"
 // Utils
 import Link from "next/link";
 // Components
@@ -23,6 +25,22 @@ import {
 const stripeUrl = "https://stripe.com"; // Replace with actual URL
 
 export default function SidebarProfileMenu() {
+  const [signoutDisabled, setSignoutDisabled] = useState<boolean>(false);
+
+  async function handleSignOut() {
+    setSignoutDisabled(!signoutDisabled);
+    const response = await fetch(`${window.location.origin}/api/auth/logout-user`, {
+      method: "POST",
+    });
+
+    if (response.ok) {
+      window.location.href = "/login";
+    } else {
+      console.log("Logout failed.");
+    }
+
+    setSignoutDisabled(!signoutDisabled);
+  };
 
   return (
     <DropdownMenu>
@@ -56,8 +74,12 @@ export default function SidebarProfileMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {/* TODO: Add logout logic */}
-        <DropdownMenuItem className="hover:cursor-pointer">
-          Log out
+        <DropdownMenuItem
+          className="hover:cursor-pointer"
+          onClick={handleSignOut}
+          disabled={signoutDisabled}
+        >
+          {signoutDisabled ? "Logging out.." : "Log out"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

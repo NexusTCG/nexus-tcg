@@ -14,9 +14,9 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-const supabaseRedirectUrl = process.env.NODE_ENV === 'development'
-? `${defaultUrl}/api/auth/callback/supabase`
-: 'https://play.nexus/api/auth/callback';
+// const supabaseRedirectUrl = process.env.NODE_ENV === 'development'
+//   ? 'http://localhost:3000/api/auth/callback'
+//   : `${defaultUrl}/api/auth/callback/supabase`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),

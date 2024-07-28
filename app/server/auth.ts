@@ -13,13 +13,7 @@ export const getCurrentUserId = cache(async () => {
     .auth
     .getUser();
 
-  if (error) {
-    console.error(
-      "Error fetching user:", 
-      error.message
-    );
-    throw error;
-  }
+  if (error) throw error;
 
   const currentUserId = data.user.id;
 
