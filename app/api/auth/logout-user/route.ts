@@ -7,9 +7,14 @@ import { cookies } from "next/headers";
 export async function POST(req: NextRequest) {
   const url = new URL(req.url).origin;
   const cookieStore = cookies();
-
   const supabase = createClient(cookieStore);
-  await supabase.auth.signOut();
 
-  return NextResponse.redirect(`${url}/login`);
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error("Logout error:", error.message);
+    return NextResponse.json({ success: false }, { status: 500 });
+  }
+
+  return NextResponse.redirect(new URL('/login', req.url));
 };
