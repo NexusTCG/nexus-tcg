@@ -1,11 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@/app/utils/supabase/middleware";
+import { getUserProfileDTO } from "@/app/server/data/user-dto";
 
 // Define public routes
 const publicRoutes = ["/", "/login", "/login/create-profile", "/cards", "/create", "/learn", "/play", "/profile/[slug]"];
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request);
+  const userProfile = await getUserProfileDTO();
   const url = new URL(request.url);
   const path = url.pathname;
 
@@ -27,8 +29,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // If user is authenticated and tries to access login or home page, redirect to dashboard
-  if (user && (path === "/" || path === "/login")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (user && (path === "/" || path.includes("/login"))) {
+    if (userProfile?.username) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    } else if (path !== "/login/create-profile") {
+      return NextResponse.redirect(new URL("/login/create-profile", request.url));
+    }
   }
 
   return response;

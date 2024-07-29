@@ -46,38 +46,44 @@ export default function Sidebar({
   function renderNavItems(items: { 
     href: string; 
     icon: React.ElementType; 
-    label: string 
+    label: string;
+    requiresUser?: boolean;
   }[]) {
-    return items.map((item) => (
-      <TooltipProvider key={item.href}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link href={item.href}>
-              <Button
-                variant="ghost"
-                size={isCollapsed ? "icon" : "default"}
-                disabled={!currentUserId === null}
-                className={clsx(
-                  "w-full",
-                  isCollapsed ? "justify-center" : "justify-start"
-                )}
-              >
-                <item.icon className={clsx(
-                  "h-[1.2rem] w-[1.2rem]",
-                  isCollapsed ? "m-0" : "mr-2"
-                )} />
-                {!isCollapsed && item.label}
-              </Button>
-            </Link>
-          </TooltipTrigger>
-          {isCollapsed && (
-            <TooltipContent side="right">
-              <p>{item.label}</p>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
-    ));
+    return items.map((item) => {
+      if (item.requiresUser && !currentUserId) {
+        return null;
+      }
+  
+      return (
+        <TooltipProvider key={item.href}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href={item.href}>
+                <Button
+                  variant="ghost"
+                  size={isCollapsed ? "icon" : "default"}
+                  className={clsx(
+                    "w-full",
+                    isCollapsed ? "justify-center" : "justify-start"
+                  )}
+                >
+                  <item.icon className={clsx(
+                    "h-[1.2rem] w-[1.2rem]",
+                    isCollapsed ? "m-0" : "mr-2"
+                  )} />
+                  {!isCollapsed && item.label}
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            {isCollapsed && (
+              <TooltipContent side="right">
+                <p>{item.label}</p>
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }).filter(Boolean);
   }
 
   return (
@@ -172,47 +178,62 @@ export default function Sidebar({
           gap-2
         "
       >
-        <div
-          id="sidebar-profile"
-          className={clsx(
-            "flex flex-row items-center w-full",
-            isCollapsed ? "justify-center" : "justify-between"
-          )}
-        >
-          {!isCollapsed && userProfile?.username && (
-            <div
-              id="avatar-username-container"
-              className="flex flex-row justify-start items-center w-full gap-2"
-            >
-              {userProfile?.avatar_url && (
-                <UserAvatar
-                  avatarUrl={userProfile.avatar_url}
-                  userName={userProfile.username}
-                  size={"md"}
-                />
+        {(currentUserId && userProfile) ? (
+          <div
+            id="sidebar-profile"
+            className={clsx(
+              "flex flex-row items-center w-full",
+              isCollapsed ? "justify-center" : "justify-between"
+            )}
+          >
+            {!isCollapsed && userProfile?.username && (
+              <div
+                id="avatar-username-container"
+                className="flex flex-row justify-start items-center w-full gap-2"
+              >
+                {userProfile?.avatar_url && (
+                  <UserAvatar
+                    avatarUrl={userProfile.avatar_url}
+                    userName={userProfile.username}
+                    size={"md"}
+                  />
+                )}
+                <p>{userProfile?.username ? userProfile.username : "Username"}</p>
+              </div>
+            )}
+            {isCollapsed ? (
+              <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SidebarProfileMenu />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  Profile Menu
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            ) : (
+              <div>
+                <SidebarProfileMenu />
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link href="/login" className="w-full">
+            <Button
+              variant="default"
+              size={isCollapsed ? "icon" : "default"}
+              className={clsx(
+                 "w-full font-semibold",
+                isCollapsed ? "justify-center" : "justify-center"
               )}
-              <p>{userProfile?.username ? userProfile.username : "Username"}</p>
-            </div>
-          )}
-          {isCollapsed ? (
-            <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div>
-                  <SidebarProfileMenu />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                Profile Menu
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          ) : (
-            <div>
-              <SidebarProfileMenu />
-            </div>
-          )}
-        </div>
+            >
+              {!isCollapsed && "Create account"}
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

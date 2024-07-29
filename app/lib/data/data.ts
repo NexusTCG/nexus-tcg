@@ -19,10 +19,10 @@ import {
 } from "react-icons/md";
 
 export const navItems = [
-  { href: "/home", icon: MdHome, label: "Home" },
+  { href: "/home", icon: MdHome, label: "Home", requiresUser: true },
   { href: "/create", icon: MdDesignServices, label: "Create" },
   { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
-  { href: "/notifications", icon: MdNotifications, label: "Notifications" },
+  { href: "/notifications", icon: MdNotifications, label: "Notifications", requiresUser: true },
 ];
 
 export const secondaryNavItems = [

@@ -78,8 +78,13 @@ export async function GET(req: NextRequest) {
           return NextResponse.redirect(`${baseUrl}/login/create-profile`);
         }
 
-        // If user has a complete profile, redirect to home
-        return NextResponse.redirect(`${baseUrl}/home`);
+        // Redirect to /home if the profile is complete
+        if (profile && profile.username) {
+          return NextResponse.redirect(`${baseUrl}/home`);
+        }
+
+        // If no profile or incomplete profile, redirect to create-profile
+        return NextResponse.redirect(`${baseUrl}/login/create-profile`);
       }
     } catch (error) {
       console.error("Unexpected error in auth callback:", error);
