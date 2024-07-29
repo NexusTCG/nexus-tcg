@@ -26,12 +26,12 @@ export const getUserProfileDTO = cache(
 
     return {
       user_id: userId,
-      first_name: data.first_name,
-      last_name: data.last_name,
-      username: data.username,
-      bio: data.bio,
-      avatar_url: data.avatar_url,
-      created_at: data.created_at,
+      first_name: data?.first_name,
+      last_name: data?.last_name,
+      username: data?.username,
+      bio: data?.bio,
+      avatar_url: data?.avatar_url,
+      created_at: data?.created_at,
     };
   } catch (error) {
     console.error("Error in getUserProfileDTO:", error);
