@@ -25,21 +25,41 @@ export async function GET(req: NextRequest) {
       } 
     
       if (data?.session && data?.session.user) {
+        const user = data.session.user;
+        
         // Check if user has a profile
-        const { data: profile, error: profileError } = await supabase
+        const { 
+          data: profile, 
+          error: profileError 
+        } = await supabase
           .from("profiles")
-          .select("*")
-          .eq("id", data.session.user.id)
-          .maybeSingle();
-      
-        if (profileError) {
+          .select("username, avatar_url, bio")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError && profileError.code !== 'PGRST116') {
           console.error("Error fetching user profile:", profileError);
         }
 
-        // If user has no profile, redirect to create profile
-        if (!profile) {
-          return NextResponse.redirect(`${baseUrl}/login/create-profile`);
+        if (!profile || !profile.username) {
+          // If no profile or username, redirect to create-profile
+          const avatarUrl = user.user_metadata.avatar_url || '';
+          return NextResponse.redirect(`${baseUrl}/login/create-profile?avatar=${encodeURIComponent(avatarUrl)}`);
         }
+        // const { data: profile, error: profileError } = await supabase
+        //   .from("profiles")
+        //   .select("*")
+        //   .eq("id", data.session.user.id)
+        //   .maybeSingle();
+      
+        // if (profileError) {
+        //   console.error("Error fetching user profile:", profileError);
+        // }
+
+        // // If user has no profile, redirect to create profile
+        // if (!profile) {
+        //   return NextResponse.redirect(`${baseUrl}/login/create-profile`);
+        // }
 
         // If user has profile, redirect to home
         return NextResponse.redirect(`${baseUrl}/home`);

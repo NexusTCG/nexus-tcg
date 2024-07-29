@@ -22,7 +22,7 @@ export default async function DashboardLayout({
 
   return (
     <div
-      id="protected-routes-layout"
+      id="dashboard-layout"
       className="
         flex
         flex-row
@@ -35,7 +35,7 @@ export default async function DashboardLayout({
     >
       <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
       <div
-        id="protected-routes-layout-content"
+        id="dashboard-layout-content"
         className="
           flex
           flex-col
