@@ -10,8 +10,15 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const currentUserId = await getCurrentUserId();
-  const userProfile = await getUserProfileDTO();
+  let currentUserId = null;
+  let userProfile = null;
+  
+  try {
+    currentUserId = await getCurrentUserId();
+    userProfile = await getUserProfileDTO();
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
 
   return (
     <div
