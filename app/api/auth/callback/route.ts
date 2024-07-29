@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
           error: profileError 
         } = await supabase
           .from("profiles")
-          .select("username, avatar_url, bio")
+          .select("username")
           .eq("id", user.id)
           .single();
 
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         if (!profile || !profile.username) {
           // If no profile or username, redirect to create-profile
           const avatarUrl = user.user_metadata.avatar_url || '';
-          return NextResponse.redirect(`${baseUrl}/login/create-profile?avatar=${encodeURIComponent(avatarUrl)}`);
+          return NextResponse.redirect(`${baseUrl}/login/create-profile`);
         }
         // const { data: profile, error: profileError } = await supabase
         //   .from("profiles")

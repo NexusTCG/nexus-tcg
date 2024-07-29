@@ -66,22 +66,28 @@ export default function CreateProfileForm({
     },
   })
 
-  async function onSubmit(values: FormValues) {
-    if (initialProfile) {
-      const { 
-        error 
-      } = await supabase
-        .from('profiles')
-        .upsert({
-        id: initialProfile.user_id,
-        ...values,
-      })
-
-      if (error) {
-        console.error('Error creating profile:', error)
-      } else {
-        router.push('/home')
+  async function onSubmit(
+    values: FormValues
+  ) {
+    console.log("values", values)
+    console.log("initialProfile id:", initialProfile?.user_id)
+    if (initialProfile?.user_id) {
+      try {
+        const { error } = await supabase.from('profiles').upsert({
+          id: initialProfile.user_id,
+          ...values,
+        })
+        if (error) {
+          console.error('Error creating profile:', error)
+        } else {
+          console.log("Profile created successfully");
+          router.push('/home')
+        }
+      } catch (error) {
+        console.error('Error in onSubmit:', error)
       }
+    } else {
+      console.error('No user ID available')
     }
   }
 
@@ -256,6 +262,7 @@ export default function CreateProfileForm({
                 hover:shadow-teal-300/10
                 transition-all
               "
+              onClick={() => { console.log("I was clicked") }}
             >
               Finish
             </Button>
