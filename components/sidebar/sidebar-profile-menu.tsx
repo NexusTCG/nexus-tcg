@@ -47,7 +47,7 @@ export default function SidebarProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" >
           <MdChevronRight className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DropdownMenuTrigger>

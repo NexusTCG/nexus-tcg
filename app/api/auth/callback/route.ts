@@ -55,7 +55,10 @@ export async function GET(
         } = await supabase
           .from("profiles")
           .select("*")
-          .eq("id", user.id)
+          .eq(
+            "id", 
+            user.id
+          )
           .maybeSingle();
 
         // Redirect to /login/create-profile if:
@@ -69,8 +72,13 @@ export async function GET(
           );
         }
 
+        const { 
+          name, 
+          avatar_url 
+        } = user.user_metadata;
+
         // Redirect to /login/create-profile if:
-        // No profile, or incomplete profile
+        // No profile, or no username
         if (
           (
             !profile || 
@@ -83,7 +91,6 @@ export async function GET(
             )
           )
         ) {
-          const { name, avatar_url } = user.user_metadata;
           const queryParams = new URLSearchParams({
             user_id: user.id,
             full_name: name || "",
@@ -94,6 +101,32 @@ export async function GET(
           return Response.redirect(
             `${url.origin}/login/create-profile?${queryParams}`
           );
+        }
+
+        // If user has a profile, but no avatar_url, update profile
+        if (
+          profile && 
+          (
+            avatar_url ||
+            avatar_url !== ""
+          ) 
+            &&
+          (
+            !profile.avatar_url || 
+            profile.avatar_url === ""
+          )
+        ) {
+          const { 
+            error 
+          } = await supabase
+            .from("profiles")
+            .update({
+              avatar_url: avatar_url,
+            })
+            .eq(
+              "id", 
+              user.id
+            )
         }
 
         // Redirect to /home if:

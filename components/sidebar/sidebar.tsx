@@ -116,7 +116,11 @@ export default function Sidebar({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+                <Button
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleSidebar} 
+                >
                   <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
                 </Button>
               </TooltipTrigger>
@@ -198,7 +202,9 @@ export default function Sidebar({
                     size={"sm"}
                   />
                 )}
-                <p className="text-sm">{userProfile?.username ? userProfile.username : "Username"}</p>
+                <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                  {userProfile?.username ? userProfile.username : "Username"}
+                </p>
               </div>
             )}
             {isCollapsed ? (
