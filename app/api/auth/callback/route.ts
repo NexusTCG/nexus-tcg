@@ -4,7 +4,18 @@ import { createClient } from "@/app/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest) {
+// Verify there is a session
+// Redirect to /login if there is no session
+// Grab the session from the data object
+// Verify the user has a complete profile based on their id (first name, last name, email, and avatar url)
+// Grab the first name, last name, email, and avatar url from the user_metadata object
+// Pass the data to /login/create-profile via query params if the user does not have a profile
+// Redirect to /login/create-profile if the user does not have a profile
+// Redirect to /home if the user has a profile
+
+export async function GET(
+  req: NextRequest
+) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || url.origin;
@@ -15,12 +26,19 @@ export async function GET(req: NextRequest) {
     
     try {
       // Exchange code for session
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      const { 
+        data, 
+        error 
+      } = await supabase
+        .auth
+        .exchangeCodeForSession(code);
 
       if (error) {
-        console.error("Error exchanging code for session:", error);
         return NextResponse.redirect(
-          `${baseUrl}/login?error=${encodeURIComponent(error.message)}`
+          `${baseUrl}/login?error=${encodeURIComponent(
+            (error as Error).message || 
+            "An unexpected error occurred"
+          )}`
         );
       } 
     
@@ -29,8 +47,8 @@ export async function GET(req: NextRequest) {
         data?.session.user
       ) {
         const user = data.session.user;
-        
-        // Check if user has a profile
+
+        // Fetch: Profile
         let { 
           data: profile, 
           error: profileError 
@@ -38,62 +56,66 @@ export async function GET(req: NextRequest) {
           .from("profiles")
           .select("*")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
-        if (!profile) {
-          const { 
-            error: insertError 
-          } = await supabase
-            .from("profiles")
-            .insert({
-              id: user.id,
-              email: user.email,
-              first_name: user.user_metadata.first_name || '',
-              last_name: user.user_metadata.last_name || '',
-              avatar_url: user.user_metadata.avatar_url || '',
-            });
-
-          if (insertError) {
-            console.error(
-              "Error creating user profile:", 
-              insertError
-            );
-          } else {
-            // Fetch the newly created profile
-            ({ 
-              data: profile, 
-              error: profileError 
-            } = await supabase
-              .from("profiles")
-              .select("*")
-              .eq("id", user.id)
-              .single());
-          }
+        // Redirect to /login/create-profile if:
+        // Error fetching profile
+        if (profileError) {
+          return Response.redirect(
+            `${url.origin}/login/create-profile/?error=${encodeURIComponent(
+              profileError.message || 
+              "An unexpected error occurred"
+            )}`
+          );
         }
 
+        // Redirect to /login/create-profile if:
+        // No profile, or incomplete profile
+        if (
+          (
+            !profile || 
+            (
+              profile && 
+              (
+                !profile.username || 
+                profile.username === ""
+              )
+            )
+          )
+        ) {
+          const { name, avatar_url } = user.user_metadata;
+          const queryParams = new URLSearchParams({
+            user_id: user.id,
+            full_name: name || "",
+            avatar_url: avatar_url || "",
+          }).toString();
+
+          // Pass first name, last name, email, and avatar url to /login/create-profile
+          return Response.redirect(
+            `${url.origin}/login/create-profile?${queryParams}`
+          );
+        }
+
+        // Redirect to /home if:
+        // Profile and complete profile
         if (
           profile && 
-          !profile.username
+          profile.username
         ) {
-          return NextResponse.redirect(`${baseUrl}/login/create-profile`);
-        }
-
-        // Redirect to /home if the profile is complete
-        if (profile && profile.username) {
           return NextResponse.redirect(`${baseUrl}/home`);
         }
-
-        // If no profile or incomplete profile, redirect to create-profile
-        return NextResponse.redirect(`${baseUrl}/login/create-profile`);
       }
     } catch (error) {
-      console.error("Unexpected error in auth callback:", error);
+      // Redirect to /login if: Error
       return NextResponse.redirect(
-        `${baseUrl}/login?error=An unexpected error occurred`
+        `${baseUrl}/login?error=${encodeURIComponent(
+          (error as Error).message || 
+          "An unexpected error occurred"
+        )}`
       );
     }
   }
   
-  // If no code, redirect to login
+  // Redirect to /login if: No code
   return NextResponse.redirect(`${baseUrl}/login`);
 }

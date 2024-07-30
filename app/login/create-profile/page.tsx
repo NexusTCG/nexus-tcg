@@ -1,8 +1,4 @@
 import React from "react";
-// Server
-import { getUserProfileDTO } from "@/app/server/data/user-dto";
-// Types
-import { ProfileDTO } from "@/app/lib/types/dto";
 // Custom components
 import CreateProfileForm from "@/components/login/create-profile-form";
 import ErrorAlertWrapper from "@/components/login/error-alert-wrapper";
@@ -10,10 +6,14 @@ import ErrorAlertWrapper from "@/components/login/error-alert-wrapper";
 export default async function CreateProfile({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: { 
+    [key: string]: string | string[] | undefined 
+  }
 }) {
-  const userProfile: ProfileDTO | null = await getUserProfileDTO();
   const error = searchParams.error as string | undefined;
+  const fullName = searchParams.full_name as string | undefined;
+  const avatarUrl = searchParams.avatar_url as string | undefined;
+  const userId = searchParams.user_id as string | undefined;
 
   return (
     <div
@@ -41,7 +41,11 @@ export default async function CreateProfile({
         "
       >
         <ErrorAlertWrapper error={error} />
-        <CreateProfileForm initialProfile={userProfile} />
+        <CreateProfileForm
+          userId={userId}
+          fullName={fullName}
+          avatarUrl={avatarUrl}
+        />
       </div>
     </div>
   );

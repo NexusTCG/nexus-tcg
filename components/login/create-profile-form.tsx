@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form"
 import { createClient } from "@/app/utils/supabase/client";
 import Image from "next/image";
 import clsx from "clsx";
-// Validation
-import { ProfileDTO } from "@/app/lib/types/dto";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 // Components
@@ -43,40 +41,61 @@ const formSchema = z.object({
   username: z.string().min(4, {
     message: "Username must be at least 4 characters.",
   }),
+  avatar_url: z.string().optional(),
   bio: z.string().max(160).optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
 type CreateProfileFormProps = {
-  initialProfile: ProfileDTO | null;
+  userId: string | null | undefined;
+  fullName: string | null | undefined;
+  avatarUrl: string | null | undefined;
 }
 
 export default function CreateProfileForm({ 
-  initialProfile 
+  userId,
+  fullName,
+  avatarUrl, 
 }: CreateProfileFormProps) {
   const router = useRouter()
   const supabase = createClient()
 
+  const [firstName, ...lastNameParts] = (fullName || "").split(" ");
+  const lastName = lastNameParts.join(" ");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: initialProfile?.username || "",
-      bio: initialProfile?.bio || "",
+      username: "",
+      avatar_url: avatarUrl || "",
+      bio: "",
+      first_name: firstName || "",
+      last_name: lastName || "",
     },
   })
 
   async function onSubmit(
     values: FormValues
   ) {
+    console.log("user_id prop:", userId);
     console.log("values", values)
-    console.log("initialProfile id:", initialProfile?.user_id)
-    if (initialProfile?.user_id) {
+    if (userId) {
       try {
-        const { error } = await supabase.from('profiles').upsert({
-          id: initialProfile.user_id,
-          ...values,
-        })
+        const { 
+          error 
+        } = await supabase
+          .from('profiles')
+          .upsert({
+            id: userId,
+            username: values.username,
+            bio: values.bio,
+            first_name: values.first_name,
+            last_name: values.last_name,
+            avatar_url: values.avatar_url,
+          })
         if (error) {
           console.error('Error creating profile:', error)
         } else {
@@ -91,7 +110,6 @@ export default function CreateProfileForm({
     }
   }
 
-  const avatarUrl = initialProfile?.avatar_url || '';
   const usernameFallback = form.watch('username').slice(0, 2).toUpperCase();
 
   return (
@@ -125,8 +143,13 @@ export default function CreateProfileForm({
               width={32} 
               height={32} 
             />
-            <CardTitle className="text-xl font-medium">
-              Create profile
+            <CardTitle className={clsx("text-xl font-medium", 
+                {
+                  "text-lg": firstName !== ""
+                }
+              )}
+            >
+              {firstName ? `Hi, ${firstName}! Create your profile` : "Create your profile"}
             </CardTitle>
           </CardHeader>
           <CardContent
@@ -161,8 +184,15 @@ export default function CreateProfileForm({
                   border-zinc-700
                 "
               >
-                <AvatarImage src={avatarUrl} alt="Avatar" />
-                <AvatarFallback className="text-neutral-500">
+                {avatarUrl && (
+                  <AvatarImage src={avatarUrl} alt="Avatar" />
+                )}
+                <AvatarFallback className={clsx("text-neutral-500", 
+                    {
+                      "text-neutral-300": usernameFallback.length > 1
+                    }
+                  )}
+                >
                   {usernameFallback}
                 </AvatarFallback>
               </Avatar>

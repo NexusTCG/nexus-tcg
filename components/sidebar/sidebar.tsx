@@ -195,10 +195,10 @@ export default function Sidebar({
                   <UserAvatar
                     avatarUrl={userProfile.avatar_url}
                     userName={userProfile.username}
-                    size={"md"}
+                    size={"sm"}
                   />
                 )}
-                <p>{userProfile?.username ? userProfile.username : "Username"}</p>
+                <p className="text-sm">{userProfile?.username ? userProfile.username : "Username"}</p>
               </div>
             )}
             {isCollapsed ? (
