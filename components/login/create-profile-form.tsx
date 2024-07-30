@@ -1,7 +1,7 @@
 "use client"
 
 // Hooks
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form"
 // Utils
@@ -31,6 +31,8 @@ import {
   AvatarImage, 
   AvatarFallback 
 } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,6 +64,9 @@ export default function CreateProfileForm({
 }: CreateProfileFormProps) {
   const router = useRouter()
   const supabase = createClient()
+  const { toast } = useToast()
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [firstName, ...lastNameParts] = (fullName || "").split(" ");
   const lastName = lastNameParts.join(" ");
@@ -80,8 +85,7 @@ export default function CreateProfileForm({
   async function onSubmit(
     values: FormValues
   ) {
-    console.log("user_id prop:", userId);
-    console.log("values", values)
+    setIsSubmitting(true)
     if (userId) {
       try {
         const { 
@@ -98,114 +102,178 @@ export default function CreateProfileForm({
           })
         if (error) {
           console.error('Error creating profile:', error)
+          toast({
+            title: "Error",
+            description: "There was a problem creating your profile. Please try again.",
+            variant: "destructive",
+          })
         } else {
           console.log("Profile created successfully");
-          router.push('/home')
+          toast({
+            title: "Success!",
+            description: "Your profile has been created. Redirecting you to the home page...",
+          })
+          setTimeout(() => router.push('/home'), 2000)
         }
       } catch (error) {
         console.error('Error in onSubmit:', error)
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        })
+        toast({
+          title: "Error",
+          description: "No user ID available. Please try logging in again.",
+          variant: "destructive",
+        })
+      } finally {
+        setIsSubmitting(false)
       }
     } else {
       console.error('No user ID available')
+      setIsSubmitting(false)
     }
   }
 
   const usernameFallback = form.watch('username').slice(0, 2).toUpperCase();
 
   return (
-    <Card 
-      className="
-        w-full
-        bg-zinc-950
-        border
-        border-zinc-700
-        shadow-xl 
-        shadow-black/50
-      "
-    >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardHeader
-            className="
-              flex 
-              flex-row 
-              justify-between 
-              items-center 
-              w-full
-              border-b
-              border-zinc-700
-              py-4
-            "
-          >
-            <Image
-              src={NexusIconWhite}
-              alt="Nexus TCG" 
-              width={32} 
-              height={32} 
-            />
-            <CardTitle className={clsx("text-xl font-medium", 
-                {
-                  "text-lg": firstName !== ""
-                }
-              )}
-            >
-              {firstName ? `Hi, ${firstName}! Create your profile` : "Create your profile"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent
-            className="
-              flex
-              flex-col
-              justify-start
-              items-start
-              w-full
-              px-4
-              py-6
-              bg-zinc-900
-              gap-6
-            "
-          >
-            <div
-              id="avatar-username-container"
+    <>
+      <Card 
+        className="
+          w-full
+          bg-zinc-950
+          border
+          border-zinc-700
+          shadow-xl 
+          shadow-black/50
+        "
+      >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardHeader
               className="
-                flex
-                flex-row
-                justify-between
-                items-start
+                flex 
+                flex-row 
+                justify-between 
+                items-center 
                 w-full
-                gap-4
+                border-b
+                border-zinc-700
+                py-4
               "
             >
-              <Avatar
+              <Image
+                src={NexusIconWhite}
+                alt="Nexus TCG" 
+                width={32} 
+                height={32} 
+              />
+              <CardTitle className={clsx("text-xl font-medium", 
+                  {
+                    "text-lg": firstName !== ""
+                  }
+                )}
+              >
+                {firstName ? `Hi, ${firstName}! Create your profile` : "Create your profile"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent
+              className="
+                flex
+                flex-col
+                justify-start
+                items-start
+                w-full
+                px-4
+                py-6
+                bg-zinc-900
+                gap-6
+              "
+            >
+              <div
+                id="avatar-username-container"
                 className="
-                  w-[60px] 
-                  h-[60px] 
-                  border 
-                  border-zinc-700
+                  flex
+                  flex-row
+                  justify-between
+                  items-start
+                  w-full
+                  gap-4
                 "
               >
-                {avatarUrl && (
-                  <AvatarImage src={avatarUrl} alt="Avatar" />
-                )}
-                <AvatarFallback className={clsx("text-neutral-500", 
-                    {
-                      "text-neutral-300": usernameFallback.length > 1
-                    }
-                  )}
+                <Avatar
+                  className="
+                    w-[60px] 
+                    h-[60px] 
+                    border 
+                    border-zinc-700
+                  "
                 >
-                  {usernameFallback}
-                </AvatarFallback>
-              </Avatar>
+                  {avatarUrl && (
+                    <AvatarImage src={avatarUrl} alt="Avatar" />
+                  )}
+                  <AvatarFallback className={clsx("text-neutral-500", 
+                      {
+                        "text-neutral-300": usernameFallback.length > 1
+                      }
+                    )}
+                  >
+                    {usernameFallback}
+                  </AvatarFallback>
+                </Avatar>
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input placeholder="Username" {...field} />
+                      </FormControl>
+                      <div
+                        id="username-description-container"
+                        className="
+                          flex
+                          flex-row
+                          justify-between
+                          items-center
+                          w-full
+                          gap-4
+                        "
+                      >
+                        <FormDescription className="text-neutral-300">
+                          Displayed on cards you make
+                        </FormDescription>
+                        <FormDescription
+                          className={clsx("text-neutral-500",
+                            {
+                              "text-neutral-300": !form.formState.isValid
+                            }
+                          )}
+                        >
+                          Required
+                        </FormDescription>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="username"
+                name="bio"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input placeholder="Username" {...field} />
+                      <Textarea
+                        placeholder="Write a short bio"
+                        className="resize-none"
+                        {...field}
+                      />
                     </FormControl>
                     <div
-                      id="username-description-container"
+                      id="bio-description-container"
                       className="
                         flex
                         flex-row
@@ -216,89 +284,50 @@ export default function CreateProfileForm({
                       "
                     >
                       <FormDescription className="text-neutral-300">
-                        Displayed on cards you make
+                        A short introduction about yourself
                       </FormDescription>
-                      <FormDescription
-                        className={clsx("text-neutral-500",
-                          {
-                            "text-neutral-300": !form.formState.isValid
-                          }
-                        )}
-                      >
-                        Required
+                      <FormDescription className="text-neutral-500">
+                        Optional
                       </FormDescription>
                     </div>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <Textarea
-                      placeholder="Write a short bio"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <div
-                    id="bio-description-container"
-                    className="
-                      flex
-                      flex-row
-                      justify-between
-                      items-center
-                      w-full
-                      gap-4
-                    "
-                  >
-                    <FormDescription className="text-neutral-300">
-                      A short introduction about yourself
-                    </FormDescription>
-                    <FormDescription className="text-neutral-500">
-                      Optional
-                    </FormDescription>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter
-            className="
-              flex
-              flex-row
-              justify-end
-              items-center
-              p-4
-              border-t
-              border-zinc-700
-            "
-          >
-            <Button
-              type="submit"
-              disabled={!form.formState.isValid}
+            </CardContent>
+            <CardFooter
               className="
-                text-lg
-                font-semibold
-                gap-2
-                bg-teal-400
-                hover:bg-teal-300
-                hover:shadow-lg
-                hover:shadow-teal-300/10
-                transition-all
+                flex
+                flex-row
+                justify-end
+                items-center
+                p-4
+                border-t
+                border-zinc-700
               "
-              onClick={() => { console.log("I was clicked") }}
             >
-              Finish
-            </Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+              <Button
+                type="submit"
+                disabled={!form.formState.isValid}
+                className="
+                  text-lg
+                  font-semibold
+                  gap-2
+                  bg-teal-400
+                  hover:bg-teal-300
+                  hover:shadow-lg
+                  hover:shadow-teal-300/10
+                  transition-all
+                "
+                onClick={() => { console.log("I was clicked") }}
+              >
+                {isSubmitting ? "Creating Profile..." : "Finish"}
+              </Button>
+            </CardFooter>
+          </form>
+        </Form>
+      </Card>
+      <Toaster />
+    </>
   )
 }
