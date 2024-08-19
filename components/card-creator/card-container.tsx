@@ -1,9 +1,9 @@
 import React from 'react';
 // Custom components
-import NexusCardFormFooter from "@/components/card-creator/nexus-card-form-footer";
-import NexusCardFormStats from "@/components/card-creator/nexus-card-form-stats";
+import CardFormFooter from "@/components/card-creator/card-form-footer";
+import CardFormStats from "@/components/card-creator/card-form-stats";
 
-type NexusCardContainerProps = {
+type CardContainerProps = {
   children: React.ReactNode;
   // Add form or render prop
   // Add size prop
@@ -16,9 +16,9 @@ type NexusCardContainerProps = {
 // TODO: Logic to change energy type
 // TODO: Logic to change card type
 
-export default function NexusCardContainer({ 
+export default function CardContainer({ 
   children 
-}: NexusCardContainerProps) {
+}: CardContainerProps) {
   return (
     <div
       id="nexus-card-container"
@@ -38,7 +38,7 @@ export default function NexusCardContainer({
       "
     >
       <div
-        id="nexus-card-content-container"
+        id="-card-content-container"
         className="
           flex
           flex-col
@@ -53,10 +53,7 @@ export default function NexusCardContainer({
       >
         {children}
       </div>
-      <div className="absolute bottom-0 left-0 z-10">
-        <NexusCardFormStats />
-      </div>
-      <NexusCardFormFooter />
+      <CardFormFooter />
     </div>
   )
 }

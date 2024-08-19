@@ -1,1 +1,1 @@
-// Types for tables in the database
+import { z } from 'zod';

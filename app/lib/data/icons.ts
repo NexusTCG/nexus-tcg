@@ -1,3 +1,4 @@
+// Energy
 import light from "@/public/icons/energy-icons/light.svg";
 import storm from "@/public/icons/energy-icons/storm.svg";
 import dark from "@/public/icons/energy-icons/dark.svg";
@@ -20,6 +21,10 @@ import void13 from "@/public/icons/energy-icons/void-13.svg";
 import void14 from "@/public/icons/energy-icons/void-14.svg";
 import void15 from "@/public/icons/energy-icons/void-15.svg";
 import voidx from "@/public/icons/energy-icons/void-x.svg";
+// Speed icons
+import speed1 from "@/public/icons/speed-icons/speed-1.svg";
+import speed2 from "@/public/icons/speed-icons/speed-2.svg";
+import speed3 from "@/public/icons/speed-icons/speed-3.svg";
 
 export const energyIcons = {
   light,
@@ -32,3 +37,5 @@ export const energyIcons = {
     void8, void9, void10, void11, void12, void13, void14, void15, voidx
   ]
 };
+
+export const speedIcons = [speed1, speed2, speed3];

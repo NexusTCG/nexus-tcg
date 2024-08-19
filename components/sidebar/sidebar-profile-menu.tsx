@@ -5,10 +5,10 @@ import React, { useState } from "react"
 import { useRouter } from 'next/navigation'
 // Utils
 import Link from "next/link";
-import Router from "next/router";
 import { createClient } from "@/app/utils/supabase/client"
 // Components
 import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/ui/mode-toggle"
 import {
   DropdownMenu,
   DropdownMenuContent,

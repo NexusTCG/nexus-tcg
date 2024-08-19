@@ -2,11 +2,11 @@ import React from "react";
 // Icons
 import { MdDesignServices } from "react-icons/md";
 
-export default function NexusCardFormFooter() {
+export default function CardFormFooter() {
 
   return (
     <div
-      id="nexus-card-footer-container"
+      id="card-footer-container"
       style={{ fontSize: "0.75rem" }}
       className="
         flex
@@ -21,7 +21,9 @@ export default function NexusCardFormFooter() {
         font-light
       "
     >
-      <span className="w-full flex justify-start"></span>
+      <span className="w-full flex justify-start">
+        {/* Filler */}
+      </span>
       <small
         id="card-creator"
         className="
@@ -51,7 +53,7 @@ export default function NexusCardFormFooter() {
           "
         >
           {/* <span>Make cards at play.nexus</span> */}
-          <span>© Nexus Games 2024</span>
+          <span>© Nexus Games {new Date().getFullYear()}</span>
       </small>
     </div>
   )

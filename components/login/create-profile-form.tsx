@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form"
 import { createClient } from "@/app/utils/supabase/client";
 import Image from "next/image";
 import clsx from "clsx";
+// Validation
+import { UserProfileSchema } from "@/app/lib/schemas/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 // Components
@@ -39,17 +41,7 @@ import { Textarea } from "@/components/ui/textarea";
 // Icons
 import NexusIconWhite from "@/public/brand-assets/nexus-icon-white.svg";
 
-const formSchema = z.object({
-  username: z.string().min(4, {
-    message: "Username must be at least 4 characters.",
-  }),
-  avatar_url: z.string().optional(),
-  bio: z.string().max(160).optional(),
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-})
-
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof UserProfileSchema>
 
 type CreateProfileFormProps = {
   userId: string | null | undefined;
@@ -72,7 +64,7 @@ export default function CreateProfileForm({
   const lastName = lastNameParts.join(" ");
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       username: "",
       avatar_url: avatarUrl || "",

@@ -1,74 +1,82 @@
 import React from "react";
+// Server
+import { getCurrentUserId } from "@/app/server/auth";
+import { getUserProfileDTO } from "@/app/server/data/user-dto";
+// Components
+import { Input } from "@/components/ui/input";
 // Custom components
 import Banner from "@/components/banner";
-import EnergyIcon from "@/components/card-creator/energy-icon";
-import NexusCardForm from "@/components/card-creator/nexus-card-form";
-import CardCreatorHeader from "@/components/card-creator/card-creator-header";
-import CardCreatorFooter from "@/components/card-creator/card-creator-footer";
+import CardForm from "@/components/card-creator/card-form";
 
-export default function Create() {
+export default async function Create() {
+  let currentUserId = null;
+  let userProfile = null;
+  
+  try {
+    currentUserId = await getCurrentUserId();
+    userProfile = await getUserProfileDTO();
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+
   return (
     <div
-      id="create-page-container"
+      id="learn-page-container"
       className="
         flex
         flex-col
+        md:flex-row
         justify-start
-        items-center
+        items-start
         w-full
-        gap-4
-        py-4
-        px-4
-        md:px-8
       "
     >
-      <Banner
-        message="This page is under construction."
-        type="warning"
-        autoExpire={false}
-      />
       <div
-        id="card-creator-container"
+        id="learn-content-container"
         className="
           flex
           flex-col
           justify-start
-          items-center
+          items-start
           w-full
-          border
-          border-zinc-700
-          rounded-md
-          overflow-hidden
+          px-4
+          md:px-8
+          py-4
+          gap-4
         "
       >
-        <CardCreatorHeader />
-        <div
-          id="card-creator-content"
-          className="
-            flex
-            flex-col
-            justify-center
-            items-center
-            w-full
-            py-8
-            bg-zinc-800
-          "
-        >
-          <div className="flex flex-row gap-2 my-4">
-            <EnergyIcon type="light" />
-            <EnergyIcon type="storm" inline />
-            <EnergyIcon type="dark" inline />
-            <EnergyIcon type="chaos" />
-            <EnergyIcon type="growth" />
-            <EnergyIcon type="void0" />
-            <EnergyIcon type="voidx" />
-          </div>
-          
-          {/* TODO: Add anomaly mode & functionality to switch between them */}
-          <NexusCardForm />
-        </div>
-        {/* TODO: Hide footer if fewer than 2 art options exist */}
-        <CardCreatorFooter />
+        <Banner
+          message="This page is under construction."
+          type="warning"
+          autoExpire={false}
+        />
+        <CardForm
+          currentUserId={currentUserId}
+          userProfile={userProfile}
+        />
+      </div>
+      <div
+        id="nexus-chat-bot-container"
+        className="
+          hidden
+          lg:flex
+          flex-col
+          justify-between
+          items-center
+          max-w-[360px]
+          w-full
+          h-screen
+          p-4
+          border-l
+          border-zinc-700
+          overflow
+          sticky
+          top-0
+        "
+      >
+        <span>Chat bot</span>
+        <span>Send Message</span>
+        <Input type="text" placeholder="Your message" />
       </div>
     </div>
   )

@@ -14,7 +14,16 @@ export default function Marketing() {
   return (
     <div
       id="marketing-page-container"
-      className="flex flex-col justify-start items-center min-h-screen w-full"
+      className="
+        flex
+        flex-col
+        justify-start
+        items-center
+        min-h-screen
+        w-full
+        bg-black
+        text-white
+      "
     >
       <NavBar />
       <SectionHero />

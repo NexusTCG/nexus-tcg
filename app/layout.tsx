@@ -7,6 +7,8 @@ import { Inter } from "next/font/google";
 import "@/app/lib/styles/globals.css";
 // Next
 import type { Metadata } from 'next'
+// Components
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,7 +51,7 @@ export default function RootLayout(
       <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
@@ -57,6 +59,7 @@ export default function RootLayout(
             {children}
             <Analytics />
           </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
