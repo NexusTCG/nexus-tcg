@@ -5,8 +5,7 @@ import {
   EnergyCostSchema,
   SpeedTypeSchema,
   CardTypeSchema,
-  InitialModeCardSchema,
-  AnomalyModeCardSchema,
+  CardFormSchema,
 } from "@/app/lib/schemas/database";
 
 // Card creator form types
@@ -14,14 +13,7 @@ export type Energy = z.infer<typeof EnergySchema>;
 export type EnergyCost = z.infer<typeof EnergyCostSchema>;
 export type SpeedType = z.infer<typeof SpeedTypeSchema>;
 export type CardType = z.infer<typeof CardTypeSchema>;
-
-export type InitialModeCard = z.infer<typeof InitialModeCardSchema>;
-export type AnomalyModeCard = z.infer<typeof AnomalyModeCardSchema>;
-
-export type CardFormDataType = {
-  initialMode: InitialModeCard;
-  anomalyMode: AnomalyModeCard;
-};
+export type CardFormDataType = z.infer<typeof CardFormSchema>;
 
 // Misc form types
 export type CardCommentFormType = {

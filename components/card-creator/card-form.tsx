@@ -11,9 +11,11 @@ import { useRouter } from "next/navigation";
 import PostHogClient from "@/app/utils/posthog/posthog";
 // Validation
 import { zodResolver } from '@hookform/resolvers/zod';
-import { InitialModeCardSchema, AnomalyModeCardSchema } from '@/app/lib/schemas/database';
+import { CardFormSchema } from "@/app/lib/schemas/database"
 import { ProfileDTO } from "@/app/lib/types/dto";
 import { CardFormDataType } from "@/app/lib/types/forms";
+// Components
+import { toast } from "sonner";
 // Custom components
 import CardCreatorHeader from "@/components/card-creator/card-creator-header";
 import CardCreatorFooter from "@/components/card-creator/card-creator-footer"; 
@@ -22,11 +24,6 @@ import CardFormText from "@/components/card-creator/card-form-text"
 import CardContainer from "@/components/card-creator/card-container";
 import CardFormHeader from "@/components/card-creator/card-form-header";
 import CardFormStats from "@/components/card-creator/card-form-stats";
-// Components
-import { toast } from "sonner";
-import { FaPersonThroughWindow } from "react-icons/fa6";
-
-const cardSchema = InitialModeCardSchema.merge(AnomalyModeCardSchema);
 
 // TODO: Replace with dynamic data
 const cardArtUrl = "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/card-art/card-art/1721896579240-flda1vy7c69.png"
@@ -43,48 +40,54 @@ export default function CardForm({
   currentUserId,
   userProfile
 }: CardFormProps) {
-  const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial');
+  const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial'); // Move to child client component
 
   const methods = useForm({
-    resolver: zodResolver(cardSchema),
+    resolver: zodResolver(CardFormSchema),
     defaultValues: {
       id: null,
       user_id: currentUserId || null,
-      anomaly_mode_card_id: null,
       created_at: null,
       updated_at: null,
       username: userProfile?.username || "Username",
-      name: "Card name",
-      type: "agent",
-      type_sub: [],
-      type_super: null,
       grade: "core",
-      text: [],
-      lore: null,
-      prompt_art: null,
-      art_options: ["/images/default-art.jpg"],
-      render: null,
-      energy_value: 0,
-      energy_cost: {
-        light: 0,
-        storm: 0,
-        dark: 0,
-        chaos: 0,
-        growth: 0,
-        void: 0,
+      initialMode: {
+        render: null,
+        name: "Card name",
+        type: "agent",
+        type_sub: [],
+        type_super: null,
+        mythic: false,
+        text: [],
+        lore: null,
+        prompt_art: null,
+        art_options: ["/images/default-art.jpg"],
+        art_selected: "/images/default-art.jpg",
+        energy_value: 0,
+        energy_cost: {
+          light: 0,
+          storm: 0,
+          dark: 0,
+          chaos: 0,
+          growth: 0,
+          void: 0,
+        },
+        speed: 1,
+        attack: 0,
+        defense: 0,
+        range: false,
       },
-      energy_types: {
-        light: "light",
-        storm: "storm",
-        dark: "dark",
-        chaos: "chaos",
-        growth: "growth",
-        void: "void",
-      },
-      speed: 1,
-      attack: 0,
-      defense: 0,
-      range: false,
+      anomalyMode: {
+        render: null,
+        name: "Common Anomaly",
+        mythic: false,
+        uncommon: false,
+        text: [],
+        lore: null,
+        prompt_art: null,
+        art_options: ["/images/default-art.jpg"],
+        art_selected: "/images/default-art.jpg",
+      }
     }
   });
 
@@ -101,70 +104,70 @@ export default function CardForm({
 
   function toggleMode() {
     if (activeMode === 'initial') {
-      setValue('type', 'anomaly');
-      setActiveMode('initial');
+      setValue('initialMode.type', 'anomaly');
+      setActiveMode('anomaly');
       return;
     } else if (activeMode === 'anomaly') {
-      setValue('type', 'agent');
+      setValue('initialMode.type', 'agent');
       setActiveMode('anomaly');
       return;
     }
   };
 
-  async function onSubmit(
-    data: CardFormDataType // Update data type
-  ) {
-    toast("Saving card...")
-    // TODO: Log in PostHog
-    try {
-      // Upload generated art (array) to supabase storage
-      // Get the selected art for initial and anomaly modes
-      // const uploadData = await uploadResponse.json() // Placeholder
+  // async function onSubmit(
+  //   data: CardFormDataType // Update data type
+  // ) {
+  //   toast("Saving card...")
+  //   // TODO: Log in PostHog
+  //   try {
+  //     Upload generated art (array) to supabase storage
+  //     Get the selected art for initial and anomaly modes
+  //     const uploadData = await uploadResponse.json() // Placeholder
       
-      if (uploadData.im_art & uploadData.am_art) {
-        const insertResponse = await fetch("/api/data/submit-card", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...data,
-            im_art: uploadData.im_art,
-            am_art: uploadData.am_art,
-          }),
-        })
+  //     if (uploadData.im_art & uploadData.am_art) {
+  //       const insertResponse = await fetch("/api/data/submit-card", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           ...data,
+  //           initialMode.art_selected: uploadData.im_art,
+  //           anomalyMode.art_selected: uploadData.am_art,
+  //         }),
+  //       })
 
-        const insertData = await insertResponse.json();
+  //       const insertData = await insertResponse.json();
 
-        if (
-          insertData.ok &&
-          insertData.data
-        ) {
-          // posthog.capture("card_created", {
-          //   distinctId: insertData.data.id,
-          //   creator: insertData.data.username,
-          // })
+  //       if (
+  //         insertData.ok &&
+  //         insertData.data
+  //       ) {
+  //         posthog.capture("card_created", {
+  //           distinctId: insertData.data.id,
+  //           creator: insertData.data.username,
+  //         })
 
-          toast("Card saved successfully!")
-          setTimeout(() => {
-            toast("Redirecting...")
-            router.push(`/cards/${insertData.data.id}`)
-          }, 2000)
-        } else {
-          toast("Failed to save card!")
-          // TODO: Log error
-        }
-      }
+  //         toast("Card saved successfully!")
+  //         setTimeout(() => {
+  //           toast("Redirecting...")
+  //           router.push(`/cards/${insertData.data.id}`)
+  //         }, 2000)
+  //       } else {
+  //         toast("Failed to save card!")
+  //         // TODO: Log error
+  //       }
+  //     }
 
-    } catch (error) {
-      toast(`Error saving card: ${error}`)
-    }
-  };
+  //   } catch (error) {
+  //     toast(`Error saving card: ${error}`)
+  //   }
+  // };
 
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        // onSubmit={methods.handleSubmit(onSubmit)}
         className="w-full"
       >
         <div 

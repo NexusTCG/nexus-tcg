@@ -37,157 +37,41 @@ export const CardTypeSchema = z
     'software'
   ]);
 
-
-export const InitialModeCardSchema = z
-  .object({
-    id: z
-      .number()
-      .optional() // Not available on creation
-      .nullable(),
-    user_id: z
-      .string()
-      .min(1, { message: "User is required." })
-      .nullable(),
-    anomaly_mode_card_id: z
-      .number()
-      .optional()
-      .nullable(),
-    created_at: z
-      .string()
-      .nullable()
-      .optional(),
-    updated_at: z
-      .string()
-      .nullable()
-      .optional(),
-    username: z
-      .string()
-      .min(1, { message: "Username is required." })
-      .default("Username"),
-    name: z
-      .string()
-      .min(1, { message: "Card name is required." })
-      .default("Card name"),
-    type: z
-      .string()
-      .min(1, { message: "Card type is required." })
-      .default("agent"),
-    type_sub: z
-      .array(z.string())
-      .nullable()
-      .optional(),
-    type_super: z
-      .string()
-      .nullable()
-      .optional(),
-    grade: z
-      .string()
-      .min(1, {
-        message: "Card grade is required"
-      })
-      .default("core"),
-    text: z
-      .array(z.string())
-      .nullable()
-      .optional(), // Array
-    lore: z
-      .string()
-      .nullable()
-      .optional(),
-    // TODO: Add prompt_card
-    prompt_art: z
-      .string()
-      .nullable()
-      .optional(),
-    art_options: z
-      .array(z.string())
-      .default(["/public/images/default-art.jpg"]), // Array
-    render: z
-      .string()
-      .nullable()
-      .optional(),
-    energy_value: z
-      .number()
-      .min(0, { message: "Energy value must be at least 0." })
-      .default(0),
-    energy_cost: EnergyCostSchema,
-    energy_types: EnergySchema,
-    speed: z
-      .number()
-      .default(1),
-    attack: z
-      .number()
-      .default(0)
-      .nullable()
-      .optional(),
-    defense: z
-      .number()
-      .default(0)
-      .nullable()
-      .optional(),
-    range: z
-      .string()
-      .nullable()
-      .optional(),
-  })
-
-  export const AnomalyModeCardSchema = z
-  .object({
-    id: z
-      .number()
-      .optional(), // Not available on creation
-    user_id: z
-      .string()
-      .min(1, { message: "User is required." }),
-    initial_mode_card_id: z
-      .number()
-      .optional()
-      .nullable(),
-    created_at: z
-      .string()
-      .nullable()
-      .optional(),
-    updated_at: z
-      .string()
-      .nullable()
-      .optional(),
-    username: z
-      .string()
-      .min(1, { message: "Username is required." }),
-    name: z
-      .string()
-      .min(1, { message: "Card name is required." }),
-    type: z
-      .string()
-      .min(1, { message: "Card type is required." })
-      .default("anomaly"),
-    type_sub: z
-      .string()
-      .min(1, { message: "Card type is required." })
-      .default("common"),
-    type_super: z
-      .string()
-      .nullable()
-      .optional(),
-    // Anomaly mode grade depends on initial mode
-    text: z
-      .array(z.string())
-      .nullable()
-      .optional(), // Array
-    lore: z
-      .string()
-      .nullable()
-      .optional(),
-    // TODO: Add prompt_card
-    prompt_art: z
-      .string()
-      .nullable()
-      .optional(),
-    art_options: z
-      .array(z.string())
-      .default(["url-to-default-anomaly-art.jpg"]), // Array
-    render: z
-      .string()
-      .nullable()
-      .optional(),
-  })
+  export const CardFormSchema = z.object({
+    id: z.number().nullable().optional(),
+    user_id: z.string().nullable(),
+    created_at: z.string().nullable().optional(),
+    updated_at: z.string().nullable().optional(),
+    username: z.string().min(1, { message: "Username is required." }).default("Username"),
+    grade: z.string().default("core"),
+    initialMode: z.object({
+      render: z.string().nullable(),
+      name: z.string().min(1, { message: "Card name is required." }).default("Card name"),
+      type: z.string().min(1, { message: "Card type is required." }).default("agent"),
+      type_sub: z.array(z.string()),
+      type_super: z.string().nullable().optional(),
+      mythic: z.boolean().default(false),
+      text: z.array(z.string()),
+      lore: z.string().nullable().optional(),
+      prompt_art: z.string().nullable(),
+      art_options: z.array(z.string()).default(["/images/default-art.jpg"]),
+      art_selected: z.string().default("/images/default-art.jpg"),
+      energy_value: z.number().default(0),
+      energy_cost: EnergyCostSchema,
+      speed: z.number().default(1),
+      attack: z.number().default(0),
+      defense: z.number().default(0),
+      range: z.boolean().default(false),
+    }),
+    anomalyMode: z.object({
+      render: z.string().nullable(),
+      name: z.string().min(1, { message: "Card name is required." }).default("Common Anomaly"),
+      mythic: z.boolean().default(false),
+      uncommon: z.boolean().default(false),
+      text: z.array(z.string()),
+      lore: z.string().nullable().optional(),
+      prompt_art: z.string().nullable(),
+      art_options: z.array(z.string()).default(["/images/default-art.jpg"]),
+      art_selected: z.string().default("/images/default-art.jpg"),
+    }),
+  });
