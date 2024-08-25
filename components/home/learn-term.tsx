@@ -63,7 +63,7 @@ export default function LearnTerm({
             hover:opacity-80
           "
         >
-          <small className="hidden md:lg">Glossary</small>
+          <small className="hidden md:inline-block">Glossary</small>
           <MdOpenInNew className="text-teal-500 w-[1rem] h-[1rem]"/>
         </div>
       </div>

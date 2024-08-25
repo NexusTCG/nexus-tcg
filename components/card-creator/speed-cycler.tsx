@@ -20,7 +20,7 @@ export default function SpeedCycler() {
 
   function cycleSpeed() {
     const nextSpeed = speed % 3 + 1;
-    setValue('speed', nextSpeed);
+    setValue('anomalyMode.speed', nextSpeed);
     toast(`Speed changed to ${nextSpeed}!`);
   };
 

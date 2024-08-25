@@ -58,7 +58,7 @@ export default function LearnKeyword({
             hover:opacity-80
           "
         >
-          <small className="hidden md:lg">Keywords</small>
+          <small className="hidden md:inline-block">Keywords</small>
           <MdOpenInNew className="text-teal-500 w-[1rem] h-[1rem]"/>
         </div>
       </div>

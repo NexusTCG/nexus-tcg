@@ -5,8 +5,9 @@ import { Analytics } from "@vercel/analytics/react";
 // Styles
 import { Inter } from "next/font/google";
 import "@/app/lib/styles/globals.css";
-// Next
+// Metadata
 import type { Metadata } from 'next'
+import { metadataKeywords } from "@/app/lib/data/data"
 // Components
 import { Toaster } from "@/components/ui/sonner"
 
@@ -18,12 +19,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  keywords: [
-    "Trading Card Game",
-    "TCG",
-    "Collectible Card Game",
-    "Digital Card Game",
-  ],
+  keywords: metadataKeywords,
   title: {
     default: "Nexus TCG",
     template: `%s | Nexus TCG`,
