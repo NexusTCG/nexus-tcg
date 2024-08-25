@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useMediaQuery } from "@/app/hooks/user-media-query";
 // Utils
 import Link from "next/link";
 import clsx from "clsx";
@@ -23,12 +24,12 @@ import {
 } from "@/components/ui/tooltip"
 // Custom components
 import UserAvatar from "@/components/user-avatar"
-import SidebarPopoverIcon from "@/components/sidebar/sidebar-popover-icon"
-import SidebarProfileMenu from "@/components/sidebar/sidebar-profile-menu"
+import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon"
+import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu"
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
 
-const userName = "John"; // Replace with fetch
+const userName = "John"; // Replace with fetched dynamic data
 
 export default function Sidebar({ 
   currentUserId,
@@ -37,6 +38,7 @@ export default function Sidebar({
   currentUserId: string | null,
   userProfile: ProfileDTO | null
 }) {
+  const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   function toggleSidebar() {
@@ -86,6 +88,10 @@ export default function Sidebar({
     }).filter(Boolean);
   }
 
+  useEffect(() => {
+    setIsCollapsed(isMediumScreen);
+  }, [isMediumScreen]);
+
   return (
     <div
       id="sidebar"
@@ -95,8 +101,8 @@ export default function Sidebar({
         justify-between
         items-center
         ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}
-        min-h-screen
         border-r
+        min-h-screen
         p-4
         transition-all
         duration-300

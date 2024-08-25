@@ -1,180 +1,37 @@
 import React from "react";
-// Utils
-import Image from "next/image";
-// Components
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
+// Custom Components
+import LatestCards from "@/components/home/latest-cards";
+import LatestNotifications from "@/components/home/latest-notifications";
+import TopCards from "@/components/home/top-cards";
+import ReadyToPlay from "@/components/home/ready-to-play";
+import QuickLearn from "@/components/home/quick-learn";
+import WeeklyTrends from "@/components/home/weekly-trends";
 
 export default function Home() {
   return (
     <div
       id="home-page-container"
-      className="
-        flex
-        flex-col
-        md:flex-row
-        justify-start
-        items-start
-        w-full
-      "
+      className="w-full px-4 sm:px-6 md:px-8 py-4"
     >
       <div
         id="home-content-container"
-        className="
-          flex
-          flex-row
-          justify-start
-          items-start
-          w-full
-          px-4
-          md:px-8
-          py-4
-          gap-4
-        "
+        className="flex flex-col lg:flex-row gap-4"
       >
         <div
           id="col-1"
-          className="
-            flex
-            flex-col
-            justify-start
-            items-start
-            w-2/3
-            gap-4
-          "
+          className="w-full lg:w-2/3 flex flex-col gap-4"
         >
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle >
-                Latest cards
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pr-0">
-              <div
-                className="
-                  flex
-                  flex-row
-                  justify-start
-                  items-start
-                  gap-2
-                  overflow-hidden
-                "
-              >
-                <Image
-                  src="/images/card-placeholder.png"
-                  alt="Placeholder"
-                  width={240}
-                  height={336}
-                />
-                <Image
-                  src="/images/card-placeholder.png"
-                  alt="Placeholder"
-                  width={240}
-                  height={336}
-                />
-                <Image
-                  src="/images/card-placeholder.png"
-                  alt="Placeholder"
-                  width={240}
-                  height={336}
-                />
-                <Image
-                  src="/images/card-placeholder.png"
-                  alt="Placeholder"
-                  width={240}
-                  height={336}
-                />
-              </div>
-              
-            </CardContent>
-            <CardFooter>
-              <p>Footer</p>
-            </CardFooter>
-          </Card>
-          <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Home</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Welcome to the home page.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <p>Footer</p>
-              </CardFooter>
-            </Card>
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Home</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Welcome to the home page.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <p>Footer</p>
-              </CardFooter>
-            </Card>
+          <LatestCards />
+          <TopCards />
+          <LatestNotifications />
         </div>
         <div
-          id="col-1"
-          className="
-            flex
-            flex-col
-            justify-start
-            items-start
-            w-1/3
-            gap-4
-          "
+          id="col-2"
+          className="w-full lg:w-1/3 flex flex-col gap-4"
         >
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Home</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Welcome to the home page.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <p>Footer</p>
-              </CardFooter>
-            </Card>
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Home</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Welcome to the home page.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <p>Footer</p>
-              </CardFooter>
-            </Card>
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Home</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Welcome to the home page.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <p>Footer</p>
-              </CardFooter>
-            </Card>
+          <ReadyToPlay />
+          <QuickLearn />
+          <WeeklyTrends />
         </div>
       </div>
     </div>

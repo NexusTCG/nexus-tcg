@@ -72,10 +72,10 @@ export default function SectionAppUI() {
               w-full
             "
           >
-            Make cards in minutes
+            Make a card in a minute
           </h4>
           <p className="text-base sm:text-lg text-neutral-300 text-start w-full">
-            Pointing and click to make a Nexus card. Finish with custom AI-generated art.
+            Point and click to create the card. Finish with custom AI-generated art.
           </p>
         </div>
       </div>

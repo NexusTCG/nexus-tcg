@@ -3,7 +3,10 @@ import React from "react";
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Custom components
-import Sidebar from "@/components/sidebar/sidebar"
+import dynamic from 'next/dynamic';
+
+const Sidebar = dynamic(() => import('@/components/dashboard-nav/sidebar'), { ssr: false });
+const HorizontalNav = dynamic(() => import('@/components/dashboard-nav/horizontal-nav'), { ssr: false });
 
 export default async function DashboardLayout({
   children,
@@ -21,32 +24,16 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div
-      id="dashboard-layout"
-      className="
-        flex
-        flex-row
-        justify-start
-        items-start
-        w-full
-        h-min-screen
-        overflow-y-auto
-      "
-    >
-      <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
-      <div
-        id="dashboard-layout-content"
-        className="
-          flex
-          flex-col
-          justify-start
-          items-center
-          w-full
-          h-screen
-        "
-      >
+    <div className="flex flex-col sm:flex-row w-full min-h-screen">
+      <div className="hidden sm:block">
+        <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
+      </div>
+      <div className="sm:hidden">
+        <HorizontalNav currentUserId={currentUserId} userProfile={userProfile} />
+      </div>
+      <div className="flex-1 p-4">
         {children}
       </div>
     </div>
-  )
+  );
 }
