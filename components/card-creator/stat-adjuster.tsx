@@ -19,14 +19,14 @@ export default function StatAdjuster({
   stat,
 }: StatAdjusterProps) {
   const { setValue, watch } = useFormContext();
-  const currentValue = watch(stat);
+  const currentValue = watch(`initialMode.${stat}`);
 
   function handleStatChange(
     stat: string, 
     change: number
   ) {
     const newValue = Math.max(0, currentValue + change);
-    setValue(stat, newValue);
+    setValue(`initialMode.${stat}`, newValue);
     toast(`${stat.charAt(0).toUpperCase() + stat.slice(1)} set to ${newValue}!`);
   }
 

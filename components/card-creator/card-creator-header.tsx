@@ -1,14 +1,20 @@
+"use client";
+
+// Hooks
 import React from "react";
+import { useFormContext } from 'react-hook-form';
 // Components
 import { Button } from "@/components/ui/button";
 
-// TODO: Accept card name data from parent component
-// TODO: Accept current card mode state from parent component
+type CardCreatorHeaderProps = {
+  activeMode: "initial" | "anomaly";
+}
 
-export default function CardCreatorHeader() {
-
-  const cardName = "Card Name"; // Replace with dynamic data
-  const cardMode = "Card Mode"; // Replace with dynamic data
+export default function CardCreatorHeader({
+  activeMode
+}: CardCreatorHeaderProps) {
+  const { watch, formState: { isSubmitting, isValid } } = useFormContext();
+  const cardName = watch("intialMode.name");
   
   return (
     <div
@@ -37,10 +43,11 @@ export default function CardCreatorHeader() {
         "
       >
         <h2 className="font-medium">{cardName}</h2>
-        <small className="text-zinc-400 text-xs">{cardMode.toUpperCase()}</small>
+        <small className="text-zinc-400 text-xs">{activeMode.toUpperCase()}</small>
       </div>
       <Button
-        disabled={true} // TODO: Disable if form is invalid
+        type="submit"
+        disabled={!isValid || isSubmitting}
         size="sm"
         className="font-semibold"
       >

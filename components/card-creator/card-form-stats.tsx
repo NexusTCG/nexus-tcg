@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -27,13 +28,15 @@ import { MdOutlineNat } from "react-icons/md";
 export default function NexusCardFormStats() {
   const { setValue, watch } = useFormContext();
 
-  const attack = watch('attack');
-  const defense = watch('defense');
-  const range = watch('range');
+  const attack = watch('initialMode.attack');
+  const defense = watch('initialMode.defense');
+  const reach = watch('initialMode.reach');
 
-  function toggleRange() {
-    toast(`Range set to ${range ? 'melee' : 'ranged'}!`);
-    setValue('range', !range);
+  function toggleReach(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    toast(`Reach set to ${reach ? 'melee' : 'ranged'}!`);
+    setValue('initialMode.reach', !reach);
   }
 
   return (
@@ -54,11 +57,11 @@ export default function NexusCardFormStats() {
       "
     >
       <div
-        id="range-icon-container"
-        onClick={toggleRange}
+        id="reach-icon-container"
+        onClick={toggleReach}
         className="cursor-pointer"
       >
-        {range ? (
+        {reach ? (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -93,18 +96,31 @@ export default function NexusCardFormStats() {
       >
         <Popover>
           <PopoverTrigger asChild>
-            <p className="font-bold text-xl text-orange-400 cursor-pointer">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    {attack}
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p className="font-normal">{attack} attack</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </p>
+            <Button
+              type="button"
+              variant="ghost"
+              className="
+                p-0
+                h-auto
+                bg-transparent
+                hover:bg-transparent
+                active:bg-transparent
+                focus:bg-transparent
+              "
+            >
+              <p className="font-bold text-xl text-orange-400 cursor-pointer">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <>{attack}</>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">
+                      <p className="font-normal">{attack} attack</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </p>
+            </Button>
           </PopoverTrigger>
           <PopoverContent side="top" className="max-w-[180px]">
             <StatAdjuster stat="attack" />
@@ -113,18 +129,24 @@ export default function NexusCardFormStats() {
         <p className="text-neutral-300">/</p>
         <Popover>
           <PopoverTrigger asChild>
-            <p className="font-bold text-xl text-emerald-400 cursor-pointer">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    {defense}
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p className="font-normal">{defense} defense</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </p>
+            <Button 
+              type="button" 
+              variant="ghost" 
+              className="p-0 h-auto bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent"
+            >
+              <p className="font-bold text-xl text-emerald-400 cursor-pointer">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <>{defense}</>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p className="font-normal">{defense} defense</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </p>
+            </Button>
           </PopoverTrigger>
           <PopoverContent side="top" className="max-w-[180px]">
             <StatAdjuster stat="defense" />

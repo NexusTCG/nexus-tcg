@@ -1,13 +1,9 @@
 "use client"
 
-// Hooks
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-// Utils
-import clsx from 'clsx';
-// Types
+import clsx from "clsx"
 import { EnergyType } from '@/app/lib/types/components';
-// Components
 import { 
   Popover, 
   PopoverContent, 
@@ -20,7 +16,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-// Custom components
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
 const energyTypes: EnergyType[] = ['light', 'storm', 'dark', 'chaos', 'growth', 'voidx'];
@@ -29,26 +24,18 @@ export default function EnergyCostPopover() {
   const { watch, setValue } = useFormContext();
   const energyCosts = watch('initialMode.energy_cost') || {};
 
-  function calculateTotalEnergy(
-    costs: Record<EnergyType, number>
-  ): number {
+  function calculateTotalEnergy(costs: Record<EnergyType, number>): number {
     return Object.values(costs).reduce((total, cost) => total + cost, 0);
   }
 
-  function updateEnergyCost(
-    type: EnergyType,
-    delta: number,
-    e: React.MouseEvent,
-  ) {
+  function updateEnergyCost(type: EnergyType, delta: number, e: React.MouseEvent) {
     e.preventDefault();
+    e.stopPropagation();
     const newValue = Math.max(0, Math.min(5, (energyCosts[type] || 0) + delta));
     setValue(`initialMode.energy_cost.${type}`, newValue);
   }
 
-  function renderEnergyIcons(
-    type: EnergyType, 
-    count: number
-  ) {
+  function renderEnergyIcons(type: EnergyType, count: number) {
     if (type === 'voidx') {
       return count > 0 ? <EnergyIcon type={`void${count}`} /> : null;
     }
@@ -57,46 +44,56 @@ export default function EnergyCostPopover() {
     ));
   }
 
-  useEffect(() => {
-    const totalEnergy = calculateTotalEnergy(energyCosts);
-    setValue('initialMode.energy_value', totalEnergy);
-  }, [energyCosts, setValue]);
-
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {Object.values(energyCosts).every(cost => cost === 0) ? (
-          <div className="cursor-pointer">
+        <Button
+          type="button"
+          variant="ghost"
+          className="
+            p-0
+            h-auto
+            bg-transparent
+            hover:bg-transparent
+            active:bg-transparent
+            focus:bg-transparent
+          "
+        >
+          {Object
+            .values(energyCosts)
+            .every(cost => cost === 0) ? (
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
+                  <div>
                     <EnergyIcon type="void0" />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent side="left">
                   <p>Change card cost</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
-        ) : (
-          <div
-            className="
-              flex 
-              flex-col 
-              justify-start
-              items-center 
-              cursor-pointer
-            "
-          >
-            {energyTypes.map(type => 
-              energyCosts[type] > 0 && (
-                <React.Fragment key={type}>
-                  {renderEnergyIcons(type, energyCosts[type])}
-                </React.Fragment>
-              )
-            )}
-          </div>
-        )}
+          ) : (
+            <div
+              className="
+                flex 
+                flex-col 
+                justify-start 
+                items-center 
+                cursor-pointer
+              "
+            >
+              {energyTypes.map(type => 
+                energyCosts[type] > 0 && (
+                  <React.Fragment key={type}>
+                    {renderEnergyIcons(type, energyCosts[type])}
+                  </React.Fragment>
+                )
+              )}
+            </div>
+          )}
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[480px]">
         <div
@@ -153,6 +150,7 @@ export default function EnergyCostPopover() {
                   "
                 >
                   <Button 
+                    type="button"
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, -1, e)}
@@ -178,6 +176,7 @@ export default function EnergyCostPopover() {
                     {energyCosts[type] || 0}
                   </span>
                   <Button 
+                    type="button"
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, 1, e)}

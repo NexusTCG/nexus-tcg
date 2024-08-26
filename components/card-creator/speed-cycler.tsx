@@ -18,8 +18,11 @@ export default function SpeedCycler() {
   const { watch, setValue } = useFormContext();
   const speed = watch('initialMode.speed');
 
-  function cycleSpeed(e: React.MouseEvent) {
+  function cycleSpeed(
+    e: React.MouseEvent
+  ) {
     e.preventDefault();
+    e.stopPropagation();
     const nextSpeed = speed % 3 + 1;
     setValue('initialMode.speed', nextSpeed);
     toast(`Speed changed to ${nextSpeed}!`);

@@ -3,8 +3,6 @@ import fetch from "node-fetch";
 
 export const maxDuration = 45; // TODO: Replace with Trigger.dev task with polling
 
-// TODO: Use Vercel AI SDK instead
-
 export async function POST(
   req: NextRequest
 ) {

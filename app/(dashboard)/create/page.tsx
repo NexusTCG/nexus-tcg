@@ -3,7 +3,7 @@ import React from "react";
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Components
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 // Custom components
 import Banner from "@/components/banner";
 import CardForm from "@/components/card-creator/card-form";
@@ -48,14 +48,14 @@ export default async function Create() {
         <Banner
           message="This page is under construction."
           type="warning"
-          autoExpire={false}
+          autoExpire={true}
         />
         <CardForm
           currentUserId={currentUserId}
           userProfile={userProfile}
         />
       </div>
-      <div
+      {/* <div
         id="nexus-chat-bot-container"
         className="
           hidden
@@ -77,7 +77,7 @@ export default async function Create() {
         <span>Chat bot</span>
         <span>Send Message</span>
         <Input type="text" placeholder="Your message" />
-      </div>
+      </div> */}
     </div>
   )
 }

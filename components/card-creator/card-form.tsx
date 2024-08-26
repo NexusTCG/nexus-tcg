@@ -14,6 +14,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CardFormSchema } from "@/app/lib/schemas/database"
 import { ProfileDTO } from "@/app/lib/types/dto";
 import { CardFormDataType } from "@/app/lib/types/forms";
+// Actions
+import { uploadGeneratedArt } from "@/app/server/actions";
 // Components
 import { toast } from "sonner";
 // Custom components
@@ -25,10 +27,6 @@ import CardContainer from "@/components/card-creator/card-container";
 import CardFormHeader from "@/components/card-creator/card-form-header";
 import CardFormStats from "@/components/card-creator/card-form-stats";
 
-// TODO: Replace with dynamic data
-const cardArtUrl = "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/card-art/card-art/1721896579240-flda1vy7c69.png"
-const cardName = "Card Name"
-const cardCreator = "Card Creator"
 const currentCardEnergy = "light" // TODO: Dynamically determine based on energy_cost
 
 type CardFormProps = {
@@ -40,7 +38,8 @@ export default function CardForm({
   currentUserId,
   userProfile
 }: CardFormProps) {
-  const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial'); // Move to child client component
+  // Move to child client component
+  const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial');
 
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
@@ -61,8 +60,8 @@ export default function CardForm({
         text: [],
         lore: null,
         prompt_art: null,
-        art_options: ["/images/default-art.jpg"],
-        art_selected: "/images/default-art.jpg",
+        art_options: [],
+        art_selected: 0,
         energy_value: 0,
         energy_cost: {
           light: 0,
@@ -75,7 +74,7 @@ export default function CardForm({
         speed: 1,
         attack: 0,
         defense: 0,
-        range: false,
+        reach: false,
       },
       anomalyMode: {
         render: null,
@@ -85,8 +84,8 @@ export default function CardForm({
         text: [],
         lore: null,
         prompt_art: null,
-        art_options: ["/images/default-art.jpg"],
-        art_selected: "/images/default-art.jpg",
+        art_options: [],
+        art_selected: 0,
       }
     }
   });
@@ -114,60 +113,86 @@ export default function CardForm({
     }
   };
 
-  // async function onSubmit(
-  //   data: CardFormDataType // Update data type
-  // ) {
-  //   toast("Saving card...")
-  //   // TODO: Log in PostHog
-  //   try {
-  //     Upload generated art (array) to supabase storage
-  //     Get the selected art for initial and anomaly modes
-  //     const uploadData = await uploadResponse.json() // Placeholder
+  async function onSubmit(
+    data: CardFormDataType
+  ) {
+    toast("Saving card...")
+    try {
+      let initialModeArtUrls: string[] = [];
+      let anomalyModeArtUrls: string[] = [];
+
+      // Upload initial mode art
+      if (data.initialMode.art_options.length > 0) {
+        const response = await fetch('/api/data/upload-generated-art', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageUrls: data.initialMode.art_options }),
+        });
+        const result = await response.json();
+        initialModeArtUrls = result.uploadedUrls;
+      }
+
+      // Upload anomaly mode art if it exists
+      if (data.anomalyMode.uncommon && data.anomalyMode.art_options.length > 0) {
+        const response = await fetch('/api/data/upload-generated-art', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageUrls: data.anomalyMode.art_options }),
+        });
+        const result = await response.json();
+        anomalyModeArtUrls = result.uploadedUrls;
+      }
       
-  //     if (uploadData.im_art & uploadData.am_art) {
-  //       const insertResponse = await fetch("/api/data/submit-card", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           ...data,
-  //           initialMode.art_selected: uploadData.im_art,
-  //           anomalyMode.art_selected: uploadData.am_art,
-  //         }),
-  //       })
+      // Update form data
+      const cardData = {
+        ...data,
+        initialMode: {
+          ...data.initialMode,
+          art_selected: initialModeArtUrls[data.initialMode.art_selected] || null,
+        },
+        anomalyMode: {
+          ...data.anomalyMode,
+          art_selected: anomalyModeArtUrls[data.anomalyMode.art_selected] || null,
+        },
+      };
+  
+      // Insert form data
+      const insertResponse = await fetch("/api/data/submit-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cardData),
+      });
+  
+      const insertData = await insertResponse.json();
+  
+      if (insertData.ok && insertData.data) {
+        // Capture event
+        (posthog.capture as any)("card_created", {
+          distinctId: insertData.data.id,
+          creator: insertData.data.username,
+        });
+  
+        toast("Card saved successfully!");
+        setTimeout(() => {
+          toast("Redirecting...");
+          router.push(`/cards/${insertData.data.id}`);
+        }, 2000);
+      } else {
+        toast("Failed to save card!");
+        console.error("Card submit error:", insertData.error);
+      }
 
-  //       const insertData = await insertResponse.json();
-
-  //       if (
-  //         insertData.ok &&
-  //         insertData.data
-  //       ) {
-  //         posthog.capture("card_created", {
-  //           distinctId: insertData.data.id,
-  //           creator: insertData.data.username,
-  //         })
-
-  //         toast("Card saved successfully!")
-  //         setTimeout(() => {
-  //           toast("Redirecting...")
-  //           router.push(`/cards/${insertData.data.id}`)
-  //         }, 2000)
-  //       } else {
-  //         toast("Failed to save card!")
-  //         // TODO: Log error
-  //       }
-  //     }
-
-  //   } catch (error) {
-  //     toast(`Error saving card: ${error}`)
-  //   }
-  // };
+    } catch (error) {
+      toast(`Error saving card: ${error}`)
+    }
+  };
 
   return (
     <FormProvider {...methods}>
       <form
-        // onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onSubmit)}
         className="w-full"
       >
         <div 
@@ -184,7 +209,7 @@ export default function CardForm({
             overflow-hidden
           "
         >
-          <CardCreatorHeader  />
+          <CardCreatorHeader activeMode={activeMode} />
           <div 
             id="card-creator-content" 
             className="
@@ -213,7 +238,6 @@ export default function CardForm({
                 "
               >
                 <CardFormArt />
-                {/* TODO: Turn into component. Keyword select + text input */}
                 <div
                   id="card-text-outer-container"
                   className="

@@ -29,7 +29,7 @@ export default function EnergyIcon({
         src={IconComponent}
         alt={`${type} energy icon`}
         fill
-        objectFit="contain"
+        style={{ objectFit: "contain" }}
       />
     </div>
   );
