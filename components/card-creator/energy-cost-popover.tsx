@@ -37,8 +37,10 @@ export default function EnergyCostPopover() {
 
   function updateEnergyCost(
     type: EnergyType,
-    delta: number
+    delta: number,
+    e: React.MouseEvent,
   ) {
+    e.preventDefault();
     const newValue = Math.max(0, Math.min(5, (energyCosts[type] || 0) + delta));
     setValue(`initialMode.energy_cost.${type}`, newValue);
   }
@@ -153,7 +155,7 @@ export default function EnergyCostPopover() {
                   <Button 
                     size="icon" 
                     variant="ghost" 
-                    onClick={() => updateEnergyCost(type, -1)}
+                    onClick={(e) => updateEnergyCost(type, -1, e)}
                     disabled={energyCosts[type] === 0}
                     className="
                       text-xl 
@@ -178,7 +180,7 @@ export default function EnergyCostPopover() {
                   <Button 
                     size="icon" 
                     variant="ghost" 
-                    onClick={() => updateEnergyCost(type, 1)}
+                    onClick={(e) => updateEnergyCost(type, 1, e)}
                     disabled={energyCosts[type] === 5}
                     className="
                       text-xl 

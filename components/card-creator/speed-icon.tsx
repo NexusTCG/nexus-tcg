@@ -14,7 +14,10 @@ export default function SpeedIcon({
   const size = inline ? 24 : 32;
   const IconComponent = speedIcons[type - 1]
 
-  console.log('speed icon', type);
+  if (!IconComponent) {
+    console.error(`Speed icon not found for type: ${type}`);
+    return null;
+  }
 
   return (
     <div

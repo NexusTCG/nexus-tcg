@@ -94,10 +94,7 @@ export default function CardFormHeader({
               ))}
           </select>
           <span className="text-xs opacity-60">•</span>
-          <select className="bg-transparent text-black">
-            <option value="" disabled selected>
-              Subtype
-            </option>
+          <select className="bg-transparent text-black" defaultValue="Subtype">
             {agentTypes.map((agentType: string) => (
               <option
                 key={agentType}

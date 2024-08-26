@@ -39,16 +39,18 @@ export default function CardFormText() {
         <SelectTrigger className="w-full rounded-sm text-white">
           <SelectValue placeholder="Effect" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent
+          className="flex flex-wrap justify-start w-full max-w-[312px]"
+        >
           <SelectItem value="light">Short Text</SelectItem>
           <SelectItem value="dark">Medium Text</SelectItem>
-          <SelectItem value="system">Long Text</SelectItem>
+          <SelectItem value="long-text">Long Text</SelectItem>
           <Separator orientation="horizontal" />
-          <SelectItem value="system">Evasion</SelectItem>
-          <SelectItem value="system">Threat</SelectItem>
+          <SelectItem value="evasion">Evasion <i>(Can only be defended by agents with evasion or intercept.)</i></SelectItem>
+          <SelectItem value="threat">Threat</SelectItem>
           <Separator orientation="horizontal" />
-          <SelectItem value="system">Evasion</SelectItem>
-          <SelectItem value="system">Threat</SelectItem>
+          <SelectItem value="deploy">Deploy</SelectItem>
+          <SelectItem value="despawn">despawn</SelectItem>
         </SelectContent>
       </Select>
     </div>

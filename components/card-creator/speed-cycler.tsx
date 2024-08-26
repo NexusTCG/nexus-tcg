@@ -16,15 +16,14 @@ import SpeedIcon from "@/components/card-creator/speed-icon";
 
 export default function SpeedCycler() {
   const { watch, setValue } = useFormContext();
-  const speed = watch('speed');
+  const speed = watch('initialMode.speed');
 
-  function cycleSpeed() {
+  function cycleSpeed(e: React.MouseEvent) {
+    e.preventDefault();
     const nextSpeed = speed % 3 + 1;
-    setValue('anomalyMode.speed', nextSpeed);
+    setValue('initialMode.speed', nextSpeed);
     toast(`Speed changed to ${nextSpeed}!`);
   };
-
-  console.log('speed', speed);
 
   return (
     <TooltipProvider>
