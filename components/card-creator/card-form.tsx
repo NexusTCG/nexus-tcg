@@ -44,7 +44,7 @@ export default function CardForm({
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
     defaultValues: {
-      id: null,
+      // id: null,
       user_id: currentUserId || null,
       created_at: null,
       updated_at: null,
@@ -91,6 +91,7 @@ export default function CardForm({
   });
 
   const { 
+    watch,
     setValue,
     handleSubmit,
     formState: { 
@@ -100,7 +101,9 @@ export default function CardForm({
 
   const posthog = PostHogClient()
   const router = useRouter()
+  const form = watch()
 
+  // TODO: Implement functionality to switch modes
   function toggleMode() {
     if (activeMode === 'initial') {
       setValue('initialMode.type', 'anomaly');
@@ -222,7 +225,9 @@ export default function CardForm({
               bg-zinc-800
             "
           >
-            Hello world
+            {/* Placeholder */}
+            <div>{JSON.stringify(form)}</div>
+            {/* Placeholder */}
             <CardContainer>
               <CardFormHeader energy={currentCardEnergy} />
               <div
