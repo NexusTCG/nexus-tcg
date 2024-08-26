@@ -222,6 +222,7 @@ export default function CardForm({
               bg-zinc-800
             "
           >
+            Hello world
             <CardContainer>
               <CardFormHeader energy={currentCardEnergy} />
               <div

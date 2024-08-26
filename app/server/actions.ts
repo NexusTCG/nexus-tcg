@@ -5,9 +5,6 @@ import { cookies } from "next/headers";
 // // Server
 // import { getCurrentUserId } from "@/app/server/auth";
 
-const cookieStore = cookies();
-const supabase = createClient(cookieStore);
-
 // TODO: Add action to delete a card
 // TODO: Add action to update a card
 // TODO: Add action to delete a user
@@ -17,6 +14,9 @@ const supabase = createClient(cookieStore);
 export async function uploadGeneratedArt(
   imageUrls: string[]
 ) {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
   try {
     const uploadedUrls = await Promise.all(imageUrls.map(async (imageUrl) => {
       const response = await fetch(imageUrl);
@@ -60,6 +60,9 @@ export async function uploadGeneratedArt(
 // FETCH DATA
 
 export async function getRandomKeyword() {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
   try {
     const { 
       data, 
