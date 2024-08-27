@@ -25,7 +25,7 @@ export default function CardFormHeader({
   return (
     <div
       id="card-form-header-container"
-      className={clsx("flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20",
+      className={clsx("flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative",
         {
           "bg-yellow-50": energy === "light",
           "bg-sky-50": energy === "storm",
@@ -43,10 +43,17 @@ export default function CardFormHeader({
           flex-col 
           justify-start 
           items-start
+          z-10
+          h-[64px]
+          w-[32px]
         "
       >
-        <SpeedCycler />
-        <EnergyCostPopover />
+        <div className="absolute top-0 left-0">
+          <SpeedCycler />
+        </div>
+        <div className="absolute top-[32px] left-0">
+          <EnergyCostPopover />
+        </div>
       </div>
       <div
         id="card-name-type-container"

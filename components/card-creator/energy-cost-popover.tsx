@@ -18,30 +18,71 @@ import {
 import { Button } from "@/components/ui/button";
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
-const energyTypes: EnergyType[] = ['light', 'storm', 'dark', 'chaos', 'growth', 'voidx'];
-
 export default function EnergyCostPopover() {
   const { watch, setValue } = useFormContext();
   const energyCosts = watch('initialMode.energy_cost') || {};
+  const energyTypes: EnergyType[] = ['light', 'storm', 'dark', 'chaos', 'growth', 'voidx'];
 
   function calculateTotalEnergy(costs: Record<EnergyType, number>): number {
-    return Object.values(costs).reduce((total, cost) => total + cost, 0);
+    return Object.entries(costs).reduce((total, [type, cost]) => {
+      if (type === 'voidx') return total;
+      return total + cost;
+    }, 0);
   }
 
-  function updateEnergyCost(type: EnergyType, delta: number, e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    const newValue = Math.max(0, Math.min(5, (energyCosts[type] || 0) + delta));
-    setValue(`initialMode.energy_cost.${type}`, newValue);
+  function getVoidEnergyType(cost: number): EnergyType {
+    if (cost === -1) return 'voidx';
+    return `void${cost}` as EnergyType;
   }
 
-  function renderEnergyIcons(type: EnergyType, count: number) {
+  function renderEnergyIcons(type: EnergyType, cost: number) {
     if (type === 'voidx') {
-      return count > 0 ? <EnergyIcon type={`void${count}`} /> : null;
+      if (cost === 0) return null;
+      return <EnergyIcon type={getVoidEnergyType(cost)} />;
     }
-    return Array(count).fill(null).map((_, index) => (
+    return Array(cost).fill(null).map((_, index) => (
       <EnergyIcon key={`${type}-${index}`} type={type} />
     ));
+  }
+
+  function renderOrderedEnergyIcons() {
+    const orderedTypes: EnergyType[] = ['voidx', 'growth', 'chaos', 'dark', 'storm', 'light'];
+    
+    return orderedTypes.map(type => {
+      const cost = energyCosts[type] || 0;
+      if (cost > 0 || (type === 'voidx' && cost !== 0)) {
+        return (
+          <React.Fragment key={type}>
+            {renderEnergyIcons(type, cost)}
+          </React.Fragment>
+        );
+      }
+      return null;
+    });
+  }
+
+  function updateEnergyCost(
+    type: EnergyType, 
+    delta: number, 
+    e: React.MouseEvent
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    const currentValue = energyCosts[type] || 0;
+    
+    let newValue: number;
+    if (type === 'voidx') {
+      if (currentValue === 0 && delta < 0) {
+        newValue = -1; // Represents 'X'
+      } else if (currentValue === -1 && delta > 0) {
+        newValue = 0; // Transition from 'X' to 0
+      } else {
+        newValue = Math.max(-1, Math.min(15, currentValue + delta));
+      }
+    } else {
+      newValue = Math.max(0, Math.min(5, currentValue + delta));
+    }
+    setValue(`initialMode.energy_cost.${type}`, newValue);
   }
 
   return (
@@ -52,16 +93,16 @@ export default function EnergyCostPopover() {
           variant="ghost"
           className="
             p-0
-            h-auto
+            h-[32px]
+            w-[32px]
             bg-transparent
             hover:bg-transparent
             active:bg-transparent
             focus:bg-transparent
+            relative
           "
         >
-          {Object
-            .values(energyCosts)
-            .every(cost => cost === 0) ? (
+          {Object.values(energyCosts).every(cost => cost === 0) ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -82,15 +123,12 @@ export default function EnergyCostPopover() {
                 justify-start 
                 items-center 
                 cursor-pointer
+                absolute
+                top-0
+                left-0
               "
             >
-              {energyTypes.map(type => 
-                energyCosts[type] > 0 && (
-                  <React.Fragment key={type}>
-                    {renderEnergyIcons(type, energyCosts[type])}
-                  </React.Fragment>
-                )
-              )}
+              {renderOrderedEnergyIcons()}
             </div>
           )}
         </Button>
@@ -135,7 +173,7 @@ export default function EnergyCostPopover() {
                     'bg-violet-950/60 hover:bg-violet-950': type === 'dark',
                     'bg-red-950/60 hover:bg-red-950': type === 'chaos',
                     'bg-lime-950/60 hover:bg-lime-950': type === 'growth',
-                    'bg-slate-800/60 hover:bg-slate-800': type.includes('void'),
+                    'bg-slate-800/60 hover:bg-slate-800': type === 'voidx',
                   }
                 )}
               >
@@ -154,7 +192,7 @@ export default function EnergyCostPopover() {
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, -1, e)}
-                    disabled={energyCosts[type] === 0}
+                    disabled={type === 'voidx' ? energyCosts[type] === -1 : energyCosts[type] === 0}
                     className="
                       text-xl 
                       font-semibold 
@@ -167,20 +205,15 @@ export default function EnergyCostPopover() {
                   >
                     -
                   </Button>
-                  <span className="
-                      mx-2
-                      text-lg 
-                      font-semibold 
-                    "
-                  >
-                    {energyCosts[type] || 0}
+                  <span className="mx-2 text-lg font-semibold">
+                    {type === 'voidx' && energyCosts[type] === -1 ? 'X' : energyCosts[type] || 0}
                   </span>
                   <Button 
                     type="button"
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, 1, e)}
-                    disabled={energyCosts[type] === 5}
+                    disabled={type === 'voidx' ? energyCosts[type] === 15 : energyCosts[type] === 5}
                     className="
                       text-xl 
                       font-semibold 
