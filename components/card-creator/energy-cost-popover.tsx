@@ -3,7 +3,10 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import clsx from "clsx"
+// Types
 import { EnergyType } from '@/app/lib/types/components';
+// Components
+import { toast } from "sonner"
 import { 
   Popover, 
   PopoverContent, 
@@ -16,29 +19,50 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+// Icons
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
 export default function EnergyCostPopover() {
   const { watch, setValue } = useFormContext();
   const energyCosts = watch('initialMode.energy_cost') || {};
-  const energyTypes: EnergyType[] = ['light', 'storm', 'dark', 'chaos', 'growth', 'voidx'];
+  const energyTypes: EnergyType[] = [
+    'light', 
+    'storm', 
+    'dark', 
+    'chaos', 
+    'growth', 
+    'void'
+  ];
 
-  function calculateTotalEnergy(costs: Record<EnergyType, number>): number {
+  function calculateTotalEnergy(
+    costs: Record<EnergyType, number>
+  ): number {
     return Object.entries(costs).reduce((total, [type, cost]) => {
-      if (type === 'voidx') return total;
-      return total + cost;
+      if (type === 'void') return total;
+      return total + (cost || 0);
     }, 0);
   }
 
-  function getVoidEnergyType(cost: number): EnergyType {
-    if (cost === -1) return 'voidx';
-    return `void${cost}` as EnergyType;
+  function calculateTotalVoidEnergy(
+    costs: Record<EnergyType, number>
+  ): number {
+    return costs['void'] || 0;
   }
 
-  function renderEnergyIcons(type: EnergyType, cost: number) {
-    if (type === 'voidx') {
+  function calculateTotalCost(
+    costs: Record<EnergyType, number>
+  ): number {
+    const total = Object.values(costs).reduce((total, cost) => total + (cost || 0), 0);
+    return total === -1 ? 0 : total;
+  }
+
+  function renderEnergyIcons(
+    type: EnergyType, 
+    cost: number
+  ) {
+    if (type === 'void') {
       if (cost === 0) return null;
-      return <EnergyIcon type={getVoidEnergyType(cost)} />;
+      return <EnergyIcon type="void" value={cost} />;
     }
     return Array(cost).fill(null).map((_, index) => (
       <EnergyIcon key={`${type}-${index}`} type={type} />
@@ -46,11 +70,18 @@ export default function EnergyCostPopover() {
   }
 
   function renderOrderedEnergyIcons() {
-    const orderedTypes: EnergyType[] = ['voidx', 'growth', 'chaos', 'dark', 'storm', 'light'];
+    const orderedTypes: EnergyType[] = [
+      'void', 
+      'growth', 
+      'chaos', 
+      'dark', 
+      'storm', 
+      'light'
+    ];
     
     return orderedTypes.map(type => {
       const cost = energyCosts[type] || 0;
-      if (cost > 0 || (type === 'voidx' && cost !== 0)) {
+      if (cost > 0 || (type === 'void' && cost !== 0)) {
         return (
           <React.Fragment key={type}>
             {renderEnergyIcons(type, cost)}
@@ -69,20 +100,34 @@ export default function EnergyCostPopover() {
     e.preventDefault();
     e.stopPropagation();
     const currentValue = energyCosts[type] || 0;
+    const totalNonVoidEnergy = calculateTotalEnergy(energyCosts);
+    const totalVoidEnergy = calculateTotalVoidEnergy(energyCosts);
     
     let newValue: number;
-    if (type === 'voidx') {
+    if (type === 'void') {
       if (currentValue === 0 && delta < 0) {
-        newValue = -1; // Represents 'X'
+        newValue = -1;
       } else if (currentValue === -1 && delta > 0) {
-        newValue = 0; // Transition from 'X' to 0
+        newValue = 0;
       } else {
-        newValue = Math.max(-1, Math.min(15, currentValue + delta));
+        newValue = Math.max(-1, Math.min(15 - totalNonVoidEnergy, currentValue + delta));
       }
     } else {
+      if (totalNonVoidEnergy >= 5 && delta > 0) {
+        return;
+      }
       newValue = Math.max(0, Math.min(5, currentValue + delta));
     }
-    setValue(`initialMode.energy_cost.${type}`, newValue);
+    
+    if (totalNonVoidEnergy + totalVoidEnergy + delta <= 15) {
+      toast(`
+        ${type.charAt(0).toUpperCase() + type.slice(1)} energy changed to ${(
+          type === "void" && newValue === -1) 
+            ? "X" 
+            : newValue}!`
+          );
+      setValue(`initialMode.energy_cost.${type}`, newValue);
+    }
   }
 
   return (
@@ -107,7 +152,7 @@ export default function EnergyCostPopover() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
-                    <EnergyIcon type="void0" />
+                    <EnergyIcon type="void" value={0} />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="left">
@@ -156,10 +201,15 @@ export default function EnergyCostPopover() {
               align-baseline
             "
           >
-            <h3 className="font-medium">Select energy cost</h3>
-            <small className="text-neutral-400">
-              Cost: <span className="text-neutral-300 font-semibold">{calculateTotalEnergy(energyCosts)}</span>
-            </small>
+            <h3 className="font-semibold">Select energy cost</h3>
+            <p>
+              <span className="font-bold">
+                {calculateTotalCost(energyCosts)}
+              </span>{" "}
+              <span className="opacity-80">
+                total cost
+              </span>
+            </p>
           </div>
           <div className="w-full grid grid-cols-3 gap-2">
             {energyTypes.map(type => (
@@ -173,11 +223,11 @@ export default function EnergyCostPopover() {
                     'bg-violet-950/60 hover:bg-violet-950': type === 'dark',
                     'bg-red-950/60 hover:bg-red-950': type === 'chaos',
                     'bg-lime-950/60 hover:bg-lime-950': type === 'growth',
-                    'bg-slate-800/60 hover:bg-slate-800': type === 'voidx',
+                    'bg-slate-800/60 hover:bg-slate-800': type === 'void',
                   }
                 )}
               >
-                <EnergyIcon type={type} />
+                <EnergyIcon type={type} value={type === 'void' ? (energyCosts[type] || 0) : undefined} />
                 <div
                   className="
                     flex
@@ -192,7 +242,7 @@ export default function EnergyCostPopover() {
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, -1, e)}
-                    disabled={type === 'voidx' ? energyCosts[type] === -1 : energyCosts[type] === 0}
+                    disabled={type === 'void' ? energyCosts[type] === -1 : energyCosts[type] === 0}
                     className="
                       text-xl 
                       font-semibold 
@@ -203,17 +253,31 @@ export default function EnergyCostPopover() {
                       hover:border-white/20
                     "
                   >
-                    -
+                    {type === "void" && energyCosts[type] === 0
+                      ? "X"
+                      : (energyCosts[type] === 0 || type === "void" && energyCosts[type] === -1)
+                      ? ""
+                      : "-"}
                   </Button>
                   <span className="mx-2 text-lg font-semibold">
-                    {type === 'voidx' && energyCosts[type] === -1 ? 'X' : energyCosts[type] || 0}
+                    {type === 'void' && energyCosts[type] === -1 ? 'X' : energyCosts[type] || 0}
                   </span>
                   <Button 
                     type="button"
                     size="icon" 
                     variant="ghost" 
                     onClick={(e) => updateEnergyCost(type, 1, e)}
-                    disabled={type === 'voidx' ? energyCosts[type] === 15 : energyCosts[type] === 5}
+                    disabled={
+                      (type === 'void' && (
+                        energyCosts[type] === 15 || 
+                        calculateTotalEnergy(energyCosts) + 
+                        calculateTotalVoidEnergy(energyCosts) >= 15)
+                      ) ||
+                      (type !== 'void' && (
+                        energyCosts[type] === 5 || 
+                        calculateTotalEnergy(energyCosts) >= 5
+                      ))
+                    }
                     className="
                       text-xl 
                       font-semibold 
@@ -224,7 +288,19 @@ export default function EnergyCostPopover() {
                       hover:border-white/20
                     "
                   >
-                    +
+                    {calculateTotalCost(energyCosts) >= 15
+                      ? ""
+                      : type !== "void" && (
+                          energyCosts[type] === 5 || 
+                          calculateTotalEnergy(energyCosts) >= 5
+                        )
+                      ? ""
+                      : type === "void" && (
+                          calculateTotalEnergy(energyCosts) + 
+                          calculateTotalVoidEnergy(energyCosts) >= 15
+                        )
+                      ? ""
+                      : "+"}
                   </Button>
                 </div>
               </div>
