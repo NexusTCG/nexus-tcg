@@ -1,8 +1,8 @@
 "use client"
 
 // Hooks
-import React from "react"
-import { useFormContext } from 'react-hook-form';
+import React, { useState, useMemo } from "react"
+import { useFormContext, Controller } from 'react-hook-form';
 // Utils
 import clsx from "clsx"
 import { cn } from "@/lib/utils";
@@ -29,11 +29,17 @@ import {
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
 
+const cardNameDefaults = [
+  "An amazing card name...", 
+  "A glorious card name...", 
+  "A fantabulous card name...",
+  "A magnificent card name...",
+  "A spectacular card name..."
+]
+
 export default function CardFormHeader() {
-  const { 
-    control, 
-    watch,
-  } = useFormContext();
+  const [isTypeSubOpen, setIsTypeSubOpen] = useState(false);
+  const { control, watch } = useFormContext();
   const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
     light: 0,
     storm: 0,
@@ -42,16 +48,13 @@ export default function CardFormHeader() {
     growth: 0,
     void: 0,
   };
+  const type = watch('initialMode.type');
+  const randomCardNamePlaceholder = useMemo(() => {
+    return cardNameDefaults[Math.floor(Math.random() * cardNameDefaults.length)];
+  }, []);
+
   const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
   const bgColorClass100 = calculateBgColor(energyCost, 100)[0]; 
-
-  const cardNameDefaults = [
-    "An amazing card name...", 
-    "A glorious card name...", 
-    "A fantabulous card name...",
-    "A magnificent card name...",
-    "A spectacular card name..."
-  ]
 
   return (
     <div
@@ -101,13 +104,7 @@ export default function CardFormHeader() {
                 <input
                   {...field}
                   type="text"
-                  placeholder={
-                    cardNameDefaults[
-                      Math.floor(
-                        Math.random() * cardNameDefaults.length
-                      )
-                    ]
-                  }
+                  placeholder={randomCardNamePlaceholder}
                   autoComplete="off"
                   data-1p-ignore
                   data-lpignore="true"
@@ -137,22 +134,15 @@ export default function CardFormHeader() {
             bgColorClass100 || 'bg-neutral-100'
           )}
         >
-          {/* <select className="flex-grow bg-transparent text-black">
-            <option value="" disabled selected>Type</option>
-            {cardTypes
-              .filter((cardType) => cardType.toLowerCase() !== "anomaly")
-              .map((cardType: string) => (
-                <option key={cardType} value={cardType.toLowerCase()}>
-                  {cardType}
-                </option>
-              ))}
-          </select> */}
           <FormField
             control={control}
             name="initialMode.type"
             render={({ field }) => (
-              <FormItem className="w-full h-full">
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormItem className="max-w-3/5 h-full">
+                <Select
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value || "Agent"}
+                >
                   <FormControl>
                     <SelectTrigger 
                       className={cn(
@@ -161,7 +151,7 @@ export default function CardFormHeader() {
                         "text-md font-medium py-0 px-1"
                       )}
                     >
-                      <SelectValue placeholder="Select type" />
+                      <SelectValue placeholder="Agent" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -178,7 +168,53 @@ export default function CardFormHeader() {
             )}
           />
           <span className="text-xs opacity-60">•</span>
-          <select className="w-full bg-transparent text-black" defaultValue="Subtype">
+          <Controller
+            control={control}
+            name="initialMode.type_sub"
+            render={({ field }) => {
+              const typeSub = Array.isArray(field.value) ? field.value : [];
+              return (
+                <FormItem className="flex-grow h-full relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsTypeSubOpen(!isTypeSubOpen)}
+                    className={cn(
+                      "w-full h-full bg-transparent text-black border-none shadow-none",
+                      "focus:ring-0 focus:ring-offset-0",
+                      "text-md font-medium py-0 px-1 text-left"
+                    )}
+                  >
+                    {typeSub.length > 0 ? typeSub.join(' ') : "Select agent types"}
+                  </button>
+                  {isTypeSubOpen && (
+                    <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
+                      {agentTypes.map((agentType) => (
+                        <div
+                          key={agentType}
+                          className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-black"
+                          onClick={() => {
+                            const newValue = typeSub.includes(agentType)
+                              ? typeSub.filter((v) => v !== agentType)
+                              : [...typeSub, agentType].slice(0, 3);
+                            field.onChange(newValue);
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={typeSub.includes(agentType)}
+                            readOnly
+                            className="mr-2"
+                          />
+                          {agentType}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </FormItem>
+              );
+            }}
+          />
+          {/* <select className="w-full bg-transparent text-black" defaultValue="Subtype">
             {agentTypes.map((agentType: string) => (
               <option
                 key={agentType}
@@ -187,7 +223,7 @@ export default function CardFormHeader() {
                 {agentType}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
       </div>
     </div>

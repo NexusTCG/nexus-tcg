@@ -38,6 +38,8 @@ export default function CardArtPopover() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: any }>({});
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { watch, control } = useFormContext();
+  const form = watch()
+  const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
 
   function handleOptionClick(category: string, option: string) {
     setSelectedOptions(prev => ({
@@ -45,16 +47,6 @@ export default function CardArtPopover() {
       [category]: prev[category] === option ? null : option
     }));
   };
-
-  const cardCreator = watch('username');
-  const cardName = watch('initialMode.name');
-  const cardArtUrl = watch('initialMode.art_options');
-
-  const promptArt = watch('initialMode.prompt_art');
-  const characterCount = promptArt ? promptArt.length : 0;
-
-  // TODO: Get
-  // TODO: Close popover when button is pressed
 
   function handleGenerateArt() {
     // Call API to generate card art
@@ -105,16 +97,20 @@ export default function CardArtPopover() {
                 opacity-0 
                 group-hover:opacity-100 
                 transition-opacity
+                duration-300
+                delay-75
                 z-20
               "
             >
-              <p className="text-white text-xl">Generate art</p>
+              <p className="text-white text-xl">
+               {form.initialMode.art_options.length > 0 ? "Update art" : "Generate art"}
+              </p>
             </div>
             <div className="w-full h-full overflow-hidden">
               <Image
                 // src={cardArtUrl[0]}
                 src="/images/default-art.jpg"
-                alt={`${cardName} by ${cardCreator}`}
+                alt={`${form.initialMode.name} by ${form.username}`}
                 fill
                 style={{ objectFit: "cover" }}
                 className="group-hover:scale-105 transition-all duration-300"
