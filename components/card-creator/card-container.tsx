@@ -94,7 +94,9 @@ export default function CardContainer({
       >
         {children}
       </div>
-      <CardFormFooter />
+      <div className="w-full z-10">
+        <CardFormFooter />
+      </div>
     </div>
   )
 }

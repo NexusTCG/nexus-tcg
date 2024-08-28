@@ -58,7 +58,7 @@ export default function CardArtPopover() {
   // TODO: Close popover when button is pressed
 
   function handleGenerateArt() {
-    
+    // Call API to generate card art
   }
 
   return (
@@ -74,10 +74,11 @@ export default function CardArtPopover() {
           <div
             id="card-art-container"
             style={{ 
-              borderRadius: "0 0 8px 8px",
+              borderRadius: "0 0 20px 20px",
               position: "relative",
               overflow: "hidden",
-              aspectRatio: "4 / 3",
+              aspectRatio: "10 / 7",
+              maxHeight: "415px",
             }}
             className="
               w-[360px]
@@ -86,7 +87,7 @@ export default function CardArtPopover() {
               border-2
               z-10
               -mt-0.5
-              shadow-sm
+              shadow
               shadow-black/50
             "
           >

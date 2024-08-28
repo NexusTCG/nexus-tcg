@@ -24,7 +24,10 @@ export default function CardFormText() {
   return (
     <div
       id="card-form-text-container"
-      style={{ fontSize: "0.85rem" }}
+      style={{ 
+        // height: "240px", 
+        fontSize: "0.85rem" 
+      }}
       className={clsx(
         "flex flex-col justify-start items-star w-full h-full gap-2 p-2 text-black border border-b-2",
         bgColorClass50 || "bg-neutral-50"

@@ -1,8 +1,15 @@
+"use client"
+
+// Hooks
 import React from "react";
+import { useFormContext } from 'react-hook-form';
 // Icons
 import { MdDesignServices } from "react-icons/md";
 
 export default function CardFormFooter() {
+  const { watch } = useFormContext();
+  const cardId = watch("id")
+  const username = watch("username")
 
   return (
     <div
@@ -15,46 +22,43 @@ export default function CardFormFooter() {
         items-center
         w-full
         min-h-[24px]
-        py-1
-        gap-2
-        text-neutral-300
+        py-1.5
         font-light
+        px-2
+        opacity-60
       "
     >
-      <span className="w-full flex justify-start">
-        {/* Filler */}
-      </span>
+      <small
+        id="fineprint"
+        style={{ fontSize: "0.6rem" }}
+        className="
+            flex
+            justify-start
+            items-end
+            w-full
+            gap-0
+          "
+        >
+          <span>© Nexus Games {new Date().getFullYear()}</span>
+      </small>
       <small
         id="card-creator"
         className="
           flex
           flex-row
-          justify-center
+          justify-start
           items-center
           w-full
           gap-0.5
         "
       >
         <MdDesignServices className="w-[0.75rem] h-[0.75rem]" />
-        {/* <span>Made by</span> */}
-        <span>Creator Name</span>
+        <span>{username}</span>
       </small>
-      <small
-        id="fineprint"
-        style={{ fontSize: "0.6rem" }}
-        className="
-            flex
-            flex-col
-            justify-center
-            items-end
-            w-full
-            text-neutral-400
-            gap-0
-          "
-        >
-          {/* <span>Make cards at play.nexus</span> */}
-          <span>© Nexus Games {new Date().getFullYear()}</span>
-      </small>
+      <span className="flex justify-end items-center w-full ">
+        {/* Filler to center card creator */}
+        {/* Card render links to play.nexus/cards/id */}
+      </span>
     </div>
   )
 }

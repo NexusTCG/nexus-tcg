@@ -102,8 +102,9 @@ export default function CardForm({
 
   const posthog = PostHogClient()
   const router = useRouter()
+  const form = watch()
 
-  const energyCost = watch('initialMode.energy_cost');
+  const energyCost = form.initialMode.energy_cost;
   const bgColorClass500 = calculateBgColor(energyCost, 500)[0];
 
   // TODO: Implement functionality to switch modes
@@ -261,7 +262,7 @@ export default function CardForm({
                   <div
                     id="card-text-outer-container"
                     className={clsx(
-                      "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-sm shadow-black/50 rounded-sm",
+                      "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-md shadow-black/50 rounded-sm",
                       bgColorClass500 || "bg-neutral-500"
                     )}
                   >
@@ -269,9 +270,11 @@ export default function CardForm({
                   </div>
                 </div>
               </div>
-              <div className="absolute bottom-0 left-0 z-10">
-                <CardFormStats />
-              </div>
+              {form.initialMode.type === "agent" && (
+                <div className="absolute bottom-0 left-0 z-10">
+                  <CardFormStats />
+                </div>
+              )}
             </CardContainer>
           </div>
           <CardCreatorFooter />

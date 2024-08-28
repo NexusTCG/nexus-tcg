@@ -36,7 +36,7 @@ export default function CardFormHeader() {
       id="card-form-header-container"
       style={{ maxHeight: "68px" }}
       className={clsx(
-        "flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative",
+        "flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative shadow shadow-black/50",
         bgColorClass50 || 'bg-neutral-50'
       )}
     >

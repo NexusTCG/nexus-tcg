@@ -49,7 +49,10 @@ export default function NexusCardFormStats() {
         items-center
         w-[100px]
         bg-black
-        p-1.5
+        pl-2
+        pr-1.5
+        pb-2
+        pt-1
         mb-2
         ml-2
         gap-0.5
@@ -87,10 +90,11 @@ export default function NexusCardFormStats() {
       </div>
       <div
         id="attack-defense-container"
-        className={clsx("flex flex-row justify-center items-center w-full",
+        className={clsx("flex flex-row justify-center items-center w-full pb-1",
           {
-            "gap-1": attack > 9 && defense > 9,
-            "gap-1.5": attack < 10 && defense < 10,
+            "gap-0.5": attack > 9 && defense > 9,
+            "gap-1": attack <= 9 || defense <= 9,
+            "gap-1.5": attack <= 9 && defense <= 9,
           }
         )}
       >
