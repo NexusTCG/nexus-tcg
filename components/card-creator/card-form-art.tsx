@@ -83,21 +83,44 @@ export default function CardArtPopover() {
             className="
               w-[360px]
               h-full
-              overflow-hidden
               border-2
               z-10
               -mt-0.5
               shadow
               shadow-black/50
+              group
             "
           >
-            <Image
-              // src={cardArtUrl[0]}
-              src="/images/default-art.jpg"
-              alt={`${cardName} by ${cardCreator}`}
-              fill
-              style={{ objectFit: "cover" }}
-            />
+            <div
+              style={{ 
+                borderRadius: "0 0 20px 20px",
+                backdropFilter: "blur(2px)" 
+              }}
+              className="
+                absolute 
+                inset-0 
+                bg-black/80
+                flex 
+                items-center 
+                justify-center
+                opacity-0 
+                group-hover:opacity-100 
+                transition-opacity
+                z-20
+              "
+            >
+              <p className="text-white text-xl">Generate art</p>
+            </div>
+            <div className="w-full h-full overflow-hidden">
+              <Image
+                // src={cardArtUrl[0]}
+                src="/images/default-art.jpg"
+                alt={`${cardName} by ${cardCreator}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="group-hover:scale-105 transition-all duration-300"
+              />
+            </div>
           </div>
         </PopoverTrigger>
         <PopoverContent

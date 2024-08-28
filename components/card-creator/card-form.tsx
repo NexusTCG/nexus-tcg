@@ -53,7 +53,7 @@ export default function CardForm({
       grade: "core",
       initialMode: {
         render: null,
-        name: "Card name",
+        name: "",
         type: "agent",
         type_sub: [],
         type_super: null,

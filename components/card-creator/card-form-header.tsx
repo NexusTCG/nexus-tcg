@@ -11,6 +11,17 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 import { agentTypes, cardTypes } from "@/app/lib/data/data";
 // Types
 import { EnergyCost } from "@/app/lib/types/components"
+// Components
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 // Custom components
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
@@ -30,6 +41,14 @@ export default function CardFormHeader() {
   };
   const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
   const bgColorClass100 = calculateBgColor(energyCost, 100)[0]; 
+
+  const cardNameDefaults = [
+    "An amazing card name...", 
+    "A glorious card name...", 
+    "A fantabulous card name...",
+    "A magnificent card name...",
+    "A spectacular card name..."
+  ]
 
   return (
     <div
@@ -70,12 +89,37 @@ export default function CardFormHeader() {
           gap-1
         "
       >
-          <input
-            // TODO: Register value
-            type="text"
-            placeholder="Card name"
-            className="w-full bg-transparent text-black"
-          />
+        <FormField
+          control={control}
+          name="initialMode.name"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                <input
+                  {...field}
+                  type="text"
+                  placeholder={cardNameDefaults[Math.floor(Math.random() * cardNameDefaults.length)]}
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
+                  data-form-type="other"
+                  className="
+                    w-full 
+                    bg-transparent 
+                    text-black
+                    font-medium
+                    text-lg
+                    outline-none
+                    border-none
+                    focus:ring-0
+                    focus:outline-none
+                    caret-black
+                  "
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <div
           id="card-type-container"
           className={clsx(

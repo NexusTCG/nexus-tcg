@@ -25,7 +25,6 @@ export default function CardFormText() {
     <div
       id="card-form-text-container"
       style={{ 
-        // height: "240px", 
         fontSize: "0.85rem" 
       }}
       className={clsx(

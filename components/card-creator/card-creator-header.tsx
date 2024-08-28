@@ -22,7 +22,7 @@ export default function CardCreatorHeader({
       isValid 
     } 
   } = useFormContext();
-  const cardName = watch("intialMode.name");
+  const cardName = watch("initialMode.name");
   
   return (
     <div
