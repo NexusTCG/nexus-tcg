@@ -6,7 +6,7 @@ export function calculateBgColor(
   energyCost: EnergyCost | null, 
   shade: number = 50
 ): string[] {
-  if (!energyCost) {
+  if (!energyCost || Object.values(energyCost).every(cost => cost === 0)) {
     return [`bg-neutral-${shade}`];
   }
 
@@ -30,8 +30,6 @@ export function calculateBgColor(
   }
 
   if (nonVoidTypes.length === 2) {
-    // const [color1, color2] = nonVoidTypes.sort().map(type => energyToColorMap[type as keyof typeof energyToColorMap]);
-    // return [`bg-gradient-${color1}-${color2}-${shade}`];
     const sortedTypes = nonVoidTypes.sort((a, b) => 
       energyOrder.indexOf(a) - energyOrder.indexOf(b)
     );

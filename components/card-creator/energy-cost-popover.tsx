@@ -174,6 +174,7 @@ export default function EnergyCostPopover() {
                 absolute
                 top-0
                 left-0
+                gap-0
               "
             >
               {renderOrderedEnergyIcons()}

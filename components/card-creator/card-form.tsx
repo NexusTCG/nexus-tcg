@@ -8,6 +8,8 @@ import {
 } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 // Utils
+import clsx from "clsx"
+import { calculateBgColor } from "@/app/utils/actions/actions";
 import PostHogClient from "@/app/utils/posthog/posthog";
 // Validation
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -100,7 +102,9 @@ export default function CardForm({
 
   const posthog = PostHogClient()
   const router = useRouter()
-  const form = watch()
+
+  const energyCost = watch('initialMode.energy_cost');
+  const bgColorClass500 = calculateBgColor(energyCost, 500)[0];
 
   // TODO: Implement functionality to switch modes
   function toggleMode() {
@@ -224,9 +228,6 @@ export default function CardForm({
               bg-zinc-800
             "
           >
-            {/* Placeholder */}
-            {/* <div>{JSON.stringify(form)}</div> */}
-            {/* Placeholder */}
             <CardContainer>
               <CardFormHeader />
               <div
@@ -259,20 +260,10 @@ export default function CardForm({
                 >
                   <div
                     id="card-text-outer-container"
-                    className="
-                      flex
-                      flex-col
-                      justify-center
-                      items-center
-                      w-full
-                      h-full
-                      p-1
-                      bg-yellow-500
-                      border-2
-                      shadow-sm
-                      shadow-black/50
-                      rounded-sm
-                    "
+                    className={clsx(
+                      "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-sm shadow-black/50 rounded-sm",
+                      bgColorClass500 || "bg-neutral-500"
+                    )}
                   >
                     <CardFormText />
                   </div>

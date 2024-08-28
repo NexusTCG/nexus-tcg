@@ -11,7 +11,6 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 import { agentTypes, cardTypes } from "@/app/lib/data/data";
 // Types
 import { EnergyCost } from "@/app/lib/types/components"
-import { EnergyType } from "@/app/lib/types/components";
 // Custom components
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
@@ -35,9 +34,10 @@ export default function CardFormHeader() {
   return (
     <div
       id="card-form-header-container"
+      style={{ maxHeight: "68px" }}
       className={clsx(
         "flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative",
-        bgColorClass50
+        bgColorClass50 || 'bg-neutral-50'
       )}
     >
       <div
@@ -70,21 +70,20 @@ export default function CardFormHeader() {
           gap-1
         "
       >
-          {/* <input
+          <input
             // TODO: Register value
             type="text"
             placeholder="Card name"
             className="w-full bg-transparent text-black"
-          /> */}
-          <small className="text-black">{bgColorClass50} + {bgColorClass100}</small>
+          />
         <div
           id="card-type-container"
           className={clsx(
             "flex flex-row justify-start items-center w-full gap-1 text-md px-1 py-0.5 rounded-sm",
-            bgColorClass100
+            bgColorClass100 || 'bg-neutral-100'
           )}
         >
-          <select className="bg-transparent text-black">
+          <select className="flex-grow bg-transparent text-black">
             <option value="" disabled selected>Type</option>
             {cardTypes
               .filter((cardType) => cardType.toLowerCase() !== "anomaly")
@@ -95,7 +94,7 @@ export default function CardFormHeader() {
               ))}
           </select>
           <span className="text-xs opacity-60">•</span>
-          <select className="bg-transparent text-black" defaultValue="Subtype">
+          <select className="w-full bg-transparent text-black" defaultValue="Subtype">
             {agentTypes.map((agentType: string) => (
               <option
                 key={agentType}
