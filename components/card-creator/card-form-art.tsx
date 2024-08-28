@@ -29,7 +29,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
@@ -64,8 +63,8 @@ export default function CardArtPopover() {
   return (
     <>
       {isPopoverOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        <div // Dark overlay
+          className="fixed inset-0 bg-black bg-opacity-60 z-40"
           onClick={() => setIsPopoverOpen(false)}
         />
       )}
@@ -134,7 +133,7 @@ export default function CardArtPopover() {
             border
             border-zinc-700
             shadow-lg
-            shadow-black/40
+            shadow-black/60
             md:w-[480px]
             w-[360px]
             max-h-[480px]
@@ -143,7 +142,7 @@ export default function CardArtPopover() {
             left-1/2
             -translate-x-1/2
             bottom-full
-            mb-4
+            -mb-24
             p-0
             gap-2
           "

@@ -5,6 +5,7 @@ import React from "react"
 import { useFormContext } from 'react-hook-form';
 // Utils
 import clsx from "clsx"
+import { cn } from "@/lib/utils";
 // Actions
 import { calculateBgColor } from "@/app/utils/actions/actions";
 // Data
@@ -13,15 +14,17 @@ import { agentTypes, cardTypes } from "@/app/lib/data/data";
 import { EnergyCost } from "@/app/lib/types/components"
 // Components
 import {
-  Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 // Custom components
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
@@ -53,9 +56,9 @@ export default function CardFormHeader() {
   return (
     <div
       id="card-form-header-container"
-      style={{ maxHeight: "68px" }}
+      style={{ maxHeight: "72px" }}
       className={clsx(
-        "flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative shadow shadow-black/50",
+        "flex flex-row justify-start items-center w-full gap-1 px-1 py-2 border border-b-2 z-20 relative shadow shadow-black/50",
         bgColorClass50 || 'bg-neutral-50'
       )}
     >
@@ -71,7 +74,7 @@ export default function CardFormHeader() {
           w-[32px]
         "
       >
-        <div className="absolute top-0 left-0">
+        <div className="absolute left-0">
           <SpeedCycler />
         </div>
         <div className="absolute top-[32px] left-0">
@@ -98,7 +101,13 @@ export default function CardFormHeader() {
                 <input
                   {...field}
                   type="text"
-                  placeholder={cardNameDefaults[Math.floor(Math.random() * cardNameDefaults.length)]}
+                  placeholder={
+                    cardNameDefaults[
+                      Math.floor(
+                        Math.random() * cardNameDefaults.length
+                      )
+                    ]
+                  }
                   autoComplete="off"
                   data-1p-ignore
                   data-lpignore="true"
@@ -114,6 +123,7 @@ export default function CardFormHeader() {
                     focus:ring-0
                     focus:outline-none
                     caret-black
+                    ml-1.5
                   "
                 />
               </FormControl>
@@ -123,11 +133,11 @@ export default function CardFormHeader() {
         <div
           id="card-type-container"
           className={clsx(
-            "flex flex-row justify-start items-center w-full gap-1 text-md px-1 py-0.5 rounded-sm",
+            "flex flex-row justify-start items-center w-full text-md rounded-sm p-0.5 max-h-[30px]",
             bgColorClass100 || 'bg-neutral-100'
           )}
         >
-          <select className="flex-grow bg-transparent text-black">
+          {/* <select className="flex-grow bg-transparent text-black">
             <option value="" disabled selected>Type</option>
             {cardTypes
               .filter((cardType) => cardType.toLowerCase() !== "anomaly")
@@ -136,7 +146,37 @@ export default function CardFormHeader() {
                   {cardType}
                 </option>
               ))}
-          </select>
+          </select> */}
+          <FormField
+            control={control}
+            name="initialMode.type"
+            render={({ field }) => (
+              <FormItem className="w-full h-full">
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger 
+                      className={cn(
+                        "w-full h-full bg-transparent text-black border-none shadow-none",
+                        "focus:ring-0 focus:ring-offset-0",
+                        "text-md font-medium py-0 px-1"
+                      )}
+                    >
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {cardTypes
+                      .filter((type) => type.toLowerCase() !== "anomaly")
+                      .map((type) => (
+                        <SelectItem key={type} value={type.toLowerCase()}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
           <span className="text-xs opacity-60">•</span>
           <select className="w-full bg-transparent text-black" defaultValue="Subtype">
             {agentTypes.map((agentType: string) => (
