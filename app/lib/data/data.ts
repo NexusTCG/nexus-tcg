@@ -100,6 +100,23 @@ export const policyLinks = {
   },
 };
 
+export const energyOrder = [
+  'light', 
+  'storm', 
+  'dark', 
+  'chaos', 
+  'growth'
+];
+
+export const energyToColorMap = {
+  light: 'yellow',
+  storm: 'sky',
+  dark: 'violet',
+  chaos: 'red',
+  growth: 'lime',
+  void: 'slate'
+};
+
 export const cardTypes = [
   "Agent",
   "Anomaly",

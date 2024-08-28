@@ -59,7 +59,7 @@ export async function uploadGeneratedArt(
 
 // FETCH DATA
 
-export async function getRandomKeyword() {
+export async function fetchRandomKeyword() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 

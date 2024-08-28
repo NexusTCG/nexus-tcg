@@ -27,8 +27,6 @@ import CardContainer from "@/components/card-creator/card-container";
 import CardFormHeader from "@/components/card-creator/card-form-header";
 import CardFormStats from "@/components/card-creator/card-form-stats";
 
-const currentCardEnergy = "light" // TODO: Dynamically determine based on energy_cost
-
 type CardFormProps = {
   currentUserId?: string | null;
   userProfile?: ProfileDTO | null;
@@ -39,6 +37,7 @@ export default function CardForm({
   userProfile
 }: CardFormProps) {
   // Move to child client component
+  // cardForm should be a server component
   const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial');
 
   const methods = useForm({
@@ -226,10 +225,10 @@ export default function CardForm({
             "
           >
             {/* Placeholder */}
-            <div>{JSON.stringify(form)}</div>
+            {/* <div>{JSON.stringify(form)}</div> */}
             {/* Placeholder */}
             <CardContainer>
-              <CardFormHeader energy={currentCardEnergy} />
+              <CardFormHeader />
               <div
                 id="card-content-container"
                 className="

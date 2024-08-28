@@ -1,24 +1,61 @@
+"use client"
+
+// Hooks
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+// Types
+import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
 import CardFormFooter from "@/components/card-creator/card-form-footer";
-import CardFormStats from "@/components/card-creator/card-form-stats";
 
 type CardContainerProps = {
   children: React.ReactNode;
-  // Add form or render prop
-  // Add size prop
-  // Add energy type prop
-  // Add card type prop
 };
 
-// TODO: Add form or render prop
-// TODO: Add size prop
-// TODO: Logic to change energy type
-// TODO: Logic to change card type
-
-export default function CardContainer({ 
+export default function CardContainer({
   children 
 }: CardContainerProps) {
+  const { watch } = useFormContext();
+  const energyCost: EnergyCost = watch('initialMode.energy_cost');
+
+  function getCardFrameImage() {
+    const activeTypes = Object.entries(energyCost)
+      .filter(([type, value]) => value > 0)
+      .map(([type]) => type);
+
+    if (activeTypes.length === 0) {
+      return 'default.jpg';
+    }
+
+    const nonVoidTypes = activeTypes
+      .filter(type => type !== 'void');
+
+    if (nonVoidTypes.length === 0) {
+      return 'void.jpg';
+    }
+
+    if (nonVoidTypes.length === 1) {
+      return `${nonVoidTypes[0]}.jpg`;
+    }
+
+    if (nonVoidTypes.length === 2) {
+      return `${nonVoidTypes.sort().join('-')}.jpg`;
+    }
+
+    if (nonVoidTypes.length >= 3 || 
+      (
+        nonVoidTypes.length === 2 && 
+        activeTypes.includes('void')
+      )
+    ) {
+      return 'multi.jpg';
+    }
+    return 'default.jpg';
+  }
+
+  const cardFrame = getCardFrameImage();
+  const cardFrameUrl = `/images/card-frames/${cardFrame}`;
+
   return (
     <div
       id="nexus-card-container"
@@ -47,9 +84,13 @@ export default function CardContainer({
           h-full
           w-full
           rounded-md
-          bg-yellow-500
           overflow-hidden
         "
+        style={{
+          backgroundImage: `url(${cardFrameUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
       >
         {children}
       </div>

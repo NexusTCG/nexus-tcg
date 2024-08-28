@@ -5,35 +5,39 @@ import React from "react"
 import { useFormContext } from 'react-hook-form';
 // Utils
 import clsx from "clsx"
+// Actions
+import { calculateBgColor } from "@/app/utils/actions/actions";
 // Data
 import { agentTypes, cardTypes } from "@/app/lib/data/data";
-// Validation
+// Types
+import { EnergyCost } from "@/app/lib/types/components"
 import { EnergyType } from "@/app/lib/types/components";
 // Custom components
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
 
-type CardFormHeaderProps = {
-  energy: EnergyType
-}
-
-export default function CardFormHeader({ 
-  energy 
-}: CardFormHeaderProps) {
-  const { watch, setValue } = useFormContext();
+export default function CardFormHeader() {
+  const { 
+    control, 
+    watch,
+  } = useFormContext();
+  const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
+    light: 0,
+    storm: 0,
+    dark: 0,
+    chaos: 0,
+    growth: 0,
+    void: 0,
+  };
+  const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
+  const bgColorClass100 = calculateBgColor(energyCost, 100)[0]; 
 
   return (
     <div
       id="card-form-header-container"
-      className={clsx("flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative",
-        {
-          "bg-yellow-50": energy === "light",
-          "bg-sky-50": energy === "storm",
-          "bg-violet-50": energy === "dark",
-          "bg-red-50": energy === "chaos",
-          "bg-lime-50": energy === "growth",
-          "bg-slate-50": energy.includes("void"),
-        }
+      className={clsx(
+        "flex flex-row justify-start items-center w-full gap-2 p-1 border border-b-2 z-20 relative",
+        bgColorClass50
       )}
     >
       <div
@@ -66,28 +70,18 @@ export default function CardFormHeader({
           gap-1
         "
       >
-        <div
-          id="card-name"
-          className="font-medium"
-        >
-          <input
+          {/* <input
             // TODO: Register value
             type="text"
             placeholder="Card name"
-            className="bg-transparent text-black"
-          />
-        </div>
+            className="w-full bg-transparent text-black"
+          /> */}
+          <small className="text-black">{bgColorClass50} + {bgColorClass100}</small>
         <div
           id="card-type-container"
-          className={clsx("flex flex-row justify-start items-center w-full gap-1 text-md px-1 py-0.5 rounded-sm",
-            {
-              "bg-yellow-100": energy === "light",
-              "bg-sky-100": energy === "storm",
-              "bg-violet-100": energy === "dark",
-              "bg-red-100": energy === "chaos",
-              "bg-lime-100": energy === "growth",
-              "bg-slate-100": energy.includes("void"),
-            }
+          className={clsx(
+            "flex flex-row justify-start items-center w-full gap-1 text-md px-1 py-0.5 rounded-sm",
+            bgColorClass100
           )}
         >
           <select className="bg-transparent text-black">

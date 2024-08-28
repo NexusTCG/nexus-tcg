@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
 export default function EnergyCostPopover() {
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, trigger } = useFormContext();
   const energyCosts = watch('initialMode.energy_cost') || {};
   const energyTypes: EnergyType[] = [
     'light', 
@@ -72,11 +72,11 @@ export default function EnergyCostPopover() {
   function renderOrderedEnergyIcons() {
     const orderedTypes: EnergyType[] = [
       'void', 
-      'growth', 
-      'chaos', 
-      'dark', 
-      'storm', 
-      'light'
+      'light',
+      'storm',
+      'dark',
+      'chaos',
+      'growth',
     ];
     
     return orderedTypes.map(type => {
@@ -126,7 +126,10 @@ export default function EnergyCostPopover() {
             ? "X" 
             : newValue}!`
           );
+      
       setValue(`initialMode.energy_cost.${type}`, newValue);
+      trigger("initialMode.energy_cost") // Remove?
+      console.log("New energy cost: ", energyCosts)
     }
   }
 
