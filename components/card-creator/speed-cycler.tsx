@@ -17,6 +17,7 @@ import SpeedIcon from "@/components/card-creator/speed-icon";
 export default function SpeedCycler() {
   const { watch, setValue } = useFormContext();
   const speed = watch('initialMode.speed');
+  const activeMode = watch("activeMode")
 
   function cycleSpeed(
     e: React.MouseEvent
@@ -27,17 +28,25 @@ export default function SpeedCycler() {
     setValue('initialMode.speed', nextSpeed);
     toast(`Speed changed to ${nextSpeed}!`);
   };
-
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger onClick={cycleSpeed}>
-          <SpeedIcon type={speed} />
-        </TooltipTrigger>
-        <TooltipContent side="left">
-          <p>Change to speed {speed === 3 ? 1 : speed + 1}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <>
+      {activeMode !== "anomaly" ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              onClick={cycleSpeed}
+              disabled={activeMode === "anomaly"}
+            >
+              <SpeedIcon type={speed} />
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>Change to speed {speed === 3 ? 1 : speed + 1}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <SpeedIcon type={speed} />
+      )}
+    </>
   );
 }

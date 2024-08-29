@@ -278,8 +278,8 @@ export default function CardForm({
                     animate={activeMode === mode ? "active" : "inactive"}
                     onClick={() => activeMode !== mode ? toggleMode() : null}
                     className={clsx(
-                      "absolute inset-0 flex justify-center items-center cursor-pointer",
-                      { "card-hover-effect": activeMode !== mode }
+                      "absolute inset-0 flex justify-center items-center",
+                      { "card-hover-effect cursor-pointer": activeMode !== mode }
                     )}
                   >
                     {activeMode === mode ? (

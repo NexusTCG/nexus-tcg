@@ -16,30 +16,17 @@ import CardFormStats from "@/components/card-creator/card-form-stats";
 
 export default function CardFormInitial() {
   const { watch } = useFormContext();
-  const form = watch()
-
-  const energyCost = form.initialMode.energy_cost;
+  const activeType = watch("initialMode.type")
+  const activeMode = watch("activeMode")
+  const energyCost = watch("form.initialMode.energy_cost");
   const bgColorClass500 = calculateBgColor(energyCost, 500)[0];
 
   return (
     <CardContainer>
       <CardFormHeader  />
-      <div
-        id="card-content-container"
-        className="
-          flex
-          flex-col
-          justify-center
-          items-center
-          w-full
-          h-full
-          px-2
-          border-x
-        "
-      >
-        <CardFormArt />
+      {activeMode !== "anomaly" ? (
         <div
-          id="card-text-outer-container"
+          id="card-content-container"
           className="
             flex
             flex-col
@@ -47,23 +34,40 @@ export default function CardFormInitial() {
             items-center
             w-full
             h-full
-            p-2
-            pb-3
-            -mt-4
+            px-2
+            border-x
           "
         >
+          <CardFormArt />
           <div
             id="card-text-outer-container"
-            className={clsx(
-              "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-md shadow-black/50 rounded-sm",
-              bgColorClass500 || "bg-neutral-500"
-            )}
+            className="
+              flex
+              flex-col
+              justify-center
+              items-center
+              w-full
+              h-full
+              p-2
+              pb-3
+              -mt-4
+            "
           >
-            <CardFormText />
+            <div
+              id="card-text-outer-container"
+              className={clsx(
+                "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-md shadow-black/50 rounded-sm",
+                bgColorClass500 || "bg-neutral-500"
+              )}
+            >
+              <CardFormText />
+            </div>
           </div>
         </div>
-      </div>
-      {form.initialMode.type === "agent" && (
+      ) : (
+        null
+      )}
+      {activeType === "agent" && (
         <div className="absolute bottom-0 left-0 z-10">
           <CardFormStats />
         </div>

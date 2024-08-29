@@ -29,6 +29,7 @@ import {
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
 import SpeedCycler from "@/components/card-creator/speed-cycler";
 
+const CARD_NAME_MAX_LENGTH = 20;
 const cardNameDefaults = [
   "An amazing card name...", 
   "A glorious card name...", 
@@ -39,7 +40,14 @@ const cardNameDefaults = [
 
 export default function CardFormHeader() {
   const [isTypeSubOpen, setIsTypeSubOpen] = useState(false);
-  const { control, watch } = useFormContext();
+  const { 
+    control, 
+    watch, 
+    formState: { 
+      isSubmitting
+  }} = useFormContext();
+  const activeMode = watch("activeMode");
+  const cardName = watch("initialMode.name")
   const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
     light: 0,
     storm: 0,
@@ -48,7 +56,6 @@ export default function CardFormHeader() {
     growth: 0,
     void: 0,
   };
-  const type = watch('initialMode.type');
   const randomCardNamePlaceholder = useMemo(() => {
     return cardNameDefaults[Math.floor(Math.random() * cardNameDefaults.length)];
   }, []);
@@ -95,38 +102,44 @@ export default function CardFormHeader() {
           gap-1
         "
       >
-        <FormField
-          control={control}
-          name="initialMode.name"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <input
-                  {...field}
-                  type="text"
-                  placeholder={randomCardNamePlaceholder}
-                  autoComplete="off"
-                  data-1p-ignore
-                  data-lpignore="true"
-                  data-form-type="other"
-                  className="
-                    w-full 
-                    bg-transparent 
-                    text-black
-                    font-medium
-                    text-lg
-                    outline-none
-                    border-none
-                    focus:ring-0
-                    focus:outline-none
-                    caret-black
-                    ml-1.5
-                  "
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        {activeMode !== "anomaly" ? (
+          <FormField
+            control={control}
+            name="initialMode.name"
+            render={({ field }) => (
+              <FormItem className="w-full" >
+                <FormControl>
+                  <input
+                    {...field}
+                    type="text"
+                    disabled={isSubmitting}
+                    placeholder={randomCardNamePlaceholder}
+                    autoComplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-form-type="other"
+                    maxLength={CARD_NAME_MAX_LENGTH}
+                    className="
+                      w-full 
+                      bg-transparent 
+                      text-black
+                      font-medium
+                      text-lg
+                      outline-none
+                      border-none
+                      focus:ring-0
+                      focus:outline-none
+                      caret-black
+                      ml-1.5
+                    "
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        ) : (
+          <p className="text-black font-medium text-lg hover:cursor-pointer">{cardName !== "" || null ? cardName : "Card name"}</p>
+        )}
         <div
           id="card-type-container"
           className={clsx(
@@ -214,16 +227,6 @@ export default function CardFormHeader() {
               );
             }}
           />
-          {/* <select className="w-full bg-transparent text-black" defaultValue="Subtype">
-            {agentTypes.map((agentType: string) => (
-              <option
-                key={agentType}
-                value={agentType.toLowerCase()}
-              >
-                {agentType}
-              </option>
-            ))}
-          </select> */}
         </div>
       </div>
     </div>
