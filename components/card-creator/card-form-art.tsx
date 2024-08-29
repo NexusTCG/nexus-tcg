@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useFormContext } from 'react-hook-form';
+import { useOverlay } from "@/app/utils/context/OverlayContext";
 // Utils
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -36,6 +37,7 @@ const MAX_PROMPT_LENGTH = 280;
 
 export default function CardArtPopover() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: any }>({});
+  const { showOverlay, hideOverlay } = useOverlay();
   const { watch, control } = useFormContext();
   const form = watch()
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
@@ -52,7 +54,7 @@ export default function CardArtPopover() {
   }
 
   return (
-    <Popover>
+    <Popover onOpenChange={(open) => open ? showOverlay() : hideOverlay()}>
       <PopoverTrigger>
         <div
           id="card-art-container"
