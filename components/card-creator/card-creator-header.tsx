@@ -3,18 +3,10 @@
 // Hooks
 import React from "react";
 import { useFormContext } from 'react-hook-form';
-// Utils
-import clsx from "clsx"
 // Components
 import { Button } from "@/components/ui/button";
 
-type CardCreatorHeaderProps = {
-  activeMode: "initial" | "anomaly";
-}
-
-export default function CardCreatorHeader({
-  activeMode
-}: CardCreatorHeaderProps) {
+export default function CardCreatorHeader() {
   const { 
     watch, 
     formState: { 
@@ -22,6 +14,7 @@ export default function CardCreatorHeader({
       isValid 
     } 
   } = useFormContext();
+  const activeMode = watch("activeMode")
   const cardName = watch("initialMode.name");
   
   return (

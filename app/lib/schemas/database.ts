@@ -44,6 +44,7 @@ export const CardTypeSchema = z
     updated_at: z.string().nullable().optional(),
     username: z.string().min(1, { message: "Username is required." }).default("Username"),
     grade: z.string().default("core"),
+    activeMode: z.string().default("initial"),
     initialMode: z.object({
       render: z.string().nullable(),
       name: z.string().min(1, { message: "Card name is required." }).default("Card name"),
