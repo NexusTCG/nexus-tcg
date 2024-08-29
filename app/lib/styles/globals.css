@@ -75,6 +75,23 @@
   }
 }
 
+.card-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+  animation: subtleBounce 1s ease-in-out infinite;
+}
+
+@keyframes subtleBounce {
+  0%, 100% {
+    transform: scale(0.9) translateY(-4px);
+  }
+  50% {
+    transform: scale(0.9) translateY(0);
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
