@@ -4,8 +4,7 @@
 import React from "react"
 import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from "next/navigation";
-import { OverlayProvider } from "@/app/utils/context/OverlayContext"
-import Overlay from "@/components/overlay"
+import { useMode } from "@/app/utils/context/CardFormModeContext"
 // Utils
 import clsx from "clsx"
 import { motion, AnimatePresence } from "framer-motion"
@@ -38,6 +37,11 @@ export default function CardForm({
   currentUserId,
   userProfile
 }: CardFormProps) {
+  const posthog = PostHogClient()
+  const router = useRouter()
+  
+  const { mode, setMode } = useMode();
+
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
     defaultValues: {
@@ -46,7 +50,6 @@ export default function CardForm({
       updated_at: null,
       username: userProfile?.username || "Username",
       grade: "core",
-      activeMode: "initial",
       initialMode: {
         render: null,
         name: "",
@@ -75,7 +78,7 @@ export default function CardForm({
       },
       anomalyMode: {
         render: null,
-        name: "Common Anomaly",
+        name: "",
         mythic: false,
         uncommon: false,
         text: [],
@@ -88,7 +91,6 @@ export default function CardForm({
   });
 
   const { 
-    watch,
     trigger,
     setValue,
     handleSubmit,
@@ -96,10 +98,6 @@ export default function CardForm({
       errors 
     }
   } = methods;
-
-  const posthog = PostHogClient()
-  const router = useRouter()
-  const activeMode = watch("activeMode")
 
   const cardVariants = {
     active: { 
@@ -126,20 +124,12 @@ export default function CardForm({
   };
 
   function toggleMode() {
-    toast(
-      activeMode === "initial" 
-        ? "Editing anomaly mode!" 
-        : "Editing initial mode!"
-      )
-    if (activeMode  === 'initial') {
-      setValue("activeMode", "anomaly");
-      trigger("activeMode")
-      return;
-    } else if (activeMode  === 'anomaly') {
+    const newMode = mode === 'initial' ? 'anomaly' : 'initial';
+    toast(`Editing ${newMode} mode!`);
+    setMode(newMode);
+    
+    if (newMode === 'initial') {
       setValue('initialMode.type', 'agent');
-      setValue("activeMode", "initial");
-      trigger("activeMode")
-      return;
     }
   };
 
@@ -223,92 +213,96 @@ export default function CardForm({
   };
 
   return (
-    <OverlayProvider>
-      <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="w-full h-full flex flex-col"
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        className="w-full h-full flex flex-col"
+      >
+        <div 
+          id="card-creator-container" 
+          className="
+            flex 
+            flex-col 
+            justify-start 
+            items-center 
+            w-full 
+            h-full
+            min-h-[calc(100vh-10rem)]
+            border 
+            border-zinc-700 
+            rounded-sm 
+            overflow-hidden
+          "
         >
+          <CardCreatorHeader />
           <div 
-            id="card-creator-container" 
+            id="card-creator-content" 
             className="
               flex 
               flex-col 
-              justify-start 
+              justify-center 
               items-center 
               w-full 
-              h-full
-              min-h-[calc(100vh-10rem)]
-              border 
-              border-zinc-700 
-              rounded-sm 
-              overflow-hidden
+              flex-grow
+              py-8 
+              bg-zinc-800
+              relative
+              pb-36
             "
           >
-            <CardCreatorHeader />
-            <div 
-              id="card-creator-content" 
+            <div
+              id="card-frames-wrapper"
               className="
                 flex 
-                flex-col 
                 justify-center 
-                items-center 
+                items-center
                 w-full 
-                flex-grow
-                py-8 
-                bg-zinc-800
-                relative
-                pb-36
+                h-full 
+                relative 
               "
             >
-              <div
-                id="card-frames-wrapper"
-                className="
-                  flex 
-                  justify-center 
-                  items-center
-                  w-full 
-                  h-full 
-                  relative 
-                "
-              >
-                <AnimatePresence initial={false}>
-                  {["anomaly", "initial"].map((mode) => (
-                    <motion.div
-                      key={mode}
-                      variants={cardVariants}
-                      initial="inactive"
-                      animate={activeMode === mode ? "active" : "inactive"}
-                      onClick={() => activeMode !== mode ? toggleMode() : null}
-                      className={clsx(
-                        "absolute inset-0 flex justify-center items-center",
-                        { "card-hover-effect cursor-pointer": activeMode !== mode }
-                      )}
-                    >
-                      {activeMode === mode ? (
-                        mode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />
-                      ) : (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger className="w-full h-full flex justify-center items-center">
-                              {mode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />}
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <p>Edit {mode} mode</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
+              <AnimatePresence initial={false}>
+                {["anomaly", "initial"].map((cardMode) => (
+                  <motion.div
+                    key={cardMode}
+                    variants={cardVariants}
+                    initial="inactive"
+                    animate={mode === cardMode ? "active" : "inactive"}
+                    onClick={() => mode !== cardMode ? toggleMode() : null}
+                    className={clsx(
+                      "absolute inset-0 flex justify-center items-center",
+                      { "card-hover-effect cursor-pointer": mode !== cardMode }
+                    )}
+                  >
+                    {mode === cardMode ? (
+                      cardMode === "anomaly" 
+                        ? <CardFormAnomaly /> 
+                        : <CardFormInitial />
+                    ) : (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div 
+                              onClick={() => mode !== cardMode ? toggleMode() : null}
+                              className="w-full h-full flex justify-center items-center cursor-pointer"
+                            >
+                              {cardMode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />}
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p>Edit {cardMode} mode</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
-            <CardCreatorFooter />
           </div>
-        </form>
-      </FormProvider>
-      <Overlay />
-    </OverlayProvider>
+          <CardCreatorFooter />
+        </div>
+      </form>
+    </FormProvider>
   )
 }

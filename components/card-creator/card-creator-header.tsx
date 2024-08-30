@@ -3,10 +3,12 @@
 // Hooks
 import React from "react";
 import { useFormContext } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Components
 import { Button } from "@/components/ui/button";
 
 export default function CardCreatorHeader() {
+  const { mode } = useMode();
   const { 
     watch, 
     formState: { 
@@ -14,7 +16,6 @@ export default function CardCreatorHeader() {
       isValid 
     } 
   } = useFormContext();
-  const activeMode = watch("activeMode")
   const cardName = watch("initialMode.name");
   
   return (
@@ -44,7 +45,7 @@ export default function CardCreatorHeader() {
         "
       >
         <h2 className="font-medium">{cardName ? cardName : "Card name"}</h2>
-        <small className="opacity-50 text-xs">{activeMode.toUpperCase()}</small>
+        <small className="opacity-50 text-xs">{mode.toUpperCase()}</small>
       </div>
       <Button
         type="submit"

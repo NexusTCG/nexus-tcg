@@ -3,6 +3,7 @@
 // Hooks
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Types
 import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
@@ -15,10 +16,15 @@ type CardContainerProps = {
 export default function CardContainer({
   children 
 }: CardContainerProps) {
+  const { mode } = useMode();
   const { watch } = useFormContext();
   const energyCost: EnergyCost = watch('initialMode.energy_cost');
 
   function getCardFrameImage() {
+    if (mode === "anomaly") {
+      return "anomaly.jpg"
+    }
+
     const activeTypes = Object.entries(energyCost)
       .filter(([type, value]) => value > 0)
       .map(([type]) => type);

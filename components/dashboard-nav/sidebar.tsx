@@ -29,8 +29,6 @@ import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu"
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
 
-const userName = "John"; // Replace with fetched dynamic data
-
 export default function Sidebar({ 
   currentUserId,
   userProfile,

@@ -3,6 +3,7 @@
 // Hooks
 import React, { useState, useMemo } from "react"
 import { useFormContext, Controller } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 import { cn } from "@/lib/utils";
@@ -40,13 +41,13 @@ const cardNameDefaults = [
 
 export default function CardFormHeader() {
   const [isTypeSubOpen, setIsTypeSubOpen] = useState(false);
+  const { mode } = useMode();
   const { 
     control, 
     watch, 
     formState: { 
       isSubmitting
   }} = useFormContext();
-  const activeMode = watch("activeMode");
   const cardName = watch("initialMode.name")
   const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
     light: 0,
@@ -102,7 +103,41 @@ export default function CardFormHeader() {
           gap-1
         "
       >
-        {activeMode !== "anomaly" ? (
+        <FormField
+          control={control}
+          name={mode === "initial" ? "initialMode.name" : "anomalyMode.name"}
+          render={({ field }) => (
+            <FormItem className="w-full" >
+              <FormControl>
+                <input
+                  {...field}
+                  type="text"
+                  disabled={isSubmitting}
+                  placeholder={mode === "initial" ? randomCardNamePlaceholder : "Common anomaly"}
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
+                  data-form-type="other"
+                  maxLength={CARD_NAME_MAX_LENGTH}
+                  className="
+                    w-full 
+                    bg-transparent 
+                    text-black
+                    font-medium
+                    text-lg
+                    outline-none
+                    border-none
+                    focus:ring-0
+                    focus:outline-none
+                    caret-black
+                    ml-1.5
+                  "
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {/* {activeMode !== "anomaly" ? (
           <FormField
             control={control}
             name="initialMode.name"
@@ -139,7 +174,7 @@ export default function CardFormHeader() {
           />
         ) : (
           <p className="text-black font-medium text-lg hover:cursor-pointer">{cardName !== "" || null ? cardName : "Card name"}</p>
-        )}
+        )} */}
         <div
           id="card-type-container"
           className={clsx(
@@ -188,17 +223,16 @@ export default function CardFormHeader() {
               const typeSub = Array.isArray(field.value) ? field.value : [];
               return (
                 <FormItem className="flex-grow h-full relative">
-                  <button
-                    type="button"
+                  <div
                     onClick={() => setIsTypeSubOpen(!isTypeSubOpen)}
                     className={cn(
-                      "w-full h-full bg-transparent text-black border-none shadow-none",
+                      "w-full h-full bg-transparent cursor-pointer text-black border-none shadow-none",
                       "focus:ring-0 focus:ring-offset-0",
                       "text-md font-medium py-0 px-1 text-left"
                     )}
                   >
                     {typeSub.length > 0 ? typeSub.join(' ') : "Select agent types"}
-                  </button>
+                  </div>
                   {isTypeSubOpen && (
                     <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
                       {agentTypes.map((agentType) => (

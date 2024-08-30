@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 // Icons
@@ -22,18 +24,30 @@ export default function Banner({
   message,
   cta,
 }: BannerProps) {
+  const [showBanner, setShowBanner] = useState<boolean>(true)
+  useEffect(() => {
+    if (!autoExpire) return;
+    
+    const timer = setTimeout(() => {
+      setShowBanner(false);
+    }, 5000);
 
-  // TODO: Implement auto-expire functionality
+    return () => clearTimeout(timer);
+  }, [autoExpire]);
 
   return (
     <div
       id="banner-container"
-      className={clsx("flex flex-row justify-between items-center w-full gap-2 p-2 rounded-sm border",
+      className={clsx("flex-row justify-between items-center w-full gap-2 p-2 rounded-sm border",
         {
           "bg-blue-700/10 hover:bg-blue-700/5 border-blue-500/20 hover:border-blue-500/20 text-blue-500 hover:text-blue-600": type === "info",
           "bg-yellow-700/10 hover:bg-yellow-700/5 border-yellow-500/20 hover:border-yellow-500/20 text-yellow-500 hover:text-yellow-600": type === "warning",
           "bg-red-700/10 hover:bg-red-700/5 border-red-500/20 hover:border-red-500/20 text-red-500 hover:text-red-600": type === "error",
           "bg-green-700/10 hover:bg-green-700/5 border-green-500/20 hover:border-green-500/20 text-green-500 hover:text-green-600": type === "success",
+        },
+        {
+          "hidden": !showBanner,
+          "flex": showBanner,
         }
       )}
     >

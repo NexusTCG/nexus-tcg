@@ -26,7 +26,7 @@ export default function EnergyIcon({
   }
 
   return (
-    <div className={`relative w-[${size}px] h-[${size}px] -mb-0.5`}>
+    <div className={`relative w-[${size}px] h-[${size}px] -mb-1`}>
       <Image
         src={IconComponent}
         alt={`${type}${value !== undefined ? ` ${value}` : ''} energy icon`}

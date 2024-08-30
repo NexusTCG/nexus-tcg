@@ -42,7 +42,10 @@ export default function CardArtPopover() {
   const form = watch()
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
 
-  function handleOptionClick(category: string, option: string) {
+  function handleOptionClick(
+    category: string, 
+    option: string
+  ) {
     setSelectedOptions(prev => ({
       ...prev,
       [category]: prev[category] === option ? null : option

@@ -189,7 +189,7 @@ export default function EnergyCostPopover() {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent side="right" align="start" className="w-[400px] p-4 shadow-lg shadow-black/60">
+          <PopoverContent side="right" align="start" className="w-[360px] p-2 shadow-lg shadow-black/60">
             <div
               id="cost-popover-container"
               className="
@@ -197,7 +197,7 @@ export default function EnergyCostPopover() {
                 flex-col
                 justify-start
                 items-center
-                gap-4
+                gap-2
                 w-full
               "
             >
@@ -212,7 +212,7 @@ export default function EnergyCostPopover() {
                   align-baseline
                 "
               >
-                <h3 className="font-semibold">Select energy cost</h3>
+                <h4 className="font-medium">Select energy cost</h4>
                 <p>
                   <span className="font-bold">
                     {calculateTotalCost(energyCosts)}
@@ -240,12 +240,12 @@ export default function EnergyCostPopover() {
                   >
                     <EnergyIcon type={type} value={type === 'void' ? (energyCosts[type] || 0) : undefined} />
                     <div
+                      id="increment-decrement-container"
                       className="
                         flex
                         flex-row
                         items-center
                         justify-center
-                        gap-1
                       "
                     >
                       <Button 
@@ -254,7 +254,7 @@ export default function EnergyCostPopover() {
                         variant="ghost" 
                         onClick={(e) => updateEnergyCost(type, -1, e)}
                         disabled={type === 'void' ? energyCosts[type] === -1 : energyCosts[type] === 0}
-                        className={clsx("h-8 w-8 text-2xl font-semibold opacity-40 hover:opacity-100 transition-all hover:border",
+                        className={clsx("w-8 h-8 text-2xl font-medium opacity-40 hover:opacity-100 transition-all hover:border",
                           {
                             'hover:bg-yellow-900 border-yellow-800': type === 'light',
                             'hover:bg-sky-900 border-sky-800': type === 'storm',
@@ -289,7 +289,7 @@ export default function EnergyCostPopover() {
                             calculateTotalEnergy(energyCosts) >= 5
                           ))
                         }
-                        className={clsx("h-8 w-8 text-2xl font-semibold opacity-40 hover:opacity-100 transition-all hover:border",
+                        className={clsx("w-8 h-8 text-2xl font-medium opacity-40 hover:opacity-100 transition-all hover:border",
                           {
                             'hover:bg-yellow-900 border-yellow-800': type === 'light',
                             'hover:bg-sky-900 border-sky-800': type === 'storm',

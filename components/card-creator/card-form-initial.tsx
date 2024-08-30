@@ -3,6 +3,7 @@
 // Hooks
 import React from "react"
 import { useFormContext } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 // Actions
@@ -16,15 +17,17 @@ import CardFormStats from "@/components/card-creator/card-form-stats";
 
 export default function CardFormInitial() {
   const { watch } = useFormContext();
-  const activeType = watch("initialMode.type")
-  const activeMode = watch("activeMode")
+  const { mode } = useMode();
+
+  const activeType = watch("initialMode.type");
   const energyCost = watch("form.initialMode.energy_cost");
+
   const bgColorClass500 = calculateBgColor(energyCost, 500)[0];
 
   return (
     <CardContainer>
-      <CardFormHeader  />
-      {activeMode !== "anomaly" ? (
+      <CardFormHeader />
+      {mode === "initial" ? (
         <div
           id="card-content-container"
           className="

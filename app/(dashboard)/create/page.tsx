@@ -6,7 +6,7 @@ import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // import { Input } from "@/components/ui/input";
 // Custom components
 import Banner from "@/components/banner";
-import CardForm from "@/components/card-creator/card-form";
+import CardFormWrapper from "@/components/card-creator/card-form-wrapper";
 
 export default async function Create() {
   let currentUserId = null;
@@ -50,7 +50,7 @@ export default async function Create() {
           type="warning"
           autoExpire={true}
         />
-        <CardForm
+        <CardFormWrapper
           currentUserId={currentUserId}
           userProfile={userProfile}
         />
