@@ -20,3 +20,7 @@ export function useClickAway(handler: () => void) {
 
   return ref;
 }
+
+export function useEnergyCost() {
+  // Move card form energy cost logic here
+}

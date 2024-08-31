@@ -60,7 +60,7 @@ export default function CardFormInitial() {
               bgColorClass500 || "bg-neutral-500"
             )}
           >
-            <CardFormText />
+            <CardFormText activeMode="initial" />
           </div>
         </div>
       </div>

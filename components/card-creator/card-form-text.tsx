@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useFormContext } from 'react-hook-form';
-import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 import { calculateBgColor } from "@/app/utils/actions/actions";
@@ -17,13 +16,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function CardFormText() {
-  const { mode } = useMode();
+type CardFormHeaderProps = {
+  activeMode: "initial" | "anomaly"
+}
+
+export default function CardFormText({
+  activeMode
+}: CardFormHeaderProps) {
 
   const { watch, setValue } = useFormContext();
   const energyCost = watch('initialMode.energy_cost');
   
-  const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
+  const bgColorClass50 = activeMode === "anomaly" ? null : calculateBgColor(energyCost, 50)[0];
 
   return (
     <div
@@ -33,10 +37,10 @@ export default function CardFormText() {
       }}
       className={clsx(
         "flex flex-col justify-start items-star w-full h-full gap-2 p-2 text-black border border-b-2",
-        bgColorClass50 || "bg-neutral-50"
+        bgColorClass50 || "bg-neutral-50",
       )}
     >
-      {mode === "initial" ? (
+      {activeMode === "initial" ? (
         <Select>
           <SelectTrigger className="w-full rounded-sm text-white">
             <SelectValue placeholder="Card effect" />
@@ -56,7 +60,26 @@ export default function CardFormText() {
           </SelectContent>
         </Select>
       ) : (
-        <p>Anomaly mode text options</p>
+        // TODO: Register in form
+        <Textarea
+          placeholder="Some card text..."
+          className="
+            w-full
+            h-full 
+            p-0 
+            text-bd
+            text-black 
+            rounded-none
+            bg-transparent 
+            resize-none 
+            border-none
+            focus:bg-black/5
+            focus:border-none
+            focus-outline-none
+            focus-visible:ring-0 
+            focus-visible:ring-offset-0
+          "
+        />
       )}
     </div>
   )

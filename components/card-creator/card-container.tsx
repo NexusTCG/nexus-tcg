@@ -18,6 +18,7 @@ export default function CardContainer({
 }: CardContainerProps) {
   const { mode } = useMode();
   const { watch } = useFormContext();
+  const username = watch("username")
   const energyCost: EnergyCost = watch('initialMode.energy_cost');
 
   function getCardFrameImage() {
@@ -101,7 +102,7 @@ export default function CardContainer({
         {children}
       </div>
       <div className="w-full z-10">
-        <CardFormFooter />
+        <CardFormFooter username={username} />
       </div>
     </div>
   )

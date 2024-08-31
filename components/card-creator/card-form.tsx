@@ -6,7 +6,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 import { useMode } from "@/app/utils/context/CardFormModeContext"
 // Utils
-import clsx from "clsx"
 import { motion, AnimatePresence } from "framer-motion"
 import PostHogClient from "@/app/utils/posthog/posthog";
 // Validation

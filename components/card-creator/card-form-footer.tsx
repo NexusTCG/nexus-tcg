@@ -1,15 +1,16 @@
 "use client"
 
-// Hooks
 import React from "react";
-import { useFormContext } from 'react-hook-form';
-// Icons
 import { MdDesignServices } from "react-icons/md";
 
-export default function CardFormFooter() {
-  const { watch } = useFormContext();
-  const username = watch("username")
+type CardFormFooterProps = {
+  username: string;
+};
 
+const CardFormFooter = React.memo(
+  function CardFormFooter({ 
+    username 
+  }: CardFormFooterProps) {
   return (
     <div
       id="card-footer-container"
@@ -58,5 +59,7 @@ export default function CardFormFooter() {
         {/* Filler to center card creator */}
       </span>
     </div>
-  )
-}
+  );
+});
+
+export default CardFormFooter;

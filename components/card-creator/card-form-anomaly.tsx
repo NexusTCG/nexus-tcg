@@ -58,7 +58,7 @@ export default function CardFormAnomaly() {
                 bgColorClass500 || "bg-neutral-500"
               )}
             >
-              <CardFormText />
+              <CardFormText activeMode="anomaly" />
             </div>
           </div>
         </div>

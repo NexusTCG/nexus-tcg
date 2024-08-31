@@ -3,7 +3,6 @@
 // Hooks
 import React, { useState, useMemo } from "react"
 import { useFormContext, Controller } from 'react-hook-form';
-import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 import { cn } from "@/lib/utils";
@@ -47,14 +46,13 @@ export default function CardFormHeader({
   activeMode
 }: CardFormHeaderProps) {
   const [isTypeSubOpen, setIsTypeSubOpen] = useState(false);
-  const { mode } = useMode();
   const { 
     control, 
     watch, 
     formState: { 
       isSubmitting
   }} = useFormContext();
-  const cardName = watch("initialMode.name")
+
   const isUncommon = watch("anomalyMode.uncommon")
   const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
     light: 0,
@@ -68,8 +66,8 @@ export default function CardFormHeader({
     return cardNameDefaults[Math.floor(Math.random() * cardNameDefaults.length)];
   }, []);
 
-  const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
-  const bgColorClass100 = calculateBgColor(energyCost, 100)[0]; 
+  const bgColorClass50 = activeMode === "anomaly" ? null : calculateBgColor(energyCost, 50)[0];
+  const bgColorClass100 = activeMode === "anomaly" ? null : calculateBgColor(energyCost, 100)[0]; 
 
   return (
     <div
@@ -112,54 +110,15 @@ export default function CardFormHeader({
           gap-1
         "
       >
-        <FormField
-          control={control}
-          name={
-            activeMode === "initial" 
-              ? "initialMode.name" 
-              : "anomalyMode.name"
-          }
-          render={({ field }) => (
-            <FormItem className="w-full" >
-              <FormControl>
-                <input
-                  {...field}
-                  type="text"
-                  disabled={isSubmitting}
-                  placeholder={
-                    activeMode === "initial" 
-                      ? randomCardNamePlaceholder 
-                      : isUncommon 
-                      ? "Uncommon Anomaly" 
-                        : "Common Anomaly"
-                  }
-                  autoComplete="off"
-                  data-1p-ignore
-                  data-lpignore="true"
-                  data-form-type="other"
-                  maxLength={CARD_NAME_MAX_LENGTH}
-                  className="
-                    w-full 
-                    bg-transparent 
-                    text-black
-                    font-medium
-                    text-lg
-                    outline-none
-                    border-none
-                    focus:ring-0
-                    focus:outline-none
-                    caret-black
-                    ml-1.5
-                  "
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        {/* {activeMode !== "anomaly" ? (
+        {activeMode === "initial" || 
+        (activeMode === "anomaly" && isUncommon) ? (
           <FormField
             control={control}
-            name="initialMode.name"
+            name={
+              activeMode === "initial" 
+                ? "initialMode.name" 
+                : "anomalyMode.name"
+            }
             render={({ field }) => (
               <FormItem className="w-full" >
                 <FormControl>
@@ -167,7 +126,13 @@ export default function CardFormHeader({
                     {...field}
                     type="text"
                     disabled={isSubmitting}
-                    placeholder={randomCardNamePlaceholder}
+                    placeholder={
+                      activeMode === "initial" 
+                        ? randomCardNamePlaceholder 
+                        : isUncommon 
+                        ? "Uncommon Anomaly" 
+                          : "Common Anomaly"
+                    }
                     autoComplete="off"
                     data-1p-ignore
                     data-lpignore="true"
@@ -192,8 +157,8 @@ export default function CardFormHeader({
             )}
           />
         ) : (
-          <p className="text-black font-medium text-lg hover:cursor-pointer">{cardName !== "" || null ? cardName : "Card name"}</p>
-        )} */}
+          <p className="pl-1 text-lg font-medium text-black">Common Anomaly</p>
+        )}
         <div
           id="card-type-container"
           className={clsx(
