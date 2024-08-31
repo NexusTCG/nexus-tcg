@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { useFormContext } from 'react-hook-form';
 import { useOverlay } from "@/app/utils/context/OverlayContext";
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -38,6 +39,8 @@ const MAX_PROMPT_LENGTH = 280;
 export default function CardArtPopover() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: any }>({});
   const { showOverlay, hideOverlay } = useOverlay();
+  const { mode } = useMode();
+
   const { watch, control } = useFormContext();
   const form = watch()
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
@@ -155,7 +158,7 @@ export default function CardArtPopover() {
           <h2 className="font-semibold">Generate card art</h2>
           <FormField
             control={control}
-            name="initialMode.prompt_art"
+            name={mode === "initial" ? "initialMode.prompt_art" : "anomalyMode.prompt_art"}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>

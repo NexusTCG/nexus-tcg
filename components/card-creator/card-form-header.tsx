@@ -39,7 +39,13 @@ const cardNameDefaults = [
   "A spectacular card name..."
 ]
 
-export default function CardFormHeader() {
+type CardFormHeaderProps = {
+  activeMode: "initial" | "anomaly"
+}
+
+export default function CardFormHeader({
+  activeMode
+}: CardFormHeaderProps) {
   const [isTypeSubOpen, setIsTypeSubOpen] = useState(false);
   const { mode } = useMode();
   const { 
@@ -49,6 +55,7 @@ export default function CardFormHeader() {
       isSubmitting
   }} = useFormContext();
   const cardName = watch("initialMode.name")
+  const isUncommon = watch("anomalyMode.uncommon")
   const energyCost: EnergyCost = watch('initialMode.energy_cost') || {
     light: 0,
     storm: 0,
@@ -73,25 +80,27 @@ export default function CardFormHeader() {
         bgColorClass50 || 'bg-neutral-50'
       )}
     >
-      <div
-        id="card-speed-cost-container"
-        className="
-          flex 
-          flex-col 
-          justify-start 
-          items-start
-          z-10
-          h-[64px]
-          w-[32px]
-        "
-      >
-        <div className="absolute left-0">
-          <SpeedCycler />
+      {activeMode === "initial" && (
+        <div
+          id="card-speed-cost-container"
+          className="
+            flex 
+            flex-col 
+            justify-start 
+            items-start
+            z-10
+            h-[64px]
+            w-[32px]
+          "
+        >
+          <div className="absolute left-0">
+            <SpeedCycler />
+          </div>
+          <div className="absolute top-[32px] left-0">
+            <EnergyCostPopover />
+          </div>
         </div>
-        <div className="absolute top-[32px] left-0">
-          <EnergyCostPopover />
-        </div>
-      </div>
+      )}
       <div
         id="card-name-type-container"
         className="
@@ -105,7 +114,11 @@ export default function CardFormHeader() {
       >
         <FormField
           control={control}
-          name={mode === "initial" ? "initialMode.name" : "anomalyMode.name"}
+          name={
+            activeMode === "initial" 
+              ? "initialMode.name" 
+              : "anomalyMode.name"
+          }
           render={({ field }) => (
             <FormItem className="w-full" >
               <FormControl>
@@ -113,7 +126,13 @@ export default function CardFormHeader() {
                   {...field}
                   type="text"
                   disabled={isSubmitting}
-                  placeholder={mode === "initial" ? randomCardNamePlaceholder : "Common anomaly"}
+                  placeholder={
+                    activeMode === "initial" 
+                      ? randomCardNamePlaceholder 
+                      : isUncommon 
+                      ? "Uncommon Anomaly" 
+                        : "Common Anomaly"
+                  }
                   autoComplete="off"
                   data-1p-ignore
                   data-lpignore="true"
@@ -182,85 +201,121 @@ export default function CardFormHeader() {
             bgColorClass100 || 'bg-neutral-100'
           )}
         >
-          <FormField
-            control={control}
-            name="initialMode.type"
-            render={({ field }) => (
-              <FormItem className="max-w-3/5 h-full">
-                <Select
-                  onValueChange={field.onChange} 
-                  defaultValue={field.value || "Agent"}
-                >
-                  <FormControl>
-                    <SelectTrigger 
-                      className={cn(
-                        "w-full h-full bg-transparent text-black border-none shadow-none",
-                        "focus:ring-0 focus:ring-offset-0",
-                        "text-md font-medium py-0 px-1"
-                      )}
-                    >
-                      <SelectValue placeholder="Agent" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {cardTypes
-                      .filter((type) => type.toLowerCase() !== "anomaly")
-                      .map((type) => (
-                        <SelectItem key={type} value={type.toLowerCase()}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-          <span className="text-xs opacity-60">•</span>
-          <Controller
-            control={control}
-            name="initialMode.type_sub"
-            render={({ field }) => {
-              const typeSub = Array.isArray(field.value) ? field.value : [];
-              return (
-                <FormItem className="flex-grow h-full relative">
-                  <div
-                    onClick={() => setIsTypeSubOpen(!isTypeSubOpen)}
-                    className={cn(
-                      "w-full h-full bg-transparent cursor-pointer text-black border-none shadow-none",
-                      "focus:ring-0 focus:ring-offset-0",
-                      "text-md font-medium py-0 px-1 text-left"
-                    )}
+          {activeMode === "initial" ? (
+            <FormField
+              control={control}
+              name="initialMode.type"
+              render={({ field }) => (
+                <FormItem className="max-w-3/5 h-full">
+                  <Select
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value || "Agent"}
                   >
-                    {typeSub.length > 0 ? typeSub.join(' ') : "Select agent types"}
-                  </div>
-                  {isTypeSubOpen && (
-                    <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
-                      {agentTypes.map((agentType) => (
-                        <div
-                          key={agentType}
-                          className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-black"
-                          onClick={() => {
-                            const newValue = typeSub.includes(agentType)
-                              ? typeSub.filter((v) => v !== agentType)
-                              : [...typeSub, agentType].slice(0, 3);
-                            field.onChange(newValue);
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={typeSub.includes(agentType)}
-                            readOnly
-                            className="mr-2"
-                          />
-                          {agentType}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    <FormControl>
+                      <SelectTrigger 
+                        className={cn(
+                          "w-full h-full bg-transparent text-black border-none shadow-none",
+                          "focus:ring-0 focus:ring-offset-0",
+                          "text-md font-medium py-0 px-1"
+                        )}
+                      >
+                        <SelectValue placeholder="Agent" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {cardTypes
+                        .filter((type) => type.toLowerCase() !== "anomaly")
+                        .map((type) => (
+                          <SelectItem key={type} value={type.toLowerCase()}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormItem>
-              );
-            }}
-          />
+              )}
+            />
+          ) : (
+            <FormField
+              control={control}
+              name="anomalyMode.uncommon"
+              render={({ field }) => (
+                <FormItem className="max-w-3/5 h-full">
+                  <Select
+                    onValueChange={(value) => field.onChange(value === "true")}
+                    value={field.value === true ? "true" : "false"}
+                    defaultValue="false"
+                  >
+                    <FormControl>
+                      <SelectTrigger 
+                        className={cn(
+                          "w-full h-full bg-transparent text-black border-none shadow-none",
+                          "focus:ring-0 focus:ring-offset-0",
+                          "text-md font-medium py-0 px-1"
+                        )}
+                      >
+                        <SelectValue placeholder="Common Anomaly" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="false">Common Anomaly</SelectItem>
+                      <SelectItem value="true">Uncommon Anomaly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          )}
+          {activeMode === "initial" && (
+            <>
+              <span className="text-xs opacity-60">•</span>
+              <Controller
+                control={control}
+                name="initialMode.type_sub"
+                render={({ field }) => {
+                  const typeSub = Array.isArray(field.value) ? field.value : [];
+                  return (
+                    <FormItem className="flex-grow h-full relative">
+                      <div
+                        onClick={() => setIsTypeSubOpen(!isTypeSubOpen)}
+                        className={cn(
+                          "w-full h-full bg-transparent cursor-pointer text-black border-none shadow-none",
+                          "focus:ring-0 focus:ring-offset-0",
+                          "text-md font-medium py-0 px-1 text-left"
+                        )}
+                      >
+                        {typeSub.length > 0 ? typeSub.join(' ') : "Select agent types"}
+                      </div>
+                      {isTypeSubOpen && (
+                        <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
+                          {agentTypes.map((agentType) => (
+                            <div
+                              key={agentType}
+                              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-black"
+                              onClick={() => {
+                                const newValue = typeSub.includes(agentType)
+                                  ? typeSub.filter((v) => v !== agentType)
+                                  : [...typeSub, agentType].slice(0, 3);
+                                field.onChange(newValue);
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={typeSub.includes(agentType)}
+                                readOnly
+                                className="mr-2"
+                              />
+                              {agentType}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </FormItem>
+                  );
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -268,22 +268,16 @@ export default function CardForm({
                     variants={cardVariants}
                     initial="inactive"
                     animate={mode === cardMode ? "active" : "inactive"}
-                    onClick={() => mode !== cardMode ? toggleMode() : null}
-                    className={clsx(
-                      "absolute inset-0 flex justify-center items-center",
-                      { "card-hover-effect cursor-pointer": mode !== cardMode }
-                    )}
+                    className="absolute inset-0 flex justify-center items-center"
                   >
                     {mode === cardMode ? (
-                      cardMode === "anomaly" 
-                        ? <CardFormAnomaly /> 
-                        : <CardFormInitial />
+                      cardMode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />
                     ) : (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div 
-                              onClick={() => mode !== cardMode ? toggleMode() : null}
+                              onClick={() => toggleMode()}
                               className="w-full h-full flex justify-center items-center cursor-pointer"
                             >
                               {cardMode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />}

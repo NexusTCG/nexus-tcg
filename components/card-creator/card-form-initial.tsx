@@ -3,7 +3,6 @@
 // Hooks
 import React from "react"
 import { useFormContext } from 'react-hook-form';
-import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 // Actions
@@ -17,7 +16,6 @@ import CardFormStats from "@/components/card-creator/card-form-stats";
 
 export default function CardFormInitial() {
   const { watch } = useFormContext();
-  const { mode } = useMode();
 
   const activeType = watch("initialMode.type");
   const energyCost = watch("form.initialMode.energy_cost");
@@ -26,10 +24,23 @@ export default function CardFormInitial() {
 
   return (
     <CardContainer>
-      <CardFormHeader />
-      {mode === "initial" ? (
+      <CardFormHeader activeMode={"initial"} />
+      <div
+        id="card-content-container"
+        className="
+          flex
+          flex-col
+          justify-center
+          items-center
+          w-full
+          h-full
+          px-2
+          border-x
+        "
+      >
+        <CardFormArt />
         <div
-          id="card-content-container"
+          id="card-text-outer-container"
           className="
             flex
             flex-col
@@ -37,39 +48,22 @@ export default function CardFormInitial() {
             items-center
             w-full
             h-full
-            px-2
-            border-x
+            p-2
+            pb-3
+            -mt-4
           "
         >
-          <CardFormArt />
           <div
             id="card-text-outer-container"
-            className="
-              flex
-              flex-col
-              justify-center
-              items-center
-              w-full
-              h-full
-              p-2
-              pb-3
-              -mt-4
-            "
+            className={clsx(
+              "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-md shadow-black/50 rounded-sm",
+              bgColorClass500 || "bg-neutral-500"
+            )}
           >
-            <div
-              id="card-text-outer-container"
-              className={clsx(
-                "flex flex-col justify-center items-center w-full h-full p-1 border-2 shadow-md shadow-black/50 rounded-sm",
-                bgColorClass500 || "bg-neutral-500"
-              )}
-            >
-              <CardFormText />
-            </div>
+            <CardFormText />
           </div>
         </div>
-      ) : (
-        null
-      )}
+      </div>
       {activeType === "agent" && (
         <div className="absolute bottom-0 left-0 z-10">
           <CardFormStats />

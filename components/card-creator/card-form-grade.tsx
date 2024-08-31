@@ -2,6 +2,8 @@ import React from "react";
 
 export default function CardFormGrade() {
   return (
-    <div>Hello</div>
+    <div>
+      <>icon</>
+    </div>
   )
 }

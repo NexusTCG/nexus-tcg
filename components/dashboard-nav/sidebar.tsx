@@ -16,6 +16,7 @@ import {
 // Shadcn components
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,7 @@ export default function Sidebar({
 }) {
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const isLoading = currentUserId === null || userProfile === null;
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed)
@@ -50,7 +52,7 @@ export default function Sidebar({
     requiresUser?: boolean;
   }[]) {
     return items.map((item) => {
-      if (item.requiresUser && !currentUserId) {
+      if (item.requiresUser && !currentUserId && !isLoading) {
         return null;
       }
   
@@ -67,11 +69,15 @@ export default function Sidebar({
                     isCollapsed ? "justify-center" : "justify-start"
                   )}
                 >
-                  <item.icon className={clsx(
-                    "h-[1.2rem] w-[1.2rem]",
-                    isCollapsed ? "m-0" : "mr-2"
-                  )} />
-                  {!isCollapsed && item.label}
+                  {isLoading ? (
+                    <Skeleton className="h-[1.2rem] w-[1.2rem] rounded-full" />
+                  ) : (
+                    <item.icon className={clsx(
+                      "h-[1.2rem] w-[1.2rem]",
+                      isCollapsed ? "m-0" : "mr-2"
+                    )} />
+                  )}
+                  {!isCollapsed && (isLoading ? <Skeleton className="h-4 w-20" /> : item.label)}
                 </Button>
               </Link>
             </TooltipTrigger>
@@ -186,7 +192,79 @@ export default function Sidebar({
           gap-2
         "
       >
-        {(currentUserId && userProfile) ? (
+        {isLoading ? (
+          <Skeleton className="w-full h-10" />
+        ) : currentUserId ? (
+          <div 
+            id="sidebar-profile"
+            className={clsx("flex flex-row items-center w-full",
+              isCollapsed ? "justify-center" : "justify-between"
+            )}
+          >
+            {!isCollapsed && (
+              <div
+                id="avatar-username-container" 
+                className="
+                  flex 
+                  flex-row 
+                  justify-start 
+                  items-center 
+                  w-full 
+                  gap-2
+                "
+              >
+                {(userProfile?.avatar_url && userProfile?.username) ? (
+                  <UserAvatar
+                    avatarUrl={userProfile.avatar_url}
+                    userName={userProfile.username}
+                    size={"sm"}
+                  />
+                ) : (
+                  <Skeleton className="w-8 h-8 rounded-full" />
+                )}
+                {userProfile?.username ? (
+                  <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                    {userProfile.username}
+                  </p>
+                ) : (
+                  <Skeleton className="w-20 h-4" />
+                )}
+              </div>
+            )}
+            {isCollapsed ? (
+              <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SidebarProfileMenu />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  Profile Menu
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            ) : (
+              <div>
+                <SidebarProfileMenu />
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link href="/login" className="w-full">
+            <Button
+              variant="default"
+              size={isCollapsed ? "icon" : "default"}
+              className={clsx(
+                "w-full font-semibold",
+                isCollapsed ? "justify-center" : "justify-center"
+              )}
+            >
+              {!isCollapsed && "Create account"}
+            </Button>
+          </Link>
+        )}
+        {/* {currentUserId ? (
           <div
             id="sidebar-profile"
             className={clsx(
@@ -194,21 +272,27 @@ export default function Sidebar({
               isCollapsed ? "justify-center" : "justify-between"
             )}
           >
-            {!isCollapsed && userProfile?.username && (
+            {!isCollapsed && (
               <div
                 id="avatar-username-container"
                 className="flex flex-row justify-start items-center w-full gap-2"
               >
-                {userProfile?.avatar_url && (
+                {userProfile?.avatar_url && userProfile?.username ? (
                   <UserAvatar
                     avatarUrl={userProfile.avatar_url}
                     userName={userProfile.username}
                     size={"sm"}
                   />
+                ) : (
+                  <Skeleton className="w-8 h-8 rounded-full" />
                 )}
-                <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
-                  {userProfile?.username ? userProfile.username : "Username"}
-                </p>
+                {userProfile?.username ? (
+                  <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                    {userProfile.username}
+                  </p>
+                ) : (
+                  <Skeleton className="w-20 h-4" />
+                )}
               </div>
             )}
             {isCollapsed ? (
@@ -243,7 +327,7 @@ export default function Sidebar({
               {!isCollapsed && "Create account"}
             </Button>
           </Link>
-        )}
+        )} */}
       </div>
     </div>
   );

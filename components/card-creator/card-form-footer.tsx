@@ -8,7 +8,6 @@ import { MdDesignServices } from "react-icons/md";
 
 export default function CardFormFooter() {
   const { watch } = useFormContext();
-  const cardId = watch("id")
   const username = watch("username")
 
   return (
@@ -57,7 +56,6 @@ export default function CardFormFooter() {
       </small>
       <span className="flex justify-end items-center w-full ">
         {/* Filler to center card creator */}
-        {/* Card render links to play.nexus/cards/id */}
       </span>
     </div>
   )

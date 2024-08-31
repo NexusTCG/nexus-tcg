@@ -16,18 +16,13 @@ import CardFormHeader from "@/components/card-creator/card-form-header";
 
 export default function CardFormAnomaly() {
   const { watch } = useFormContext();
-  const { mode } = useMode();
-
-  const uncommon = watch("anomalyMode.uncommon")
-  const mythic = watch("anomalyMode.mythic")
   const energyCost = watch("form.initialMode.energy_cost");
 
   const bgColorClass500 = calculateBgColor(energyCost, 500)[0];
 
   return (
     <CardContainer>
-      <CardFormHeader />
-      {mode === "anomaly" && (
+      <CardFormHeader activeMode={"anomaly"} />
         <div
           id="card-content-container"
           className="
@@ -67,7 +62,6 @@ export default function CardFormAnomaly() {
             </div>
           </div>
         </div>
-      )}
     </CardContainer>
   )
 }

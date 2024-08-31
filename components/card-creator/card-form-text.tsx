@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useFormContext } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import clsx from "clsx"
 import { calculateBgColor } from "@/app/utils/actions/actions";
@@ -17,8 +18,11 @@ import {
 } from "@/components/ui/select"
 
 export default function CardFormText() {
+  const { mode } = useMode();
+
   const { watch, setValue } = useFormContext();
   const energyCost = watch('initialMode.energy_cost');
+  
   const bgColorClass50 = calculateBgColor(energyCost, 50)[0];
 
   return (
@@ -32,24 +36,28 @@ export default function CardFormText() {
         bgColorClass50 || "bg-neutral-50"
       )}
     >
-      <Select>
-        <SelectTrigger className="w-full rounded-sm text-white">
-          <SelectValue placeholder="Card effect" />
-        </SelectTrigger>
-        <SelectContent
-          className="flex flex-wrap justify-start w-full max-w-[312px]"
-        >
-          <SelectItem value="light">Short Text</SelectItem>
-          <SelectItem value="dark">Medium Text</SelectItem>
-          <SelectItem value="long-text">Long Text</SelectItem>
-          <Separator orientation="horizontal" />
-          <SelectItem value="evasion">Evasion <i>(Can only be defended by agents with evasion or intercept.)</i></SelectItem>
-          <SelectItem value="threat">Threat</SelectItem>
-          <Separator orientation="horizontal" />
-          <SelectItem value="deploy">Deploy</SelectItem>
-          <SelectItem value="despawn">despawn</SelectItem>
-        </SelectContent>
-      </Select>
+      {mode === "initial" ? (
+        <Select>
+          <SelectTrigger className="w-full rounded-sm text-white">
+            <SelectValue placeholder="Card effect" />
+          </SelectTrigger>
+          <SelectContent
+            className="flex flex-wrap justify-start w-full max-w-[312px]"
+          >
+            <SelectItem value="light">Short Text</SelectItem>
+            <SelectItem value="dark">Medium Text</SelectItem>
+            <SelectItem value="long-text">Long Text</SelectItem>
+            <Separator orientation="horizontal" />
+            <SelectItem value="evasion">Evasion <i>(Can only be defended by agents with evasion or intercept.)</i></SelectItem>
+            <SelectItem value="threat">Threat</SelectItem>
+            <Separator orientation="horizontal" />
+            <SelectItem value="deploy">Deploy</SelectItem>
+            <SelectItem value="despawn">despawn</SelectItem>
+          </SelectContent>
+        </Select>
+      ) : (
+        <p>Anomaly mode text options</p>
+      )}
     </div>
   )
 }
