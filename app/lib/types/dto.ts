@@ -8,3 +8,12 @@ export type ProfileDTO = {
   bio: string | null;
   avatar_url: string | null;
 };
+
+export type KeywordsDTO = {
+  id?: number | null;
+  created_at?: string | null;
+  name: string | null;
+  reminder: string | null;
+  type: "persistent" | "reactive" | "active" | null;
+  tip: string | null;
+};

@@ -21,6 +21,7 @@ export const getUserProfileDTO = cache(
 
     if (error) {
       console.error("Error fetching user profile:", error.message);
+      // return error instead
       return null;
     }
 
@@ -35,6 +36,7 @@ export const getUserProfileDTO = cache(
     };
   } catch (error) {
     console.error("Error in getUserProfileDTO:", error);
+    // return error instead
     return null;
   }
 });

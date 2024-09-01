@@ -272,6 +272,7 @@ export default function CardForm({
                     {mode === cardMode ? (
                       cardMode === "anomaly" ? <CardFormAnomaly /> : <CardFormInitial />
                     ) : (
+                      // The tooltip is not working
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>

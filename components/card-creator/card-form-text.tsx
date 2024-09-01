@@ -1,10 +1,12 @@
 "use client"
 
-import React from "react";
-import { useFormContext } from 'react-hook-form';
+import React, { useState, useEffect } from "react";
+import { useFormContext, useFieldArray } from 'react-hook-form';
 // Utils
 import clsx from "clsx"
 import { calculateBgColor } from "@/app/utils/actions/actions";
+// Validation
+import { KeywordsDTO } from "@/app/lib/types/dto";
 // Components
 import { Separator } from "@radix-ui/react-separator";
 import { Textarea } from "@/components/ui/textarea"
@@ -23,11 +25,46 @@ type CardFormHeaderProps = {
 export default function CardFormText({
   activeMode
 }: CardFormHeaderProps) {
-
-  const { watch, setValue } = useFormContext();
-  const energyCost = watch('initialMode.energy_cost');
+  const [keywords, setKeywords] = useState<KeywordsDTO[] | null> (null)
   
+  const { watch,  control } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "initialMode.keywords"
+  });
+
+  const energyCost = watch('initialMode.energy_cost');
   const bgColorClass50 = activeMode === "anomaly" ? null : calculateBgColor(energyCost, 50)[0];
+  
+  const selectedKeywords = watch("initialMode.keywords") || [];
+
+  function handleKeywordSelect(
+    value: string, 
+    index: number
+  ) {
+    if (index < fields.length) {
+      fields[index] = { id: value }; // Update existing field
+    } else {
+      append({ id: value }); // Add new field
+    }
+  }
+
+  useEffect(() => {
+    async function fetchKeywords() {
+      try {
+        const response = await fetch('/api/data/fetch-keywords');
+        if (!response.ok) {
+          throw new Error('Failed to fetch keywords');
+        }
+        const data = await response.json();
+        console.log("Keywords: ", data);
+        setKeywords(data);
+      } catch (error) {
+        console.error('Error fetching keywords:', error);
+      }
+    }
+    fetchKeywords();
+  }, []);
 
   return (
     <div
@@ -41,24 +78,51 @@ export default function CardFormText({
       )}
     >
       {activeMode === "initial" ? (
-        <Select>
-          <SelectTrigger className="w-full rounded-sm text-white">
-            <SelectValue placeholder="Card effect" />
-          </SelectTrigger>
-          <SelectContent
-            className="flex flex-wrap justify-start w-full max-w-[312px]"
-          >
-            <SelectItem value="light">Short Text</SelectItem>
-            <SelectItem value="dark">Medium Text</SelectItem>
-            <SelectItem value="long-text">Long Text</SelectItem>
-            <Separator orientation="horizontal" />
-            <SelectItem value="evasion">Evasion <i>(Can only be defended by agents with evasion or intercept.)</i></SelectItem>
-            <SelectItem value="threat">Threat</SelectItem>
-            <Separator orientation="horizontal" />
-            <SelectItem value="deploy">Deploy</SelectItem>
-            <SelectItem value="despawn">despawn</SelectItem>
-          </SelectContent>
-        </Select>
+        <>
+          {[...Array(4)].map((_, index) => (
+            index < fields.length || index === 0 ? (
+              <Select 
+                key={index} 
+                onValueChange={(value) => handleKeywordSelect(value, index)}
+                value={fields[index]?.id || ""}
+              >
+                <SelectTrigger className="w-full rounded-sm text-white">
+                  <SelectValue placeholder={`Select keyword ${index + 1}`} />
+                </SelectTrigger>
+                <SelectContent className="flex flex-wrap justify-start w-full max-w-[312px] text-white">
+                  {keywords && keywords
+                    .filter(kw => !selectedKeywords.includes(kw.name))
+                    .map(keyword => (
+                      <SelectItem key={keyword.id} value={keyword.name || ''}>
+                        <p
+                          className={clsx("font-semibold",
+                            {
+                              "text-blue-500": keyword.type?.toLowerCase() === "persistent",
+                              "text-amber-500": keyword.type?.toLowerCase() === "reactive",
+                              "text-emerald-500": keyword.type?.toLowerCase() === "active",
+                            }
+                          )}
+                        >
+                          {keyword.name}
+                        </p>
+                        <p
+                          className={clsx("italic font-light text-xs",
+                            {
+                              "text-blue-500/80": keyword.type?.toLowerCase() === "persistent",
+                              "text-amber-500/80": keyword.type?.toLowerCase() === "reactive",
+                              "text-emerald-500/80": keyword.type?.toLowerCase() === "active",
+                            }
+                          )}
+                        >
+                          ({keyword.reminder})
+                        </p>
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            ) : null
+          ))}
+        </>
       ) : (
         // TODO: Register in form
         <Textarea
