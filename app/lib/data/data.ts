@@ -1,28 +1,33 @@
 // Icons
-import { 
-  FaDiscord, 
+import {
+  FaDiscord,
   FaGithub,
-  FaLinkedin, 
-  FaReddit, 
-  FaTwitch, 
-  FaYoutube,
+  FaLinkedin,
+  FaReddit,
   FaSteam,
-  FaXTwitter 
-} from "react-icons/fa6"
-import { 
-  MdHome, 
-  MdDesignServices, 
-  MdOutlineLayers, 
+  FaTwitch,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
+import {
+  MdDesignServices,
+  MdHome,
   MdNotifications,
-  MdOutlinePeople,
   MdOutlineBook,
+  MdOutlineLayers,
+  MdOutlinePeople,
 } from "react-icons/md";
 
 export const navItems = [
   { href: "/home", icon: MdHome, label: "Home", requiresUser: true },
   { href: "/create", icon: MdDesignServices, label: "Create" },
   { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
-  { href: "/notifications", icon: MdNotifications, label: "Notifications", requiresUser: true },
+  {
+    href: "/notifications",
+    icon: MdNotifications,
+    label: "Notifications",
+    requiresUser: true,
+  },
 ];
 
 export const secondaryNavItems = [
@@ -35,86 +40,90 @@ export const socialChannels = {
     icon: FaDiscord,
     href: "https://discord.gg/nexus",
     label: "Discord",
-    linkColor: "indigo"
+    linkColor: "indigo",
   },
   github: {
     icon: FaGithub,
     href: "https://github.com/NexusTCG/nexus/wiki",
     label: "GitHub",
-    linkColor: "slate"
+    linkColor: "slate",
   },
   linkedin: {
     icon: FaLinkedin,
     href: "https://www.linkedin.com/company/nexus-tcg",
     label: "LinkedIn",
-    linkColor: "blue"
+    linkColor: "blue",
   },
   reddit: {
     icon: FaReddit,
     href: "https://www.reddit.com/r/playnexus/",
     label: "Reddit",
-    linkColor: "orange"
+    linkColor: "orange",
   },
   steam: {
     icon: FaSteam,
     href: "https://steamcommunity.com/sharedfiles/filedetails/?id=3279618215",
     label: "Steam",
-    linkColor: "stone"
+    linkColor: "stone",
   },
   twitch: {
     icon: FaTwitch,
     href: "https://twitch.tv/nexus_tcg/about",
     label: "Twitch",
-    linkColor: "purple"
+    linkColor: "purple",
   },
   youtube: {
     icon: FaYoutube,
     href: "https://youtube.com/@PlayNexusTCG",
     label: "YouTube",
-    linkColor: "red"
+    linkColor: "red",
   },
   twitter: {
     icon: FaXTwitter,
     href: "https://twitter.com/PlayNexusTcg",
     label: "Twitter",
-    linkColor: "sky"
-  }
+    linkColor: "sky",
+  },
 };
 
 export const policyLinks = {
   guidelines: {
-    href: "https://docs.google.com/document/d/1Pojoxyo1YZPLi7ZEuIzG9-RcTAUSO-C86HvU_NplY9I/edit#heading=h.m4dz65rg4sen",
-    label: "Community Guidelines"
+    href:
+      "https://docs.google.com/document/d/1Pojoxyo1YZPLi7ZEuIzG9-RcTAUSO-C86HvU_NplY9I/edit#heading=h.m4dz65rg4sen",
+    label: "Community Guidelines",
   },
   privacy: {
-    href: "https://app.termly.io/policy-viewer/policy.html?policyUUID=ad50ccf1-c965-4b23-8bdb-77a1bca4cb54",
-    label: "Privacy"
+    href:
+      "https://app.termly.io/policy-viewer/policy.html?policyUUID=ad50ccf1-c965-4b23-8bdb-77a1bca4cb54",
+    label: "Privacy",
   },
   terms: {
-    href: "https://app.termly.io/policy-viewer/policy.html?policyUUID=ed073254-9c41-4933-b15f-884e216e16de",
-    label: "Terms of Service"
+    href:
+      "https://app.termly.io/policy-viewer/policy.html?policyUUID=ed073254-9c41-4933-b15f-884e216e16de",
+    label: "Terms of Service",
   },
   cookies: {
-    href: "https://app.termly.io/policy-viewer/policy.html?policyUUID=a25f2c19-179e-41dd-90d1-a797291d8669",
-    label: "Cookies"
+    href:
+      "https://app.termly.io/policy-viewer/policy.html?policyUUID=a25f2c19-179e-41dd-90d1-a797291d8669",
+    label: "Cookies",
   },
 };
 
 export const energyOrder = [
-  'light', 
-  'storm', 
-  'dark', 
-  'chaos', 
-  'growth'
+  "light",
+  "storm",
+  "dark",
+  "chaos",
+  "growth",
 ];
 
 export const energyToColorMap = {
-  light: 'yellow',
-  storm: 'sky',
-  dark: 'violet',
-  chaos: 'red',
-  growth: 'lime',
-  void: 'slate'
+  light: "yellow",
+  storm: "sky",
+  dark: "violet",
+  chaos: "red",
+  growth: "lime",
+  void: "slate",
 };
 
 export const cardTypes = [
@@ -122,8 +131,10 @@ export const cardTypes = [
   "Anomaly",
   "Event",
   "Hardware",
+  "Hardware Agent",
   "Software",
-]
+  "Software Agent",
+];
 
 export const agentTypes = [
   "Alchemist",
@@ -191,7 +202,7 @@ export const agentTypes = [
   "Warrior",
   "Wyrm",
   "Zombie",
-]
+];
 
 export const artdirectionOptions = {
   "Style": [
@@ -213,19 +224,17 @@ export const artdirectionOptions = {
     "Surrealism",
     "Vaporwave",
   ],
-  "Prompt": [
-
-  ],
-}
+  "Prompt": [],
+};
 
 export const metadataKeywords = [
-  "TCG", 
+  "TCG",
   "Trading Card Game",
   "Trading Card Games",
   "Card Game",
   "Card Games",
   "Custom Card",
-  "Custom Cards", 
+  "Custom Cards",
   "AI",
   "Artificial Intelligence",
   "Generate AI",
@@ -233,7 +242,7 @@ export const metadataKeywords = [
   "AI custom card",
   "AI custom TCG card",
   "AI TCG",
-  "Nexus", 
+  "Nexus",
   "Nexus TCG",
   "Nexus Trading Card Game",
   "Nexus Card Creator",
@@ -263,4 +272,4 @@ export const metadataKeywords = [
   "TCG community",
   "trading card game community",
   "how to create your own digital cards with AI",
-]
+];

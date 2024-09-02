@@ -5,7 +5,7 @@ import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Components
 // import { Input } from "@/components/ui/input";
 // Custom components
-import Banner from "@/components/banner";
+// import Banner from "@/components/banner";
 import CardFormWrapper from "@/components/card-creator/card-form-wrapper";
 
 export default async function Create() {
@@ -45,11 +45,11 @@ export default async function Create() {
           gap-4
         "
       >
-        <Banner
+        {/* <Banner
           message="This page is under construction."
           type="warning"
           autoExpire={true}
-        />
+        /> */}
         <CardFormWrapper
           currentUserId={currentUserId}
           userProfile={userProfile}
