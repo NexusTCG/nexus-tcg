@@ -74,13 +74,22 @@ export default function AgentTypeSelect() {
         <FormItem className="flex-grow h-full relative">
           <Select
             onValueChange={(value) => {
-              const currentValue = Array.isArray(field.value) ? field.value : [];
+              const currentValue = Array.isArray(field.value) 
+                ? field.value 
+                : [];
               const newValue = currentValue.includes(value)
                 ? currentValue.filter((t) => t !== value)
-                : currentValue.length < 3 ? [...currentValue, value] : currentValue;
+                : currentValue.length < 3 
+                  ? [...currentValue, value] 
+                  : currentValue;
               field.onChange(newValue);
             }}
-            value={Array.isArray(field.value) && field.value.length > 0 ? field.value[field.value.length - 1] : undefined}
+            value={
+              Array.isArray(field.value) 
+                && field.value.length > 0 
+                  ? field.value[field.value.length - 1] 
+                  : undefined
+                }
           >
             <FormControl>
               <SelectTrigger 
