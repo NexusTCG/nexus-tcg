@@ -117,7 +117,7 @@ export default function SectionHero() {
               </Button>
             </Link>
             <small className="text-neutral-300 text-md">
-              One-click with Google, Discord, and Twitch
+              One-click signup with Google, Discord, or Twitch
             </small>
           </div>
         </div>

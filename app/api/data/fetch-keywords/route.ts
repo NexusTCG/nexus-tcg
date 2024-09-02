@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const keywords = await getKeywordsDTO()
 
-    console.log(`[Server] Keywords fetched: ${JSON.stringify(keywords)}`);
+    // console.log(`[Server] Keywords fetched: ${JSON.stringify(keywords)}`);
 
     if (!keywords || keywords.length === 0) {
       return NextResponse.json({ 

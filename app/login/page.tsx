@@ -71,26 +71,14 @@ export default function LoginPage() {
             bg-zinc-800
           "
         >
-          <OAuthButton
-            cta="Log in with Google"
-            provider="google"
-            disabled={false}
-          />
-          <OAuthButton
-            cta="Log in with Discord"
-            provider="discord"
-            disabled={false}
-          />
-          <OAuthButton
-            cta="Log in with Twitch"
-            provider="twitch"
-            disabled={false}
-          />
-          <OAuthButton
-            cta="Log in with GitHub"
-            provider="github"
-            disabled={false}
-          />
+          {["Google", "Discord", "Twitch"].map((provider: string) => (
+            <OAuthButton
+              key={provider}
+              cta={`Log in with ${provider}`}
+              provider={provider.toLowerCase() as "google" | "discord" | "twitch" | "github" | null}
+              disabled={false}
+            />
+          ))}
         </div>
       </div>
     </div>
