@@ -26,7 +26,8 @@ import {
 // Custom components
 import TypeSelect from "@/components/card-creator/type-select";
 import SubTypeSelect from "@/components/card-creator/sub-type-select";
-import EnergyCostPopover from "@/components/card-creator/energy-cost-popover"
+import AgentTypeSelect from "@/components/card-creator/agent-type-select";
+import EnergyCostPopover from "@/components/card-creator/energy-cost-popover";
 import SpeedCycler from "@/components/card-creator/speed-cycler";
 
 const CARD_NAME_MAX_LENGTH = 20;
@@ -202,7 +203,14 @@ export default function CardFormHeader({
               )}
             />
           )}
+          {activeMode === "initial" &&
+           cardType.toLowerCase().includes("agent") && (
+            <AgentTypeSelect />
+          )}
           {activeMode === "initial" && (
+            cardType.toLowerCase() === "software" ||
+            cardType.toLowerCase() === "hardware"
+          ) && (
             <SubTypeSelect />
           )}
         </div>

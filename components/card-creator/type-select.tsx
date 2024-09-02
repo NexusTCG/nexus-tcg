@@ -1,7 +1,7 @@
 "use client";
 
 // Hooks
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useFormContext } from 'react-hook-form';
 // Utils
 import { cn } from "@/lib/utils";
@@ -22,7 +22,44 @@ import {
 } from "@/components/ui/select";
 
 export default function TypeSelect() {
-  const { control } = useFormContext();
+  const [previousType, setPreviousType] = useState<string | null>(null)
+
+  const { watch, control, setValue } = useFormContext();
+  const cardType = watch("initialMode.type");
+  const cardSubType = watch("initialMode.type_sub");
+
+  useEffect(() => {
+    if (cardType === previousType && previousType !== null) {
+      return
+    }
+
+    if (cardType === "agent" && previousType !== null && previousType.includes("agent")) {
+      setPreviousType(cardType)
+      return
+    }
+
+    if (cardType === "agent" && (previousType === "software" || previousType === "hardware")) {
+      setValue("initialMode.type_sub", [])
+      setPreviousType(cardType)
+      return
+    }
+
+    if (cardType !== "agent" && cardType.includes("agent") && previousType !== null && previousType.includes("agent")) {
+      if (cardSubType.length > 2) {
+        setValue("initialMode.type_sub", cardSubType.slice(0, 2))
+      }
+      setPreviousType(cardType)
+      return
+    }
+
+    if (cardType === "software" || cardType === "hardware") {
+      setValue("initialMode.type_sub", [])
+    } else {
+      setValue("initialMode.type_sub", [])
+    }
+
+    setPreviousType(cardType)
+  }, [cardType, previousType, cardSubType, setValue])
 
   return (
     <FormField
