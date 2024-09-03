@@ -45,7 +45,7 @@ export default function SubTypeSelect() {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="default" className="h-[30]"></SelectItem>
+              <SelectItem value="default" style={{ height: "30px" }}></SelectItem>
               {cardType === "software" && (
                 <SelectItem value="modification">
                   Modification
