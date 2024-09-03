@@ -30,7 +30,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator";
+import Keyword from "@/components/card-creator/keyword"
 // Icons
 import { Check } from "lucide-react"
 
@@ -96,24 +96,14 @@ export default function KeywordSelect({
     );
     if (!keywordData) return keyword;
 
-    if (truncateKeywords) {
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span>{keyword}</span>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <p>{keywordData.reminder}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    } else {
-      return (
-        <p className="font-medium">{keyword} <i className="text-md font-light">{keywordData.reminder}</i></p> 
-      );
-    }
+    return (
+      <Keyword
+        keyword={keyword}
+        reminder={keywordData.reminder}
+        truncate={truncateKeywords}
+        type={keywordData.type}
+      />
+    )
   }
 
   // TODO: Prevent keywords to be fetched on every render
@@ -147,6 +137,7 @@ export default function KeywordSelect({
   // TODO: Fix keywords expanding past container bounds
   // TODO: Render selectedKeywords based on keyword name instead of id
 
+  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -154,7 +145,13 @@ export default function KeywordSelect({
           variant="ghost"
           role="combobox"
           arian-expanded={open}
-          className="flex w-full justify-between bg-transparent hover:bg-transparent text-black hover:text-black"
+          className="
+            flex
+            flex-wrap 
+            justify-start
+            items-start
+            w-full
+            bg-transparent hover:bg-transparent text-black hover:text-black"
         >
           {selectedKeywords.length > 0 ? (
             <div className="flex flex-wrap w-full gap-2">
