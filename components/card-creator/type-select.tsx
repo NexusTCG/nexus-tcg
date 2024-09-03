@@ -22,44 +22,55 @@ import {
 } from "@/components/ui/select";
 
 export default function TypeSelect() {
-  const [previousType, setPreviousType] = useState<string | null>(null)
+  const [previousType, setPreviousType] = useState<string | null>("agent")
 
   const { watch, control, setValue } = useFormContext();
   const cardType = watch("initialMode.type");
   const cardSubType = watch("initialMode.type_sub");
 
   useEffect(() => {
+    // If new type is same as old, return
     if (cardType === previousType && previousType !== null) {
-      return
+      return;
     }
-
+  
+    if (cardType === "event") {
+      setValue("initialMode.type_sub", []);
+      setPreviousType(cardType);
+      return;
+    }
+  
+    // If new type is "agent" and previous type includes "agent"
     if (cardType === "agent" && previousType !== null && previousType.includes("agent")) {
-      setPreviousType(cardType)
-      return
+      setPreviousType(cardType);
+      return;
     }
-
-    if (cardType === "agent" && (previousType === "software" || previousType === "hardware")) {
-      setValue("initialMode.type_sub", [])
-      setPreviousType(cardType)
-      return
+  
+    // If new type is "agent" and previous type does not include "agent"
+    if (cardType === "agent" && (previousType === null || !previousType.includes("agent"))) {
+      setValue("initialMode.type_sub", []);
+      setPreviousType(cardType);
+      return;
     }
-
+  
+    // If new type is not "agent" but includes "agent" and previous type includes "agent"
     if (cardType !== "agent" && cardType.includes("agent") && previousType !== null && previousType.includes("agent")) {
-      if (cardSubType.length > 2) {
-        setValue("initialMode.type_sub", cardSubType.slice(0, 2))
+      if (Array.isArray(cardSubType) && cardSubType.length > 2) {
+        setValue("initialMode.type_sub", cardSubType.slice(0, 2));
       }
-      setPreviousType(cardType)
-      return
+      setPreviousType(cardType);
+      return;
     }
-
+  
+    // If new type is "software" or "hardware"
     if (cardType === "software" || cardType === "hardware") {
-      setValue("initialMode.type_sub", [])
+      setValue("initialMode.type_sub", "default");
     } else {
-      setValue("initialMode.type_sub", [])
+      setValue("initialMode.type_sub", []);
     }
-
-    setPreviousType(cardType)
-  }, [cardType, previousType, cardSubType, setValue])
+  
+    setPreviousType(cardType);
+  }, [cardType, previousType, cardSubType, setValue]);
 
   return (
     <FormField

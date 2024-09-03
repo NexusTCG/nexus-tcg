@@ -111,17 +111,11 @@ export default function AgentTypeSelect() {
                 <SelectItem 
                   key={type} 
                   value={type}
-                  disabled={(
-                    field.value && 
-                    field.value.length >= 3
-                  ) && (
-                    cardType
-                      .toLowerCase()
-                      .includes("ware") && 
-                    field.value && 
-                    field.value.length >= 2
-                  )
-                    && !field.value.includes(type)
+                  disabled={
+                    field.value &&
+                    ((cardType.toLowerCase().includes("ware") && field.value.length >= 2) ||
+                    (!cardType.toLowerCase().includes("ware") && field.value.length >= 3)) &&
+                    !field.value.includes(type)
                   }
                 >
                   {type}

@@ -41,18 +41,24 @@ export default function SubTypeSelect() {
                   "text-sm font-medium py-0 px-1"
                 )}
               >
-                <SelectValue placeholder="Select subtype" />
+                <SelectValue>
+                    {field.value === "default" 
+                      || Array.isArray(field.value) 
+                        ? "Select subtype" 
+                        : field.value
+                    }
+                </SelectValue>
               </SelectTrigger>
             </FormControl>
             <SelectContent>
               <SelectItem value="default" style={{ height: "30px" }}></SelectItem>
               {cardType === "software" && (
-                <SelectItem value="modification">
+                <SelectItem value="Modification">
                   Modification
                 </SelectItem>
               )}
               {cardType === "hardware" && (
-                <SelectItem value="gear">
+                <SelectItem value="Gear">
                   Gear
                 </SelectItem>
               )}
