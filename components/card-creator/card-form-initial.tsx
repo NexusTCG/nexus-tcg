@@ -10,7 +10,7 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 // Custom components
 import CardContainer from "@/components/card-creator/card-container";
 import CardFormArt from "@/components/card-creator/card-form-art"
-import CardFormText from "@/components/card-creator/card-form-text"
+import CardFormText from "@/components/card-creator/card-form-textbox"
 import CardFormHeader from "@/components/card-creator/card-form-header";
 import CardFormStats from "@/components/card-creator/card-form-stats";
 

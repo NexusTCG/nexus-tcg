@@ -57,6 +57,7 @@ export default function CardForm({
         type_super: null,
         mythic: false,
         text: [],
+        keywords: [],
         lore: null,
         prompt_art: null,
         art_options: [],
