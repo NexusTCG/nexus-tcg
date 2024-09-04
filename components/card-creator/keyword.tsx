@@ -34,18 +34,13 @@ export default function Keyword({
   const hasInput = reminder && (reminder.includes('[') || /\bN\b/.test(reminder))
   const inputType = reminder?.includes('[') ? 'text' : 'number'
 
+  const [inputWidth, setInputWidth] = useState(0);
+  const measureRef = useRef<HTMLSpanElement>(null);
+
   function adjustInputWidth() {
-    if (inputRef.current && inputType === 'text') {
-      if (inputValue === '') {
-        // Reset to default width when empty
-        inputRef.current.style.width = '';
-      } else {
-        // Set width to 1px to get the scroll width
-        inputRef.current.style.width = '1px';
-        // Set the width to the scroll width
-        const width = Math.min(inputRef.current.scrollWidth, 160);
-        inputRef.current.style.width = `${width}px`;
-      }
+    if (measureRef.current) {
+      const newWidth = Math.min(measureRef.current.offsetWidth + 5, 160);
+      setInputWidth(newWidth);
     }
   }
 
@@ -83,23 +78,37 @@ export default function Keyword({
           {keyword}{hasInput && (<span className="text-black">:</span>)}
         </span>
         {hasInput && (
-          <Input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            onClick={handleInputClick}
-            maxLength={inputType === 'text' ? 20 : 2}
-            placeholder={inputType === 'text' ? "[...]" : '0'}
-            className={clsx(
-              "flex-inline text-black text-normal opacity-80 bg-transparent border-none rounded-none p-0 h-4 ml-1",
-              "keyword-input",
-              {
-                "max-w-[18px] mr-0.25 font-bold": inputType === 'number',
-                "w-auto max-w-40": inputType === 'text',
-              },
-            )}
-          />
+          <>
+            <span 
+              ref={measureRef} 
+              className="invisible absolute whitespace-pre"
+              style={{
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                fontWeight: inputType === 'number' ? 'bold' : 'normal',
+              }}
+            >
+              {inputValue || (inputType === 'text' ? '[...]' : '0')}
+            </span>
+            <Input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              onClick={handleInputClick}
+              maxLength={inputType === 'text' ? 20 : 2}
+              placeholder={inputType === 'text' ? "[...]" : '0'}
+              style={{ width: `${inputWidth}px` }}
+              className={clsx(
+                "flex-inline text-black text-normal opacity-80 bg-transparent border-none rounded-none p-0 h-4 ml-1",
+                "keyword-input",
+                {
+                  "max-w-[18px] mr-0.25 font-bold": inputType === 'number',
+                  "max-w-[160px] font-semibold": inputType === 'text',
+                },
+              )}
+            />
+          </>
         )}
       </>
     )
