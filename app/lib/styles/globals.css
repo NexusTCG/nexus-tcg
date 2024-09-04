@@ -64,6 +64,23 @@
   animation: scaleIn 0.2s ease-out;
 }
 
+.keyword-input {
+  transition: width 0.1s ease-out;
+  min-width: 1ch;
+}
+
+.keyword-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.keyword-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;

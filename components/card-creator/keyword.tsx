@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDebounce } from 'use-debounce';
 // Utils
 import clsx from 'clsx';
 // Components
@@ -26,15 +27,45 @@ export default function Keyword({
   type 
 }: KeywordProps) {
   const [inputValue, setInputValue] = useState('')
+  const [debouncedInputValue] = useDebounce(inputValue, 300);
+  const [reminderWords, setReminderWords] = useState<string[]>([]);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
   const hasInput = reminder && (reminder.includes('[') || /\bN\b/.test(reminder))
   const inputType = reminder?.includes('[') ? 'text' : 'number'
 
-  const reminderWords = reminder ? reminder.split(' ') : [];
+  function adjustInputWidth() {
+    if (inputRef.current && inputType === 'text') {
+      if (inputValue === '') {
+        // Reset to default width when empty
+        inputRef.current.style.width = '';
+      } else {
+        // Set width to 1px to get the scroll width
+        inputRef.current.style.width = '1px';
+        // Set the width to the scroll width
+        const width = Math.min(inputRef.current.scrollWidth, 160);
+        inputRef.current.style.width = `${width}px`;
+      }
+    }
+  }
 
   function handleInputClick(
     e: React.MouseEvent
   ) {
     e.stopPropagation();
+  }
+
+  function handleInputChange(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const value = e.target.value;
+    if (inputType === 'number') {
+      if (value === '' || /^\d+$/.test(value)) {
+        setInputValue(value);
+      }
+    } else {
+      setInputValue(value);
+    }
   }
 
   function renderKeywordContent() {
@@ -53,24 +84,46 @@ export default function Keyword({
         </span>
         {hasInput && (
           <Input
-            type={inputType}
+            ref={inputRef}
+            type="text"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             onClick={handleInputClick}
             maxLength={inputType === 'text' ? 20 : 2}
-            placeholder={inputType === 'text' ? '...' : '0'}
+            placeholder={inputType === 'text' ? "[...]" : '0'}
             className={clsx(
-              "flex flex-grow text-black bg-transparent border-none rounded-none p-0 h-4 mx-1 active:border-none active:outline-none",
+              "flex-inline text-black text-normal opacity-80 bg-transparent border-none rounded-none p-0 h-4 ml-1",
+              "keyword-input",
               {
-                "max-w-10": inputType === 'number',
-                "max-w-40": inputType === 'text',
-              }
+                "max-w-[18px] mr-0.25 font-bold": inputType === 'number',
+                "w-auto max-w-40": inputType === 'text',
+              },
             )}
           />
         )}
       </>
     )
   }
+
+  useEffect(() => {
+    if (reminder) {
+      const words = reminder.split(' ');
+      const updatedWords = words.map(word => {
+        if (word === 'N' || word.startsWith('[')) {
+          return debouncedInputValue || word;
+        }
+        return word;
+      });
+      setReminderWords(updatedWords);
+    }
+  }, [
+    reminder, 
+    debouncedInputValue
+  ]);
+
+  useEffect(() => {
+    adjustInputWidth();
+  }, [inputValue, inputType]);
 
   return truncate ? (
     <TooltipProvider>
@@ -111,7 +164,7 @@ export default function Keyword({
                   key={index} 
                   className={`font-normal text-black italic opacity-80 ${index < reminderWords.length - 1 ? 'mr-1' : ''}`}
                 >
-                  {word}
+                  {word === 'N' || word.startsWith('[') ? inputValue || word : word}
                 </span>
               ))}
             <span className="font-normal text-black italic opacity-80">).</span>
