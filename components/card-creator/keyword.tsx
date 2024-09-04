@@ -1,7 +1,10 @@
-import React from 'react';
+"use client"
+
+import React, { useState } from 'react';
 // Utils
 import clsx from 'clsx';
 // Components
+import { Input } from "@/components/ui/input"
 import { 
   Tooltip, 
   TooltipContent, 
@@ -22,25 +25,59 @@ export default function Keyword({
   truncate,
   type 
 }: KeywordProps) {
+  const [inputValue, setInputValue] = useState('')
+  const hasInput = reminder && (reminder.includes('[') || /\bN\b/.test(reminder))
+  const inputType = reminder?.includes('[') ? 'text' : 'number'
 
   const reminderWords = reminder ? reminder.split(' ') : [];
+
+  function handleInputClick(
+    e: React.MouseEvent
+  ) {
+    e.stopPropagation();
+  }
+
+  function renderKeywordContent() {
+    return (
+      <>
+        <span className={clsx(
+          "font-bold",
+          {
+            "mr-1": !hasInput,
+            "text-blue-700": type === "persistent",
+            "text-green-700": type === "reactive",
+            "text-yellow-700": type === "active",
+          }
+        )}>
+          {keyword}{hasInput && (<span className="text-black">:</span>)}
+        </span>
+        {hasInput && (
+          <Input
+            type={inputType}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onClick={handleInputClick}
+            maxLength={inputType === 'text' ? 20 : 2}
+            placeholder={inputType === 'text' ? '...' : '0'}
+            className={clsx(
+              "flex flex-grow text-black bg-transparent border-none rounded-none p-0 h-4 mx-1 active:border-none active:outline-none",
+              {
+                "max-w-10": inputType === 'number',
+                "max-w-40": inputType === 'text',
+              }
+            )}
+          />
+        )}
+      </>
+    )
+  }
 
   return truncate ? (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <span>
-            <p className={clsx(
-              "font-semibold",
-                {
-                  "text-blue-700 hover:text-blue-500": type === "persistent",
-                  "text-green-700 hover:text-green-500": type === "reactive",
-                  "text-yellow-700 hover:text-yellow-500": type === "active",
-                }
-              )}
-            >
-              {keyword}
-            </p>
+            {renderKeywordContent()}
           </span>
         </TooltipTrigger>
         <TooltipContent 
@@ -67,30 +104,17 @@ export default function Keyword({
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="w-full inline-flex flex-wrap items-baseline space-y-0">
-            <span className={clsx(
-              "font-bold mr-1",
-              {
-                "text-blue-700": type === "persistent",
-                "text-green-700": type === "reactive",
-                "text-yellow-700": type === "active",
-              }
-            )}>
-              {keyword}
-            </span>
-            {reminder && (
-              <>
-                <span className="font-normal text-black italic opacity-80">(</span>
-                {reminderWords.map((word, index) => (
-                  <React.Fragment key={index}>
-                    <span className="font-normal text-black italic opacity-80">{word}</span>
-                    {index < reminderWords.length - 1 && (
-                      <span className="font-normal text-black italic mr-1 opacity-80">{" "}</span>
-                    )}
-                  </React.Fragment>
-                ))}
-                <span className="font-normal text-black italic  opacity-80">).</span>
-              </>
-            )}
+            {renderKeywordContent()}
+            <span className="font-normal text-black italic opacity-80">(</span>
+              {reminderWords.map((word, index) => (
+                <span 
+                  key={index} 
+                  className={`font-normal text-black italic opacity-80 ${index < reminderWords.length - 1 ? 'mr-1' : ''}`}
+                >
+                  {word}
+                </span>
+              ))}
+            <span className="font-normal text-black italic opacity-80">).</span>
           </div>
         </TooltipTrigger>
         <TooltipContent side="top">

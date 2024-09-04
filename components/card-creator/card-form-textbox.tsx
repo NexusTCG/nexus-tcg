@@ -40,7 +40,7 @@ export default function CardFormTextBox({
               ? cardGrade.toLowerCase() 
               : "core"
             } 
-          truncateKeywords={cardText > 150 ? true : true} 
+          truncateKeywords={cardText > 150 ? true : false} 
         />
       )}
       {/* Text Component */}
