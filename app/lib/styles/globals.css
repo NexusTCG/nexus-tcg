@@ -81,6 +81,18 @@
   border: none !important;
 }
 
+.card-text-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.card-text-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;

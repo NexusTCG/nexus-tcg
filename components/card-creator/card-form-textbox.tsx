@@ -7,6 +7,8 @@ import clsx from "clsx"
 import { calculateBgColor } from "@/app/utils/actions/actions";
 // Custom components
 import KeywordSelect from "@/components/card-creator/keyword-select";
+import CardText from "@/components/card-creator/card-text";
+import LoreText from "@/components/card-creator/lore-text";
 
 type CardFormTextBoxProps = {
   activeMode: "initial" | "anomaly"
@@ -29,7 +31,9 @@ export default function CardFormTextBox({
       id="card-form-text-container"
       style={{ fontSize: "0.85rem" }}
       className={clsx(
-        "flex flex-col justify-start items-start w-full h-full px-2 pt-1.5 pb-2.5 gap-2 text-black border border-b-2",
+        "flex flex-col justify-start items-start",
+        "w-full h-full px-2 pt-1.5 pb-2.5 gap-1",
+        "border border-b-2",
         bgColorClass50 || "bg-neutral-50",
       )}
     >
@@ -43,8 +47,13 @@ export default function CardFormTextBox({
           truncateKeywords={cardText > 150 ? true : false} 
         />
       )}
-      {/* Text Component */}
-      {/* Lore Text Component */}
+      {/* TODO: Dynamically set length based on keyword count */}
+      <CardText 
+        activeMode={activeMode} 
+        length="xl" 
+      />
+      {/* TODO: Hide lore if CardText is 150 chars or more and theres key words */}
+      <LoreText activeMode={activeMode} />
     </div>
   );
 }
