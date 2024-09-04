@@ -162,7 +162,7 @@ export default function KeywordSelect({
             rounded-none
             overflow-hidden
             p-0
-            min-h-[40px]
+            min-h-[20px]
             h-auto
           "
         >
