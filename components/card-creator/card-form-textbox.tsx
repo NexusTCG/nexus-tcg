@@ -29,18 +29,20 @@ export default function CardFormTextBox({
       id="card-form-text-container"
       style={{ fontSize: "0.85rem" }}
       className={clsx(
-        "flex flex-col justify-start items-start w-full h-full gap-2 p-2 text-black border border-b-2",
+        "flex flex-col justify-start items-start w-full h-full px-2 pt-1.5 pb-2.5 gap-2 text-black border border-b-2",
         bgColorClass50 || "bg-neutral-50",
       )}
     >
-      <KeywordSelect
-        cardGrade={
-          cardGrade 
-            ? cardGrade.toLowerCase() 
-            : "core"
-          } 
-        truncateKeywords={cardText > 150 ? true : false} 
-      />
+      {activeMode === "initial" && (
+        <KeywordSelect
+          cardGrade={
+            cardGrade 
+              ? cardGrade.toLowerCase() 
+              : "core"
+            } 
+          truncateKeywords={cardText > 150 ? true : false} 
+        />
+      )}
       {/* Text Component */}
       {/* Lore Text Component */}
     </div>

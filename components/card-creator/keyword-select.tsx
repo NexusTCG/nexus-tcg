@@ -9,13 +9,6 @@ import clsx from "clsx"
 // Validation
 import { KeywordsDTO } from "@/app/lib/types/dto";
 // Components
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from "@/components/ui/tooltip"
-
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -65,12 +58,9 @@ export default function KeywordSelect({
     keyword: string
   ) {
     if (selectedKeywords.length < maxKeywords) {
-      if (
-        !selectedKeywords
-          .some((
-            kw: { id: string }
-          ) => kw.id === keyword)
-        ) {
+      if (!selectedKeywords.some((
+        kw: { id: string }) => kw.id === keyword
+      )) {
         append({ id: keyword });
       }
     }
@@ -79,20 +69,16 @@ export default function KeywordSelect({
   function handleRemoveKeyword(
     keyword: string
   ) {
-    remove(
-      selectedKeywords
-        .findIndex((
-          kw: { id: string }
-        ) => kw.id === keyword)
-      );
+    remove(selectedKeywords.findIndex((
+      kw: { id: string }) => kw.id === keyword
+    ));
   }
 
   function renderKeyword(
     keyword: string
   ) {
-    const keywordData = keywords?.find((
-        kw: KeywordsDTO
-      ) => kw.name === keyword
+    const keywordData = keywords?.find(
+      (kw: KeywordsDTO) => kw.name === keyword
     );
     if (!keywordData) return keyword;
 
@@ -106,9 +92,29 @@ export default function KeywordSelect({
     )
   }
 
-  // TODO: Prevent keywords to be fetched on every render
+  function renderKeywords() {
+    if (truncateKeywords) {
+      return selectedKeywords.map((
+        keyword: { id: string }, 
+        index: number
+      ) => (
+        <React.Fragment key={keyword.id}>
+          {renderKeyword(keyword.id)}
+          {index < selectedKeywords.length - 1 && <span className="mr-1">,</span>}
+        </React.Fragment>
+      ));
+    } else {
+      return selectedKeywords.map((
+        keyword: { id: string }
+      ) => (
+        <div key={keyword.id} className="w-full">
+          {renderKeyword(keyword.id)}
+        </div>
+      ));
+    }
+  }
 
-  // Fetch keywords from Supabase
+  // TODO: Prevent keywords to be fetched on every render
   useEffect(() => {
     if (keywords) return;
 
@@ -136,40 +142,41 @@ export default function KeywordSelect({
   // TODO: Implement keyword deselect functionality
   // TODO: Fix keywords expanding past container bounds
   // TODO: Render selectedKeywords based on keyword name instead of id
-
-  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           role="combobox"
-          arian-expanded={open}
+          aria-expanded={open}
           className="
             flex
-            flex-wrap 
+            flex-col 
             justify-start
             items-start
             w-full
-            bg-transparent hover:bg-transparent text-black hover:text-black"
+            bg-transparent 
+            hover:bg-transparent 
+            text-black 
+            hover:text-black
+            rounded-none
+            overflow-hidden
+            p-0
+            min-h-[40px]
+            h-auto
+          "
         >
           {selectedKeywords.length > 0 ? (
-            <div className="flex flex-wrap w-full gap-2">
-              {(
-                selectedKeywords.length > 2 
-                  ? selectedKeywords.slice(0, 2) 
-                  : selectedKeywords).map((
-                    keyword: { id: string }, 
-                    index: number
-                  ) => (
-                <span key={index}>
-                  {renderKeyword(keyword.id)}
-                  </span>
-              ))}
-              {selectedKeywords.length > 2 && <span>...</span>}
+            <div className={clsx(
+              "w-full",
+              truncateKeywords ? "flex flex-row flex-wrap" : "space-y-1"
+            )}>
+              {renderKeywords()}
             </div>
           ) : (
-            <span className="flex justify-start items-center px-2 py-1 hover:bg-neutral-200 rounded-sm w-full">"Select keywords..."</span>
+            <span className="flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full">
+              Select keywords...
+            </span>
           )}
         </Button>
       </PopoverTrigger>

@@ -30,7 +30,7 @@ import AgentTypeSelect from "@/components/card-creator/agent-type-select";
 import EnergyCostPopover from "@/components/card-creator/energy-cost-popover";
 import SpeedCycler from "@/components/card-creator/speed-cycler";
 
-const CARD_NAME_MAX_LENGTH = 20;
+const CARD_NAME_MAX_LENGTH = 30;
 const cardNameDefaults = [
   "An amazing card name...", 
   "A glorious card name...", 
