@@ -24,6 +24,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip"
 // Custom components
 import Keyword from "@/components/card-creator/keyword"
 // Icons
@@ -172,9 +178,18 @@ export default function KeywordSelect({
               {renderKeywords()}
             </div>
           ) : (
-            <span className="flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full">
-              Select keywords...
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full p-1 hover:text-neutral-800">
+                    Select keywords...
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  Click to add keywords
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </Button>
       </PopoverTrigger>
