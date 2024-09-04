@@ -10,6 +10,7 @@ import clsx from "clsx"
 import { KeywordsDTO } from "@/app/lib/types/dto";
 // Components
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import {
   Command,
   CommandEmpty,
@@ -23,6 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+// Custom components
 import Keyword from "@/components/card-creator/keyword"
 // Icons
 import { Check } from "lucide-react"
@@ -40,7 +42,7 @@ export default function KeywordSelect({
   const [keywords, setKeywords] = useState<KeywordsDTO[] | null>(null);
 
   const { control, watch } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const { append, remove } = useFieldArray({
     control,
     name: "initialMode.keywords"
   });
@@ -54,24 +56,20 @@ export default function KeywordSelect({
     prime: 4
   }[cardGrade];
 
-  function handleKeywordSelect(
+  function handleKeywordToggle(
     keyword: string
   ) {
-    if (selectedKeywords.length < maxKeywords) {
-      if (!selectedKeywords.some((
-        kw: { id: string }) => kw.id === keyword
-      )) {
-        append({ id: keyword });
-      }
+    const index = selectedKeywords
+      .findIndex(
+        (kw: { id: string }) => kw.id === keyword
+      );
+    if (index > -1) {
+      // Remove if: Keyword is already selected
+      remove(index);
+    } else if (selectedKeywords.length < maxKeywords) {
+      // Add if: Keyword not selected, and max not reached
+      append({ id: keyword });
     }
-  }
-
-  function handleRemoveKeyword(
-    keyword: string
-  ) {
-    remove(selectedKeywords.findIndex((
-      kw: { id: string }) => kw.id === keyword
-    ));
   }
 
   function renderKeyword(
@@ -180,7 +178,7 @@ export default function KeywordSelect({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[312px] p-0">
+      <PopoverContent className="w-[312px] h-[260px] p-0">
         <Command>
           <CommandInput placeholder="Search keywords..." />
           <CommandList>
@@ -190,17 +188,28 @@ export default function KeywordSelect({
                 key={type}
                 heading={type.charAt(0).toUpperCase() + type.slice(1)}
               >
+                <>
+                <Separator />
                 {keywords
                   ?.filter((keyword: KeywordsDTO) => keyword.type === type)
-                  .map((keyword: KeywordsDTO) => (
+                  .map((keyword: KeywordsDTO) => {
+                    const isSelected = selectedKeywords.some(
+                      (kw: { id: string }) => kw.id === keyword.name
+                    );
+                    return (
                   <CommandItem
                     key={keyword.id}
                     value={keyword.name || ''}
-                    onSelect={() => handleKeywordSelect(keyword.name || '')}
-                    disabled={selectedKeywords.length >= maxKeywords}
+                    onSelect={
+                      () => handleKeywordToggle(keyword.name || '')
+                    }
+                    disabled={
+                      !isSelected && 
+                      selectedKeywords.length >= maxKeywords
+                    }
                   >
                     <div className={clsx(
-                      "flex flex-row justify-start items-start gap-2 w-full",
+                      "flex flex-row justify-start items-start gap-2 w-full cursor-pointer",
                       {
                         "text-blue-500": type === "persistent",
                         "text-orange-500": type === "reactive",
@@ -209,7 +218,7 @@ export default function KeywordSelect({
                     )}>
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          "mr-2 h-[20px] w-[20px]",
                           selectedKeywords.some((
                             kw: { id: string }
                           ) => kw.id === keyword.name) 
@@ -226,8 +235,10 @@ export default function KeywordSelect({
                         </p>
                       </div>
                     </div>
-                  </CommandItem>
-                ))}
+                    </CommandItem>
+                    );
+                  })}
+                </>
               </CommandGroup>
             ))}
           </CommandList>
