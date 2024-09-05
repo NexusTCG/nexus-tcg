@@ -9,6 +9,7 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 import KeywordSelect from "@/components/card-creator/keyword-select";
 import CardText from "@/components/card-creator/card-text";
 import LoreText from "@/components/card-creator/lore-text";
+import KeywordDrawer from "@/components/card-creator/keyword-drawer";
 
 type CardFormTextBoxProps = {
   activeMode: "initial" | "anomaly"
@@ -36,9 +37,24 @@ export default function CardFormTextBox({
         bgColorClass50 || "bg-neutral-50",
       )}
     >
-      {activeMode === "initial" && (
+      {/* {activeMode === "initial" && (
         <div className="flex-shrink-0">
           <KeywordSelect
+            cardGrade={
+              cardGrade 
+                ? cardGrade.toLowerCase() 
+                : "core"
+              } 
+            truncateKeywords={
+              (cardText > 150 ? true : false) || 
+              (keywords.length > 2 ? true : false)
+            } 
+          />
+        </div>
+      )} */}
+      {activeMode === "initial" && (
+        <div className="flex-shrink-0 w-full">
+          <KeywordDrawer
             cardGrade={
               cardGrade 
                 ? cardGrade.toLowerCase() 

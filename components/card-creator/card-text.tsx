@@ -19,7 +19,7 @@ export default function CardText({
   activeMode,
 }: CardTextProps) {
   const [maxLength, setMaxLength] = useState<number>(300)
-  const [height, setHeight] = useState<number>(200)
+  // const [height, setHeight] = useState<number>(200)
   const { 
     watch,
     control, 
@@ -27,7 +27,7 @@ export default function CardText({
       isSubmitting 
     }
   } = useFormContext();
-  const cardText = watch(`${activeMode}Mode.text`)
+  // const cardText = watch(`${activeMode}Mode.text`)
   const keywords = watch("keywords")
 
   useEffect(() => {
