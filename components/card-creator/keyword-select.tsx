@@ -118,11 +118,11 @@ export default function KeywordSelect({
     }
   }
 
-  // TODO: Prevent keywords to be fetched on every render
+  // TODO: Prevent keywords from being fetched on every render
   useEffect(() => {
-    if (keywords) return;
-
     async function fetchKeywords() {
+      if (keywords) return;
+
       try {
         const response = await fetch('/api/data/fetch-keywords');
 
@@ -143,9 +143,6 @@ export default function KeywordSelect({
     fetchKeywords();
   }, []);
 
-  // TODO: Implement keyword deselect functionality
-  // TODO: Fix keywords expanding past container bounds
-  // TODO: Render selectedKeywords based on keyword name instead of id
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -181,7 +178,7 @@ export default function KeywordSelect({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full p-1 hover:text-neutral-800">
+                  <span className="h-[24px] flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full p-1 hover:text-neutral-800">
                     Select keywords...
                   </span>
                 </TooltipTrigger>

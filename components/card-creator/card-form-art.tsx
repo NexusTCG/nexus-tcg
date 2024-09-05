@@ -131,6 +131,7 @@ export default function CardArtPopover() {
           shadow-lg
           shadow-black/60
           md:w-[480px]
+          lg:w-[600px]
           w-[360px]
           max-h-[480px]
           overflow-visible

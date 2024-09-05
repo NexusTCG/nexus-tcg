@@ -1,7 +1,7 @@
 "use client";
 
 // Hooks
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useFormContext } from 'react-hook-form';
 // Components
 import {
@@ -11,33 +11,32 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
-type CardFormTextBoxProps = {
+type CardTextProps = {
   activeMode: "initial" | "anomaly"
-  length: "s" | "md" | "lg" | "xl"
 }
 
 export default function CardText({ 
   activeMode,
-  length, 
-}: CardFormTextBoxProps) {
+}: CardTextProps) {
+  const [maxLength, setMaxLength] = useState<number>(300)
+  const [height, setHeight] = useState<number>(200)
   const { 
+    watch,
     control, 
     formState: { 
       isSubmitting 
     }
   } = useFormContext();
+  const cardText = watch(`${activeMode}Mode.text`)
+  const keywords = watch("keywords")
 
-  const MAX_LENGTH = length === "s" 
-    ? 75 : length === "md" 
-    ? 150 : length === "lg" 
-    ? 225 : 300;
-
-  // TODO: Add "/" for dropdown menu to add inline icons or syntax
-  // TODO: Remove icon with backspace
-  // TODO: Add space after each new paragraph break.
-  // TODO: Make sure height is always the full available height
-  // TODO: Add syntax correction for text input (based on game terminology)
-  // TODO: Add spellcheck to text input
+  useEffect(() => {
+    if (Array.isArray(keywords) && keywords.length >= 3) {
+      setMaxLength(225)
+    } else {
+      setMaxLength(300)
+    }
+  }, [keywords])
   
   return (
     <FormField
@@ -48,34 +47,31 @@ export default function CardText({
           : "anomalyMode.text"
       }
       render={({ field }) => (
-        <FormItem className="w-full">
+        <FormItem className="w-full h-full">
           <FormControl>
-            {/* Placeholder div for text input visibility */}
-            <div className="w-full h-full border border-red-500">
-              <Textarea
-                {...field}
-                disabled={isSubmitting}
-                maxLength={MAX_LENGTH}
-                placeholder={`Enter ${activeMode} mode text...`}
-                className="
-                  w-full
-                  h-full
-                  bg-transparent
-                  text-black
-                  font-medium
-                  text-md
-                  rounded-none
-                  outline-none
-                  border-none
-                  focus:ring-0
-                  focus:outline-none
-                  caret-black
-                  p-0
-                  card-text-input
-                  resize-none
-                "
-              />
-            </div>
+            <Textarea
+              {...field}
+              disabled={isSubmitting}
+              maxLength={maxLength}
+              placeholder={`Enter ${activeMode} mode text...`}
+              className="
+                w-full
+                h-full
+                bg-transparent
+                text-black
+                font-medium
+                text-md
+                rounded-none
+                outline-none
+                border-none
+                focus:ring-0
+                focus:outline-none
+                caret-black
+                p-0
+                card-text-input
+                resize-none
+              "
+            />
           </FormControl>
         </FormItem>
       )}

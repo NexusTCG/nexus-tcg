@@ -17,12 +17,11 @@ type CardFormTextBoxProps = {
 export default function CardFormTextBox({
   activeMode
 }: CardFormTextBoxProps) {
-  
   const { watch } = useFormContext();
   const cardGrade = watch("grade")
   const energyCost = watch('initialMode.energy_cost');
-
-  const cardText = 150; // Placeholder
+  const keywords = watch('initialMode.keywords');
+  const cardText = watch(`${activeMode}Mode.text`)
 
   const bgColorClass50 = activeMode === "anomaly" ? null : calculateBgColor(energyCost, 50)[0];
 
@@ -32,28 +31,36 @@ export default function CardFormTextBox({
       style={{ fontSize: "0.85rem" }}
       className={clsx(
         "flex flex-col justify-start items-start",
-        "w-full h-full px-2 pt-1.5 pb-2.5 gap-1",
-        "border border-b-2",
+        "w-full h-full px-2 pt-1.5 pb-2.5 gap-1.5",
+        "border border-b-2 resize-none",
         bgColorClass50 || "bg-neutral-50",
       )}
     >
       {activeMode === "initial" && (
-        <KeywordSelect
-          cardGrade={
-            cardGrade 
-              ? cardGrade.toLowerCase() 
-              : "core"
+        <div className="flex-shrink-0">
+          <KeywordSelect
+            cardGrade={
+              cardGrade 
+                ? cardGrade.toLowerCase() 
+                : "core"
+              } 
+            truncateKeywords={
+              (cardText > 150 ? true : false) || 
+              (keywords.length > 2 ? true : false)
             } 
-          truncateKeywords={cardText > 150 ? true : false} 
-        />
+          />
+        </div>
       )}
-      {/* TODO: Dynamically set length based on keyword count */}
-      <CardText 
-        activeMode={activeMode} 
-        length="xl" 
-      />
-      {/* TODO: Hide lore if CardText is 150 chars or more and theres key words */}
-      <LoreText activeMode={activeMode} />
+      <div className="flex-grow w-full overflow-hidden">
+        <CardText 
+          activeMode={activeMode}
+        />
+      </div>
+      {cardText.length < 150 && keywords.length <= 2 && (
+        <div className="flex-shrink-0 w-full">
+          <LoreText activeMode={activeMode} />
+        </div>
+      )}
     </div>
   );
 }
