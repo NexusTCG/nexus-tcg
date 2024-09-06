@@ -34,7 +34,6 @@ export default function GradeCycler() {
   } = useFormContext();
   
   const grade = watch('grade') as Grade;
-  const isUncommon = watch("anomalyMode.uncommon")
 
   function cycleGrade(
     e: React.MouseEvent

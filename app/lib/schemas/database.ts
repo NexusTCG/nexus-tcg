@@ -45,8 +45,9 @@ export const CardFormSchema = z.object({
   username: z.string().min(1, { message: "Username is required." }).default(
     "Username",
   ),
-  grade: z.string().default("core"),
+  postToDiscord: z.boolean().default(true),
   approved: z.boolean().default(false),
+  grade: z.string().default("core"),
   initialMode: z.object({
     render: z.string().nullable(),
     name: z.string().min(1, { message: "Card name is required." }).default(

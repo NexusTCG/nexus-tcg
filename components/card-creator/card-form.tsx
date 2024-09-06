@@ -49,8 +49,9 @@ export default function CardForm({
       created_at: null,
       updated_at: null,
       username: userProfile?.username || "Username",
-      grade: "core",
+      postToDiscord: true,
       approved: false,
+      grade: "core",
       initialMode: {
         render: null,
         name: "",
