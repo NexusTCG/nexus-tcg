@@ -46,6 +46,7 @@ export const CardFormSchema = z.object({
     "Username",
   ),
   grade: z.string().default("core"),
+  approved: z.boolean().default(false),
   initialMode: z.object({
     render: z.string().nullable(),
     name: z.string().min(1, { message: "Card name is required." }).default(

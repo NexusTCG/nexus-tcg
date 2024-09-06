@@ -1,11 +1,15 @@
 "use client";
 
+// Hooks
 import React, { useState, useEffect } from "react";
 import { useFormContext, useFieldArray } from 'react-hook-form';
+// Types
 import { KeywordsDTO } from "@/app/lib/types/dto";
+// Components 
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Badge } from "@/components/ui/badge";
+// Custom components
 import Keyword from "@/components/card-creator/keyword";
 
 type KeywordDrawerProps = {
@@ -123,6 +127,8 @@ export default function KeywordDrawer({
                   .map((keyword: KeywordsDTO) => {
                     const isSelected = selectedKeywords.some((kw: { id: string }) => kw.id === keyword.name);
                     return (
+                      // TODO: Add tooltip to each badge
+                      // TODO: Move cardform up when drawer is open to make it visible
                       <Badge
                         key={keyword.id}
                         variant={isSelected ? "default" : "outline"}

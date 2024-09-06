@@ -8,6 +8,7 @@ import { useMode } from "@/app/utils/context/CardFormModeContext";
 import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
 import CardFormFooter from "@/components/card-creator/card-form-footer";
+import GradeCycler from "@/components/card-creator/grade-cycler";
 
 type CardContainerProps = {
   children: React.ReactNode;
@@ -18,7 +19,9 @@ export default function CardContainer({
 }: CardContainerProps) {
   const { mode } = useMode();
   const { watch } = useFormContext();
+
   const username = watch("username")
+  const isUncommon: boolean = watch("anomalyMode.uncommon")
   const energyCost: EnergyCost = watch('initialMode.energy_cost');
 
   function getCardFrameImage() {
@@ -102,6 +105,13 @@ export default function CardContainer({
         {children}
       </div>
       <div className="w-full z-10">
+        {mode === "anomaly" && isUncommon === false ? (
+          null
+        ) : (
+          <div className="absolute bottom-0 right-0 z-50 p-2 rounded-tl-2xl bg-black mb-1 mr-1 pl-">
+            <GradeCycler />
+          </div>
+        )}
         <CardFormFooter username={username} />
       </div>
     </div>

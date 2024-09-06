@@ -101,16 +101,16 @@ export default function CardCreatorFooter() {
       </div>
       <div>
         <Button variant="ghost" size="icon">
-            <MdChevronRight
-              className="
-                h-[24px]
-                w-[24px]
-                text-neutral-500
-                opacity-80
-                hover:opacity-100
-                animate-all
-              "
-            />
+          <MdChevronRight
+            className="
+              h-[24px]
+              w-[24px]
+              text-neutral-500
+              opacity-80
+              hover:opacity-100
+              animate-all
+            "
+          />
         </Button>
       </div>
     </div>

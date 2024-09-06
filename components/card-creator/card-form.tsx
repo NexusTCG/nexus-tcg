@@ -26,6 +26,7 @@ import CardCreatorHeader from "@/components/card-creator/card-creator-header";
 import CardCreatorFooter from "@/components/card-creator/card-creator-footer"; 
 import CardFormInitial from "@/components/card-creator/card-form-initial";
 import CardFormAnomaly from "@/components/card-creator/card-form-anomaly";
+import GradeCycler from "@/components/card-creator/grade-cycler";
 
 type CardFormProps = {
   currentUserId?: string | null;
@@ -48,7 +49,8 @@ export default function CardForm({
       created_at: null,
       updated_at: null,
       username: userProfile?.username || "Username",
-      grade: "prime", // TODO: Change back to core
+      grade: "core",
+      approved: false,
       initialMode: {
         render: null,
         name: "",
@@ -91,7 +93,6 @@ export default function CardForm({
   });
 
   const { 
-    trigger,
     setValue,
     handleSubmit,
     formState: { 
