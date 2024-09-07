@@ -20,7 +20,7 @@ export default function CardContainer({
   const { mode } = useMode();
   const { watch } = useFormContext();
 
-  const username = watch("username")
+  const username = watch("nexus_card_data.username")
   const isUncommon: boolean = watch("anomalyMode.uncommon")
   const energyCost: EnergyCost = watch('initialMode.energy_cost');
 

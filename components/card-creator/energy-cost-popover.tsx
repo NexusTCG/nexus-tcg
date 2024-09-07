@@ -3,6 +3,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useOverlay} from "@/app/utils/context/OverlayContext"
+import { useMode } from "@/app/utils/context/CardFormModeContext"
 // Utils
 import clsx from "clsx"
 // Types
@@ -25,9 +26,10 @@ import { Button } from "@/components/ui/button";
 import EnergyIcon from "@/components/card-creator/energy-icon";
 
 export default function EnergyCostPopover() {
+  const { mode } = useMode();
   const { showOverlay, hideOverlay } = useOverlay();
   const { watch, setValue, trigger } = useFormContext();
-  const activeMode = watch("activeMode");
+  
   const energyCosts = watch('initialMode.energy_cost') || {};
   const energyTypes: EnergyType[] = [
     'light', 
@@ -139,7 +141,7 @@ export default function EnergyCostPopover() {
 
   return (
     <>
-      {activeMode !== "anomaly" ? (
+      {mode !== "anomaly" ? (
         <Popover  onOpenChange={(open) => open ? showOverlay() : hideOverlay()}>
           <PopoverTrigger asChild>
             <Button

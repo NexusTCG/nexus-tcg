@@ -74,45 +74,37 @@ export default function KeywordSelect({
       remove(index);
     } else if (selectedKeywords.length < maxKeywords) {
       // Add if: Keyword not selected, and max not reached
-      append({ id: keyword });
+      // append({ id: keyword });
+      append(keyword);
     }
   }
 
-  function renderKeyword(
-    keyword: string
-  ) {
-    const keywordData = keywords?.find(
-      (kw: KeywordsDTO) => kw.name === keyword
-    );
-    if (!keywordData) return keyword;
-
+  function renderKeyword(keywordName: string) {
+    const keywordData = keywords?.find((kw: KeywordsDTO) => kw.name === keywordName);
+    if (!keywordData) return keywordName;
+  
     return (
       <Keyword
-        keyword={keyword}
+        keyword={keywordData.name || ''}
         reminder={keywordData.reminder}
         truncate={truncateKeywords}
         type={keywordData.type}
       />
-    )
+    );
   }
 
   function renderKeywords() {
     if (truncateKeywords) {
-      return selectedKeywords.map((
-        keyword: { id: string }, 
-        index: number
-      ) => (
-        <React.Fragment key={keyword.id}>
-          {renderKeyword(keyword.id)}
+      return selectedKeywords.map((keyword: string, index: number) => (
+        <React.Fragment key={keyword}>
+          {renderKeyword(keyword)}
           {index < selectedKeywords.length - 1 && <span className="mr-1">,</span>}
         </React.Fragment>
       ));
     } else {
-      return selectedKeywords.map((
-        keyword: { id: string }
-      ) => (
-        <div key={keyword.id} className="w-full">
-          {renderKeyword(keyword.id)}
+      return selectedKeywords.map((keyword: string) => (
+        <div key={keyword} className="w-full">
+          {renderKeyword(keyword)}
         </div>
       ));
     }
@@ -205,9 +197,10 @@ export default function KeywordSelect({
                 {keywords
                   ?.filter((keyword: KeywordsDTO) => keyword.type === type)
                   .map((keyword: KeywordsDTO) => {
-                    const isSelected = selectedKeywords.some(
-                      (kw: { id: string }) => kw.id === keyword.name
-                    );
+                    // const isSelected = selectedKeywords.some(
+                    //   (kw: { id: string }) => kw.id === keyword.name
+                    // );
+                    const isSelected = selectedKeywords.includes(keyword.name);
                     return (
                   <CommandItem
                     key={keyword.id}
@@ -231,9 +224,10 @@ export default function KeywordSelect({
                       <Check
                         className={cn(
                           "mr-2 h-[20px] w-[20px]",
-                          selectedKeywords.some((
-                            kw: { id: string }
-                          ) => kw.id === keyword.name) 
+                          // selectedKeywords.some((
+                          //   kw: { id: string }
+                          // ) => kw.id === keyword.name) 
+                          selectedKeywords.some((kw: string) => kw === keyword.name)
                             ? "opacity-100" 
                             : "opacity-0"
                         )}

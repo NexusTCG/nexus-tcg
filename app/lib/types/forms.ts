@@ -1,11 +1,11 @@
 // Types for forms
-import { z } from 'zod';
+import { z } from "zod";
 import {
-  EnergySchema,
-  EnergyCostSchema,
-  SpeedTypeSchema,
-  CardTypeSchema,
   CardFormSchema,
+  CardTypeSchema,
+  EnergyCostSchema,
+  EnergySchema,
+  SpeedTypeSchema,
 } from "@/app/lib/schemas/database";
 
 // Card creator form types
@@ -23,4 +23,4 @@ export type CardCommentFormType = {
   comment: string;
   created_at: string;
   updated_at: string;
-}
+};

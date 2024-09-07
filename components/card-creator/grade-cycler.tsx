@@ -33,15 +33,15 @@ export default function GradeCycler() {
     } 
   } = useFormContext();
   
-  const grade = watch('grade') as Grade;
+  const grade = watch('nexus_card_data.grade') as Grade;
 
   function cycleGrade(
-    e: React.MouseEvent
+    e: React.MouseEvent 
   ) {
     e.preventDefault();
     e.stopPropagation();
     const nextGrade = getNextGrade(grade);
-    setValue('grade', nextGrade);
+    setValue('nexus_card_data.grade', nextGrade);
     toast(`Grade changed to ${nextGrade}!`);
   }
 

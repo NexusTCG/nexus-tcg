@@ -27,8 +27,7 @@ export default function CardText({
       isSubmitting 
     }
   } = useFormContext();
-  // const cardText = watch(`${activeMode}Mode.text`)
-  const keywords = watch("keywords")
+  const keywords = watch("initialMode.keywords")
 
   useEffect(() => {
     if (Array.isArray(keywords) && keywords.length >= 3) {

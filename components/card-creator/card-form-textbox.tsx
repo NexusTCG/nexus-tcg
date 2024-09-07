@@ -19,7 +19,7 @@ export default function CardFormTextBox({
   activeMode
 }: CardFormTextBoxProps) {
   const { watch } = useFormContext();
-  const cardGrade = watch("grade")
+  const cardGrade = watch("nexus_card_data.grade")
   const energyCost = watch('initialMode.energy_cost');
   const keywords = watch('initialMode.keywords');
   const cardText = watch(`${activeMode}Mode.text`)
@@ -37,7 +37,7 @@ export default function CardFormTextBox({
         bgColorClass50 || "bg-neutral-50",
       )}
     >
-      {/* {activeMode === "initial" && (
+      {activeMode === "initial" && (
         <div className="flex-shrink-0">
           <KeywordSelect
             cardGrade={
@@ -51,8 +51,8 @@ export default function CardFormTextBox({
             } 
           />
         </div>
-      )} */}
-      {activeMode === "initial" && (
+      )}
+      {/* {activeMode === "initial" && (
         <div className="flex-shrink-0 w-full">
           <KeywordDrawer
             cardGrade={
@@ -66,7 +66,7 @@ export default function CardFormTextBox({
             } 
           />
         </div>
-      )}
+      )} */}
       <div className="flex-grow w-full overflow-hidden">
         <CardText 
           activeMode={activeMode}

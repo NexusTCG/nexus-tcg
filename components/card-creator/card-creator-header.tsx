@@ -48,6 +48,7 @@ export default function CardCreatorHeader() {
         <h2 className="font-medium">{cardName ? cardName : "Card name"}</h2>
         <small className="opacity-50 text-xs">{mode.toUpperCase()}</small>
       </div>
+      {isValid.toString()}
       <Button
         type="submit"
         disabled={!isValid || isSubmitting}

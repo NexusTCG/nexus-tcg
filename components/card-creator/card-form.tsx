@@ -1,7 +1,7 @@
 "use client"
 
 // Hooks
-import React from "react"
+import React, { useEffect } from "react"
 import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 import { useMode } from "@/app/utils/context/CardFormModeContext"
@@ -9,6 +9,7 @@ import { useMode } from "@/app/utils/context/CardFormModeContext"
 import { motion, AnimatePresence } from "framer-motion"
 import PostHogClient from "@/app/utils/posthog/posthog";
 // Validation
+import { ZodError } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CardFormSchema } from "@/app/lib/schemas/database"
 import { ProfileDTO } from "@/app/lib/types/dto";
@@ -45,24 +46,24 @@ export default function CardForm({
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
     defaultValues: {
-      user_id: currentUserId || null,
-      created_at: null,
-      updated_at: null,
-      username: userProfile?.username || "Username",
-      postToDiscord: true,
-      approved: false,
-      grade: "core",
+      nexus_card_data: {
+        user_id: currentUserId || null,
+        created_at: null,
+        updated_at: null,
+        username: userProfile?.username || "Username",
+        approved: false,
+        grade: "core",
+      },
       initialMode: {
         render: null,
         name: "",
         type: "agent",
         type_sub: [],
-        type_super: null,
         mythic: false,
-        text: [""],
+        text: "",
         keywords: [],
         lore: "",
-        prompt_art: null,
+        prompt_art: "",
         art_options: [],
         art_selected: 0,
         energy_value: 0,
@@ -84,9 +85,9 @@ export default function CardForm({
         name: "",
         mythic: false,
         uncommon: false,
-        text: [""],
+        text: "",
         lore: "",
-        prompt_art: null,
+        prompt_art: "",
         art_options: [],
         art_selected: 0,
       }
@@ -94,12 +95,16 @@ export default function CardForm({
   });
 
   const { 
+    watch,
     setValue,
     handleSubmit,
     formState: { 
-      errors 
+      errors,
+      isValid,
     }
   } = methods;
+
+  const form = watch(); // For debugging
 
   const cardVariants = {
     active: { 
@@ -157,6 +162,7 @@ export default function CardForm({
       // Upload anomaly mode art if it exists
       if (
         data.anomalyMode.uncommon && 
+        data.anomalyMode.art_options !== undefined &&
         data.anomalyMode.art_options.length > 0
       ) {
         const response = await fetch('/api/data/upload-generated-art', {
@@ -167,20 +173,60 @@ export default function CardForm({
         const result = await response.json();
         anomalyModeArtUrls = result.uploadedUrls;
       }
+
+      const initialModeArtSelectedIndex = typeof data.initialMode.art_selected === 'number' 
+        ? data.initialMode.art_selected 
+        : 0;
+
+      const anomalyModeArtSelectedIndex = typeof data.anomalyMode.art_selected === 'number' 
+        ? data.anomalyMode.art_selected 
+        : 0;
       
       // Update form data
       const cardData = {
-        ...data,
+        nexus_card_data: {
+          user_id: data.nexus_card_data.user_id,
+          username: data.nexus_card_data.username,
+          approved: data.nexus_card_data.approved ? data.nexus_card_data.approved : false,
+          grade: data.nexus_card_data.grade
+        },
         initialMode: {
-          ...data.initialMode,
-          art_selected: initialModeArtUrls[data.initialMode.art_selected] || null,
+          render: data.initialMode.render,
+          name: data.initialMode.name,
+          type: data.initialMode.type,
+          type_sub: data.initialMode.type_sub,
+          mythic: data.initialMode.mythic,
+          text: data.initialMode.text,
+          keywords: data.initialMode.keywords,
+          lore: data.initialMode.lore,
+          prompt_art: data.initialMode.prompt_art,
+          art_options: initialModeArtUrls,
+          art_selected: initialModeArtSelectedIndex,
+          energy_value: data.initialMode.energy_value,
+          energy_cost: data.initialMode.energy_cost,
+          speed: data.initialMode.speed,
+          attack: data.initialMode.attack,
+          defense: data.initialMode.defense,
+          reach: data.initialMode.reach,
         },
         anomalyMode: {
-          ...data.anomalyMode,
-          art_selected: anomalyModeArtUrls[data.anomalyMode.art_selected] || null,
+          render: data.anomalyMode.render,
+          name: data.anomalyMode.name,
+          mythic: data.anomalyMode.mythic,
+          uncommon: data.anomalyMode.uncommon,
+          text: data.anomalyMode.text,
+          lore: data.anomalyMode.lore,
+          prompt_art: data.anomalyMode.prompt_art,
+          art_options: anomalyModeArtUrls,
+          art_selected: anomalyModeArtSelectedIndex,
         },
       };
   
+      console.log(
+        'Submitting card data:', 
+        JSON.stringify(cardData, null, 2)
+      );
+
       // Insert form data
       const insertResponse = await fetch("/api/data/submit-card", {
         method: "POST",
@@ -210,9 +256,48 @@ export default function CardForm({
       }
 
     } catch (error) {
-      toast(`Error saving card: ${error}`)
+      if (error instanceof ZodError) {
+        console.log('Zod validation error:', error);
+
+        const invalidFields = error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message
+        }));
+        console.log('Invalid fields:', invalidFields);
+
+        invalidFields.forEach(({ field, message }) => {
+          toast.error(`${field}: ${message}`);
+        });
+      } else {
+        // Handle other types of errors
+        console.error('Unexpected error:', error);
+        toast.error('An unexpected error occurred');
+      }
     }
   };
+
+  // Debugging
+  useEffect(() => {
+    if (!isValid) {
+      try {
+        CardFormSchema.parse(form);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          console.log('Zod validation error:', error);
+
+          const invalidFields = error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }));
+          console.log('Invalid fields:', invalidFields);
+
+          invalidFields.forEach(({ field, message }) => {
+            toast.error(`${field}: ${message}`);
+          });
+        }
+      }
+    }
+  }, [form, isValid]);
 
   return (
     <FormProvider {...methods}>

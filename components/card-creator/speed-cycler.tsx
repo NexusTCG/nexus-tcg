@@ -3,6 +3,7 @@
 // Hooks
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useMode } from "@/app/utils/context/CardFormModeContext"
 // Components
 import { toast } from "sonner"
 import {
@@ -15,9 +16,9 @@ import {
 import SpeedIcon from "@/components/card-creator/speed-icon";
 
 export default function SpeedCycler() {
+  const { mode } = useMode();
   const { watch, setValue } = useFormContext();
   const speed = watch('initialMode.speed');
-  const activeMode = watch("activeMode")
 
   function cycleSpeed(
     e: React.MouseEvent
@@ -30,12 +31,11 @@ export default function SpeedCycler() {
   };
   return (
     <>
-      {activeMode !== "anomaly" ? (
+      {mode === "initial" ? (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger
               onClick={cycleSpeed}
-              disabled={activeMode === "anomaly"}
             >
               <SpeedIcon type={speed} />
             </TooltipTrigger>
