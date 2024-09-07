@@ -7,16 +7,15 @@ import { useMode } from "@/app/utils/context/CardFormModeContext";
 // Utils
 import Image from 'next/image';
 import clsx from 'clsx';
+import posthog from 'posthog-js';
 // Data
 import { artdirectionOptions } from "@/app/lib/data/data";
 // Components
+import { toast } from "sonner";
 import {
-  Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import {
@@ -34,16 +33,22 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
-const MAX_PROMPT_LENGTH = 280;
+const MAX_PROMPT_LENGTH = 100;
+const MAX_ART_GENERATIONS = 5;
 
 export default function CardArtPopover() {
-  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: any }>({});
+  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string | null }>({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const { showOverlay, hideOverlay } = useOverlay();
+  const { watch, control, setValue } = useFormContext();
   const { mode } = useMode();
 
-  const { watch, control } = useFormContext();
   const form = watch()
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
+  const artOptions = form[`${mode}Mode`].art_options;
+  const selectedArt = form[`${mode}Mode`].art_selected;
 
   function handleOptionClick(
     category: string, 
@@ -55,14 +60,68 @@ export default function CardArtPopover() {
     }));
   };
 
-  function handleGenerateArt() {
-    // Call API to generate card art
+  async function handleGenerateArt() {
+    if (artOptions.length >= MAX_ART_GENERATIONS) {
+      // Show error message
+      return;
+    }
+
+    setIsGenerating(true);
+    toast("Generating art...")
+
+    const prompt = form[`${mode}Mode`].prompt_art;
+    const artDirections = Object.values(selectedOptions).filter(Boolean).join(", ");
+    const fullPrompt = `${prompt}. Art style: ${artDirections}`;
+
+    try {
+      const response = await fetch('/api/data/generate-art', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt }),
+      });
+
+      if (!response.ok) {
+        toast.error('Art generation API call failed!')
+        throw new Error('Art generation API call failed')
+      };
+
+      const { imageUrl } = await response.json();
+
+      posthog.capture('art_generated', {
+        imageUrl,
+        artOptions,
+        prompt,
+        artDirections,
+        fullPrompt,
+      })
+      toast.success('Art generated!')
+
+      setValue(`${mode}Mode.art_options`, [...artOptions, imageUrl]);
+      setValue(`${mode}Mode.art_selected`, artOptions.length);
+    } catch (error) {
+      console.error('Error generating art:', error);
+      toast.error('Art generation failed!')
+    } finally {
+      setIsGenerating(false);
+      setIsPopoverOpen(false);
+      hideOverlay();
+    }
   }
 
   return (
-    <Popover onOpenChange={(open) => open ? showOverlay() : hideOverlay()}>
-      <PopoverTrigger>
-        <div
+    <Popover 
+      open={isPopoverOpen} 
+      onOpenChange={(open) => {
+        if (!isGenerating) {
+          setIsPopoverOpen(open);
+          open 
+            ? showOverlay() 
+            : hideOverlay();
+        }
+      }}
+    >
+      <PopoverTrigger disabled={isGenerating}>
+      <div
           id="card-art-container"
           style={{ 
             borderRadius: "0 0 20px 20px",
@@ -72,20 +131,20 @@ export default function CardArtPopover() {
             maxHeight: "415px",
           }}
           className="
-            w-[360px]
-            h-full
-            border-2
-            z-10
-            -mt-0.5
-            shadow
-            shadow-black/50
+            w-[360px] 
+            h-full 
+            border-2 
+            z-10 
+            -mt-0.5 
+            shadow 
+            shadow-black/50 
             group
           "
         >
           <div
             style={{ 
               borderRadius: "0 0 20px 20px",
-              backdropFilter: "blur(2px)" 
+              backdropFilter: "blur(1px)" 
             }}
             className="
               absolute 
@@ -108,12 +167,15 @@ export default function CardArtPopover() {
           </div>
           <div className="w-full h-full overflow-hidden">
             <Image
-              // src={cardArtUrl[0]}
-              src="/images/default-art.jpg"
-              alt={`${form.initialMode.name} by ${form.username}`}
+              src={
+                artOptions[selectedArt] || 
+                "/images/default-art.jpg"
+              }
+              alt={`${form[`${mode}Mode`].name} by ${form.username}`}
               fill
-              style={{ objectFit: "cover" }}
-              className="group-hover:scale-105 transition-all duration-300"
+              style={{ 
+                objectFit: "cover",
+              }}
             />
           </div>
         </div>
@@ -142,6 +204,13 @@ export default function CardArtPopover() {
           -mb-24
           p-0
           gap-2
+          transition-all
+          duration-200
+          ease-in-out
+          opacity-100
+          scale-100
+          data-[state=closed]:opacity-0
+          data-[state=closed]:scale-95
         "
       >
         <div
@@ -152,21 +221,21 @@ export default function CardArtPopover() {
             justify-start
             items-start
             w-full
-            gap-4
+            gap-2
             p-4
           "
         >
-          <h2 className="font-semibold">Generate card art</h2>
           <FormField
             control={control}
             name={mode === "initial" ? "initialMode.prompt_art" : "anomalyMode.prompt_art"}
+            disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
                   <div className="relative w-full">
                     <Textarea
                       placeholder="Write a prompt describing your card's art"
-                      className="w-full max-h-[300px] pr-16 resize-none"
+                      className="w-full h-[100px] pr-16 resize-none"
                       maxLength={MAX_PROMPT_LENGTH}
                       {...field}
                     />
@@ -183,13 +252,31 @@ export default function CardArtPopover() {
             type="button"
             onClick={handleGenerateArt}
             size="sm"
-            className="
-              w-full
-              font-semibold
-            "
+            className={clsx("w-full font-semibold",
+              {
+                "animate-pulse": isGenerating,
+              }
+            )}
+            disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
           >
-            Generate art
+            {isGenerating ? "Generating..." : "Generate art"}
           </Button>
+          <small className="flex items-center space-x-0.5 font-medium">
+            <span className={clsx(
+                "font-bold",
+              {
+                "text-red-600": artOptions.length >= MAX_ART_GENERATIONS,
+                "text-red-500": artOptions.length >= MAX_ART_GENERATIONS * 0.8,
+                "text-red-400": artOptions.length >= MAX_ART_GENERATIONS * 0.6,
+              }
+            )}
+            >
+              {artOptions.length}
+            </span>
+            <span className="opacity-40">/</span>
+            <span className="font-semibold">{MAX_ART_GENERATIONS}{" "}</span>
+            <span className="opacity-80 font-normal">art generations left for {mode === "initial" ? "initial mode" : "anomaly mode"}</span>
+          </small>
         </div>
         <Separator />
         <div
@@ -271,7 +358,7 @@ export default function CardArtPopover() {
                       >
                         <Image
                           // src={`/path/to/${option.toLowerCase()}_reference.jpg`} 
-                          src="/images/default-art.jpg" // Placeholder
+                          src={selectedArt ? artOptions[selectedArt] : "/images/default-art.jpg"} // Placeholder
                           alt={`${option} style`} 
                           fill
                           style={{ objectFit: "cover" }}
