@@ -11,16 +11,12 @@ import posthog from 'posthog-js';
 // Data
 import { artPromptOptions } from "@/app/lib/data/components";
 // Validation
-import { 
-  ArtPromptOptionsType, 
-  ArtPromptOptionType 
-} from "@/app/lib/types/components";
+import { ArtPromptOptionType } from "@/app/lib/types/components";
 // Components
 import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -260,7 +256,7 @@ export default function CardArtSheet() {
             gap-2
           "
         >
-          <h2>Generate art</h2>
+          <SheetTitle>Generate art</SheetTitle>
           <div
             className="
               flex
@@ -373,8 +369,14 @@ export default function CardArtSheet() {
             h-full
           "
         >
-          {Object.entries(artPromptOptions).map(([sectionKey, section], index, array) => {
-            if (sectionKey === "framing" && (!selectedOptions["subject"] || selectedOptions["subject"] === 1)) {
+          {Object.entries(artPromptOptions).map((
+            [sectionKey, section], index, array
+          ) => {
+            if (
+              sectionKey === "framing" && (
+                !selectedOptions["subject"] || 
+                selectedOptions["subject"] === 1
+              )) {
               return null;
             }
 
@@ -398,7 +400,9 @@ export default function CardArtSheet() {
                         variant={isSelected ? "default" : "outline"}
                         className={clsx(
                           "font-normal cursor-pointer transition-colors duration-200",
-                          isSelected ? "bg-primary text-primary-foreground" : "bg-background",
+                          isSelected 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-background",
                           "hover:bg-primary/90 hover:text-primary-foreground"
                         )}
                         onClick={() => handleOptionClick(sectionKey, option.id)}
@@ -407,22 +411,26 @@ export default function CardArtSheet() {
                       </Badge>
                     );
 
-                    if (!option.image && !option.description) {
-                      return BadgeComponent;
-                    }
-
-                    return (
-                      <TooltipProvider key={option.id}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            {BadgeComponent}
-                          </TooltipTrigger>
-                          <TooltipContent
-                            sideOffset={5}
-                            className="w-[200px] border border-zinc-600 shadow-md shadow-black/60 z-[100] p-2"
-                          >
-                            {option.image && (
-                              <div className="w-full h-[150px] relative mb-2">
+                    if (option.image) {
+                      return (
+                        <TooltipProvider key={option.id}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              {BadgeComponent}
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="right"
+                              className="
+                                w-[200px] 
+                                p-0 
+                                overflow-hidden 
+                                border 
+                                border-zinc-600 
+                                shadow-md 
+                                shadow-black/60
+                              "
+                            >
+                              <div className="w-full h-[150px] relative">
                                 <Image
                                   src={option.image}
                                   alt={option.option}
@@ -430,14 +438,16 @@ export default function CardArtSheet() {
                                   style={{ objectFit: "cover" }}
                                 />
                               </div>
-                            )}
-                            {option.description && (
-                              <p className="text-sm">{option.description}</p>
-                            )}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    );
+                              {option.description && (
+                                <p className="p-2 text-sm">{option.description}</p>
+                              )}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      );
+                    }
+
+                    return BadgeComponent;
                   })}
                 </div>
               </div>

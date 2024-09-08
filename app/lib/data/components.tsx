@@ -1,4 +1,3 @@
-import React from "react";
 import { 
   MdPalette, 
   MdInvertColors, 
@@ -8,34 +7,26 @@ import {
   MdAccessTime, 
   MdMood, 
   MdPublic, 
-  MdTungsten, 
-  MdTexture, 
-  MdCrop, 
-  MdTransform, 
+  MdTungsten,  
+  MdCrop,  
   MdPhotoCamera 
 } from "react-icons/md";
 
 // Types
-import { 
-  ArtPromptOptionType, 
-  ArtPromptOptionsSectionType, 
-  ArtPromptOptionsType 
-} from "@/app/lib/types/components";
+import { ArtPromptOptionsType } from "@/app/lib/types/components";
 
 const artPromptOptionSectionIcons = {
   Palette: MdPalette,
   InvertColors: MdInvertColors,
   Brush: MdBrush,
   WbSunny: MdWbSunny,
-  Planet: MdPublic, // Update with actual icon
+  Planet: MdPublic,
   Landscape: MdLandscape,
   AccessTime: MdAccessTime,
   Mood: MdMood,
   Public: MdPublic,
   Tungsten: MdTungsten,
-  Texture: MdTexture,
   Crop: MdCrop,
-  Transform: MdTransform,
   LocalSee: MdPhotoCamera,
 }
 
@@ -47,7 +38,7 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Abstract",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/abstract.jpg?t=2024-09-08T15%3A21%3A04.355Z",
         "description": null,
         "prompt": null
       },
@@ -81,111 +72,62 @@ export const artPromptOptions: ArtPromptOptionsType = {
       },
       { 
         "id": 6,
-        "option": "Cubism",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 7,
         "option": "Cyberpunk",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 8,
-        "option": "Flat art",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 9,
+        "id": 7,
         "option": "Gothic",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 10,
+        "id": 8,
         "option": "Glitch art",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 11,
-        "option": "Impressionism",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 12,
-        "option": "Minimalism",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 13,
+        "id": 9,
         "option": "Naturalism",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 14,
-        "option": "Paper art",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 15,
+        "id": 10,
         "option": "Pixel art",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 16,
+        "id": 11,
         "option": "Psychedelic",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 17,
-        "option": "Realism",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 18,
-        "option": "Steampunk",
-        "image": null,
-        "description": null,
-        "prompt": null
-      },
-      { 
-        "id": 19,
+        "id": 12,
         "option": "Stylized",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 20,
+        "id": 13,
         "option": "Surrealism",
         "image": null,
         "description": null,
         "prompt": null
       },
       { 
-        "id": 21,
+        "id": 14,
         "option": "Vaporwave",
         "image": null,
         "description": null,
