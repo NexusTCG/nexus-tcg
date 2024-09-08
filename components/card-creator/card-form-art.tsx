@@ -48,7 +48,8 @@ const MAX_PROMPT_LENGTH = 100;
 const MAX_ART_GENERATIONS = 5;
 
 export default function CardArtSheet() {
-  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const { showOverlay, hideOverlay } = useOverlay();
@@ -56,10 +57,11 @@ export default function CardArtSheet() {
   const { mode } = useMode();
 
   const form = watch()
-  const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
-  const artDirectionOptions = form[`${mode}Mode`].art_direction_options;
   const artOptions = form[`${mode}Mode`].art_options;
   const selectedArt = form[`${mode}Mode`].art_selected;
+  const characterCount = form.initialMode.prompt_art 
+    ? form.initialMode.prompt_art.length 
+    : 0;
 
   function getSelectedOptionName(
     sectionKey: string, 
@@ -259,7 +261,6 @@ export default function CardArtSheet() {
           "
         >
           <h2>Generate art</h2>
-          {JSON.stringify(artDirectionOptions)}
           <div
             className="
               flex
