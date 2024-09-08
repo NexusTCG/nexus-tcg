@@ -10,11 +10,10 @@ import { Button } from "@/components/ui/button";
 export default function CardCreatorHeader() {
   const { mode } = useMode();
   const { 
-    watch, 
-    setValue,
+    watch,
     formState: { 
-      isSubmitting, 
-      isValid 
+      isSubmitting,
+      isValid
     } 
   } = useFormContext();
   const cardName = watch("initialMode.name");
@@ -48,7 +47,6 @@ export default function CardCreatorHeader() {
         <h2 className="font-medium">{cardName ? cardName : "Card name"}</h2>
         <small className="opacity-50 text-xs">{mode.toUpperCase()}</small>
       </div>
-      {isValid.toString()}
       <Button
         type="submit"
         disabled={!isValid || isSubmitting}

@@ -9,7 +9,12 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import posthog from 'posthog-js';
 // Data
-import { artdirectionOptions } from "@/app/lib/data/data";
+import { artPromptOptions } from "@/app/lib/data/components";
+// Validation
+import { 
+  ArtPromptOptionsType, 
+  ArtPromptOptionType 
+} from "@/app/lib/types/components";
 // Components
 import { toast } from "sonner";
 import {
@@ -29,16 +34,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+// Icons
+import { X } from "lucide-react";
 
 const MAX_PROMPT_LENGTH = 100;
 const MAX_ART_GENERATIONS = 5;
 
 export default function CardArtPopover() {
-  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string | null }>({});
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  const [isGenerating, setIsGenerating] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { showOverlay, hideOverlay } = useOverlay();
@@ -51,18 +58,38 @@ export default function CardArtPopover() {
   const selectedArt = form[`${mode}Mode`].art_selected;
 
   function handleOptionClick(
-    category: string, 
-    option: string
+    section: string, 
+    optionId: number
   ) {
     setSelectedOptions(prev => ({
       ...prev,
-      [category]: prev[category] === option ? null : option
+      [section]: prev[section] === optionId ? null : optionId
     }));
-  };
+  }
+
+  function getSelectedOptionName(
+    sectionKey: string, 
+    optionId: number | null
+  ): string | null {
+    if (optionId === null) return null;
+    const section = artPromptOptions[sectionKey];
+    const option = section.options.find(opt => opt.id === optionId);
+    return option ? option.option : null;
+  }
+
+  function handleBadgeClick(
+    sectionKey: string
+  ) {
+    setSelectedOptions(prev => {
+      const newOptions = { ...prev };
+      delete newOptions[sectionKey];
+      return newOptions;
+    });
+  }
 
   async function handleGenerateArt() {
     if (artOptions.length >= MAX_ART_GENERATIONS) {
-      // Show error message
+      toast.error(`You've reached the maximum of ${MAX_ART_GENERATIONS} art generations for ${mode === "initial" ? "initial mode" : "anomaly mode"}.`)
       return;
     }
 
@@ -182,7 +209,7 @@ export default function CardArtPopover() {
       </PopoverTrigger>
       <PopoverContent
         className="
-          PopoverContent 
+          PopoverContent
           flex
           flex-col
           justify-start
@@ -275,8 +302,34 @@ export default function CardArtPopover() {
             </span>
             <span className="opacity-40">/</span>
             <span className="font-semibold">{MAX_ART_GENERATIONS}{" "}</span>
-            <span className="opacity-80 font-normal">art generations left for {mode === "initial" ? "initial mode" : "anomaly mode"}</span>
+            <span className="opacity-80 font-normal">art generations used for {mode === "initial" ? "initial mode" : "anomaly mode"}</span>
           </small>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {Object.entries(selectedOptions).map(([sectionKey, optionId]) => {
+              const optionName = getSelectedOptionName(sectionKey, optionId);
+              if (optionName) {
+                return (
+                  <Badge
+                    key={sectionKey}
+                    variant="secondary"
+                    onClick={() => handleBadgeClick(sectionKey)}
+                    className="
+                      hover:opacity-80
+                      text-xs 
+                      font-normal 
+                      pr-1.5
+                      cursor-pointer
+                    "
+
+                  >
+                    {optionName}
+                    <X className="inline-block ml-1 h-3 w-3" />
+                  </Badge>
+                );
+              }
+              return null;
+            })}
+          </div>
         </div>
         <Separator />
         <div
@@ -292,84 +345,79 @@ export default function CardArtPopover() {
             max-h-[50vh]
           "
         >
-          {Object
-            .entries(artdirectionOptions)
-            .map(([category, options]) => (
-            <div
-              key={category}
-              id="artdirection-options-category-container"
-              className="
-                flex
-                flex-col
-                justify-start
-                items-start
-                gap-2
-                w-full
-                p-4
-                border-b
-                border-zinc-700
-              "
-            >
-              <h4 className="text-md font-semibold">{category}</h4>
+          {Object.entries(artPromptOptions).map(([sectionKey, section]) => {
+            if (sectionKey === "framing" && (!selectedOptions["subject"] || selectedOptions["subject"] === 1)) {
+              return null;
+            }
+
+            return (
               <div
-                id="category-options"
+                key={sectionKey}
                 className="
-                  flex
-                  flex-wrap
-                  justify-start
-                  items-start
-                  gap-1
-                  w-full
+                  flex 
+                  flex-col 
+                  gap-2 
+                  w-full 
+                  p-4 
+                  border-b 
+                  border-zinc-700
                 "
               >
-                {options.map((option) => (
-                  <TooltipProvider key={option}>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button
-                          onClick={() => handleOptionClick(category, option)}
-                          variant={
-                            selectedOptions[category] === option 
-                            ? "default"
-                            : "outline"}
-                          size="sm"
-                          className={clsx("text-xs",
-                            {
-                              "border": selectedOptions[category] === option,
-                            }
-                          )}
-                        >
-                          {option}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        sideOffset={5}
-                        style={{ position: "relative", }}
-                        className="
-                          w-[200px]
-                          h-[150px]
-                          border
-                          border-zinc-600
-                          shadow-md
-                          shadow-black/60
-                          z-[100]
-                          p-0
-                        "
+                <h4 className="text-md font-semibold">{section.title}</h4>
+                <div className="flex flex-wrap gap-1 mb-2">
+                {section.options.map((option: ArtPromptOptionType) => {
+                    const isSelected = selectedOptions[sectionKey] === option.id;
+                    const BadgeComponent = (
+                      <Badge
+                        key={option.id}
+                        variant={isSelected ? "default" : "outline"}
+                        className={clsx(
+                          "font-normal cursor-pointer transition-colors duration-200",
+                          isSelected ? "bg-primary text-primary-foreground" : "bg-background",
+                          "hover:bg-primary/90 hover:text-primary-foreground"
+                        )}
+                        onClick={() => handleOptionClick(sectionKey, option.id)}
                       >
-                        <Image
-                          // src={`/path/to/${option.toLowerCase()}_reference.jpg`} 
-                          src={selectedArt ? artOptions[selectedArt] : "/images/default-art.jpg"} // Placeholder
-                          alt={`${option} style`} 
-                          fill
-                          style={{ objectFit: "cover" }}
-                        />
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
+                        {option.option}
+                      </Badge>
+                    );
+
+                    if (!option.image && !option.description) {
+                      return BadgeComponent;
+                    }
+
+                    return (
+                      <TooltipProvider key={option.id}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            {BadgeComponent}
+                          </TooltipTrigger>
+                          <TooltipContent
+                            sideOffset={5}
+                            className="w-[200px] border border-zinc-600 shadow-md shadow-black/60 z-[100] p-2"
+                          >
+                            {option.image && (
+                              <div className="w-full h-[150px] relative mb-2">
+                                <Image
+                                  src={option.image}
+                                  alt={option.option}
+                                  fill
+                                  style={{ objectFit: "cover" }}
+                                />
+                              </div>
+                            )}
+                            {option.description && (
+                              <p className="text-sm">{option.description}</p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </PopoverContent>
     </Popover>

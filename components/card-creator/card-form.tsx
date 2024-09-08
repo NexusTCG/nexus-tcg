@@ -277,27 +277,27 @@ export default function CardForm({
   };
 
   // Debugging
-  useEffect(() => {
-    if (!isValid) {
-      try {
-        CardFormSchema.parse(form);
-      } catch (error) {
-        if (error instanceof ZodError) {
-          console.log('Zod validation error:', error);
+  // useEffect(() => {
+  //   if (!isValid) {
+  //     try {
+  //       CardFormSchema.parse(form);
+  //     } catch (error) {
+  //       if (error instanceof ZodError) {
+  //         console.log('Zod validation error:', error);
 
-          const invalidFields = error.errors.map(err => ({
-            field: err.path.join('.'),
-            message: err.message
-          }));
-          console.log('Invalid fields:', invalidFields);
+  //         const invalidFields = error.errors.map(err => ({
+  //           field: err.path.join('.'),
+  //           message: err.message
+  //         }));
+  //         console.log('Invalid fields:', invalidFields);
 
-          invalidFields.forEach(({ field, message }) => {
-            toast.error(`${field}: ${message}`);
-          });
-        }
-      }
-    }
-  }, [form, isValid]);
+  //         invalidFields.forEach(({ field, message }) => {
+  //           toast.error(`${field}: ${message}`);
+  //         });
+  //       }
+  //     }
+  //   }
+  // }, [form, isValid]);
 
   return (
     <FormProvider {...methods}>
