@@ -9,7 +9,6 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 import KeywordSelect from "@/components/card-creator/keyword-select";
 import CardText from "@/components/card-creator/card-text";
 import LoreText from "@/components/card-creator/lore-text";
-import KeywordDrawer from "@/components/card-creator/keyword-drawer";
 
 type CardFormTextBoxProps = {
   activeMode: "initial" | "anomaly"

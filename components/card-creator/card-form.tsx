@@ -94,17 +94,7 @@ export default function CardForm({
     }
   });
 
-  const { 
-    watch,
-    setValue,
-    handleSubmit,
-    formState: { 
-      errors,
-      isValid,
-    }
-  } = methods;
-
-  const form = watch(); // For debugging
+  const { setValue } = methods;
 
   const cardVariants = {
     active: { 

@@ -18,16 +18,19 @@ import {
 // Components
 import { toast } from "sonner";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover"
 import {
   Tooltip,
   TooltipContent,
@@ -44,9 +47,9 @@ import { X } from "lucide-react";
 const MAX_PROMPT_LENGTH = 100;
 const MAX_ART_GENERATIONS = 5;
 
-export default function CardArtPopover() {
+export default function CardArtSheet() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  const [isGenerating, setIsGenerating] = useState(false);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const { showOverlay, hideOverlay } = useOverlay();
   const { watch, control, setValue } = useFormContext();
@@ -56,16 +59,6 @@ export default function CardArtPopover() {
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
   const artOptions = form[`${mode}Mode`].art_options;
   const selectedArt = form[`${mode}Mode`].art_selected;
-
-  function handleOptionClick(
-    section: string, 
-    optionId: number
-  ) {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [section]: prev[section] === optionId ? null : optionId
-    }));
-  }
 
   function getSelectedOptionName(
     sectionKey: string, 
@@ -77,12 +70,45 @@ export default function CardArtPopover() {
     return option ? option.option : null;
   }
 
+  function handleOptionClick(
+    section: string, 
+    optionId: number
+  ) {
+    setSelectedOptions(prev => {
+      const newOptions = {
+        ...prev,
+        [section]: prev[section] === optionId ? null : optionId
+      };
+
+      const updatedArtOptions = Object.entries(newOptions)
+        .filter(([_, value]) => value !== null)
+        .map(([key, value]) => ({
+          section: key,
+          option: value as ArtPromptOptionType["id"]
+        }));
+
+      setValue(`${mode}Mode.art_options`, updatedArtOptions);
+
+      return newOptions;
+    });
+  }
+
   function handleBadgeClick(
     sectionKey: string
   ) {
     setSelectedOptions(prev => {
       const newOptions = { ...prev };
       delete newOptions[sectionKey];
+
+      const updatedArtOptions = Object.entries(newOptions)
+        .filter(([_, value]) => value !== null)
+        .map(([key, value]) => ({
+          section: key,
+          option: value as ArtPromptOptionType["id"]
+        }));
+
+      setValue(`${mode}Mode.art_options`, updatedArtOptions);
+
       return newOptions;
     });
   }
@@ -130,25 +156,25 @@ export default function CardArtPopover() {
       toast.error('Art generation failed!')
     } finally {
       setIsGenerating(false);
-      setIsPopoverOpen(false);
+      setIsSheetOpen(false);
       hideOverlay();
     }
   }
 
   return (
-    <Popover 
-      open={isPopoverOpen} 
+    <Sheet 
+      open={isSheetOpen} 
       onOpenChange={(open) => {
         if (!isGenerating) {
-          setIsPopoverOpen(open);
+          setIsSheetOpen(open);
           open 
             ? showOverlay() 
             : hideOverlay();
         }
       }}
     >
-      <PopoverTrigger disabled={isGenerating}>
-      <div
+      <SheetTrigger disabled={isGenerating}>
+        <div
           id="card-art-container"
           style={{ 
             borderRadius: "0 0 20px 20px",
@@ -206,131 +232,131 @@ export default function CardArtPopover() {
             />
           </div>
         </div>
-      </PopoverTrigger>
-      <PopoverContent
+      </SheetTrigger>
+      <SheetContent
+        side="right"
         className="
-          PopoverContent
           flex
           flex-col
           justify-start
           items-start
-          rounded-xl
-          border
+          border-l
           border-zinc-700
-          shadow-lg
-          shadow-black/60
-          md:w-[480px]
-          lg:w-[600px]
-          w-[360px]
-          max-h-[480px]
-          overflow-visible
-          absolute
-          left-1/2
-          -translate-x-1/2
-          bottom-full
-          -mb-24
           p-0
-          gap-2
-          transition-all
-          duration-200
-          ease-in-out
-          opacity-100
-          scale-100
-          data-[state=closed]:opacity-0
-          data-[state=closed]:scale-95
+          gap-0
         "
       >
-        <div
-          id="art-direction-form"
+        <SheetHeader
           className="
-            flex
-            flex-col
+            flex 
+            flex-col 
             justify-start
             items-start
-            w-full
+            w-full 
+            p-4 
             gap-2
-            p-4
           "
         >
-          <FormField
-            control={control}
-            name={mode === "initial" ? "initialMode.prompt_art" : "anomalyMode.prompt_art"}
-            disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="relative w-full">
-                    <Textarea
-                      placeholder="Write a prompt describing your card's art"
-                      className="w-full h-[100px] pr-16 resize-none"
-                      maxLength={MAX_PROMPT_LENGTH}
-                      {...field}
-                    />
-                    <div className="absolute bottom-2 right-2 text-sm text-gray-400">
-                      {characterCount}/{MAX_PROMPT_LENGTH}
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="button"
-            onClick={handleGenerateArt}
-            size="sm"
-            className={clsx("w-full font-semibold",
-              {
-                "animate-pulse": isGenerating,
-              }
-            )}
-            disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
+          <h2>Generate art</h2>
+          {JSON.stringify(artOptions)}
+          <div
+            className="
+              flex
+              flex-col
+              justify-start
+              items-start
+              w-full
+              gap-4
+            "
           >
-            {isGenerating ? "Generating..." : "Generate art"}
-          </Button>
-          <small className="flex items-center space-x-0.5 font-medium">
-            <span className={clsx(
-                "font-bold",
-              {
-                "text-red-600": artOptions.length >= MAX_ART_GENERATIONS,
-                "text-red-500": artOptions.length >= MAX_ART_GENERATIONS * 0.8,
-                "text-red-400": artOptions.length >= MAX_ART_GENERATIONS * 0.6,
-              }
-            )}
-            >
-              {artOptions.length}
-            </span>
-            <span className="opacity-40">/</span>
-            <span className="font-semibold">{MAX_ART_GENERATIONS}{" "}</span>
-            <span className="opacity-80 font-normal">art generations used for {mode === "initial" ? "initial mode" : "anomaly mode"}</span>
-          </small>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {Object.entries(selectedOptions).map(([sectionKey, optionId]) => {
-              const optionName = getSelectedOptionName(sectionKey, optionId);
-              if (optionName) {
-                return (
-                  <Badge
-                    key={sectionKey}
-                    variant="secondary"
-                    onClick={() => handleBadgeClick(sectionKey)}
-                    className="
-                      hover:opacity-80
-                      text-xs 
-                      font-normal 
-                      pr-1.5
-                      cursor-pointer
-                    "
-
-                  >
-                    {optionName}
-                    <X className="inline-block ml-1 h-3 w-3" />
-                  </Badge>
-                );
-              }
-              return null;
-            })}
+            <FormField
+              control={control}
+              name={mode === "initial" ? "initialMode.prompt_art" : "anomalyMode.prompt_art"}
+              disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="relative w-full">
+                      <Textarea
+                        placeholder="Write a prompt describing your card's art"
+                        className="w-full h-[100px] pr-16 resize-none"
+                        maxLength={MAX_PROMPT_LENGTH}
+                        {...field}
+                      />
+                      <div className="absolute bottom-2 right-2 text-sm text-gray-400">
+                        {characterCount}/{MAX_PROMPT_LENGTH}
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-col gap-2 w-full">
+              <Button
+                type="button"
+                onClick={handleGenerateArt}
+                size="sm"
+                className={clsx("w-full font-semibold",
+                  {
+                    "animate-pulse": isGenerating,
+                  }
+                )}
+                disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
+              >
+                {isGenerating ? "Generating..." : "Generate art"}
+              </Button>
+              <small className="flex items-center space-x-0.5 font-medium">
+                <span className={clsx(
+                    "font-bold",
+                  {
+                    "text-red-600": artOptions.length >= MAX_ART_GENERATIONS,
+                    "text-red-500": artOptions.length >= MAX_ART_GENERATIONS * 0.8,
+                    "text-red-400": artOptions.length >= MAX_ART_GENERATIONS * 0.6,
+                  }
+                )}
+                >
+                  {artOptions.length}
+                </span>
+                <span className="opacity-40">/</span>
+                <span className="font-semibold">{MAX_ART_GENERATIONS}{" "}</span>
+                <span className="opacity-80 font-normal">
+                  art generations used for {
+                    mode === "initial" 
+                    ? "initial mode" 
+                    : "anomaly mode"
+                  }
+                </span>
+              </small>
+            </div>
+            {Object.keys(selectedOptions).length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {Object.entries(selectedOptions).map(([sectionKey, optionId]) => {
+                  const optionName = getSelectedOptionName(sectionKey, optionId);
+                  if (optionName) {
+                    return (
+                    <Badge
+                      key={sectionKey}
+                      variant="secondary"
+                      onClick={() => handleBadgeClick(sectionKey)}
+                      className="
+                        hover:opacity-80
+                        text-xs 
+                        font-normal 
+                        pr-1.5
+                        cursor-pointer
+                      "
+                    >
+                      {optionName}
+                      <X className="inline-block ml-1 h-3 w-3" />
+                    </Badge>
+                  );
+                }
+                return null;
+              })}
+            </div>)}
           </div>
-        </div>
+        </SheetHeader>
         <Separator />
         <div
           id="art-direction-options-container"
@@ -342,10 +368,10 @@ export default function CardArtPopover() {
             w-full
             overflow-y-auto
             scrollbar-hide
-            max-h-[50vh]
+            h-full
           "
         >
-          {Object.entries(artPromptOptions).map(([sectionKey, section]) => {
+          {Object.entries(artPromptOptions).map(([sectionKey, section], index, array) => {
             if (sectionKey === "framing" && (!selectedOptions["subject"] || selectedOptions["subject"] === 1)) {
               return null;
             }
@@ -353,19 +379,16 @@ export default function CardArtPopover() {
             return (
               <div
                 key={sectionKey}
-                className="
-                  flex 
-                  flex-col 
-                  gap-2 
-                  w-full 
-                  p-4 
-                  border-b 
-                  border-zinc-700
-                "
+                className={clsx(
+                  "flex flex-col gap-2 w-full p-4",
+                  {
+                    "border-b border-zinc-700": index !== array.length - 1,
+                  }
+                )}
               >
-                <h4 className="text-md font-semibold">{section.title}</h4>
+                <h4>{section.title}</h4>
                 <div className="flex flex-wrap gap-1 mb-2">
-                {section.options.map((option: ArtPromptOptionType) => {
+                  {section.options.map((option: ArtPromptOptionType) => {
                     const isSelected = selectedOptions[sectionKey] === option.id;
                     const BadgeComponent = (
                       <Badge
@@ -419,7 +442,7 @@ export default function CardArtPopover() {
             );
           })}
         </div>
-      </PopoverContent>
-    </Popover>
+      </SheetContent>
+    </Sheet>
   )
 }
