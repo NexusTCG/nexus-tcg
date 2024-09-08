@@ -73,7 +73,7 @@ export default function CardCreatorFooter() {
               key={index}
               id={`image-container-${index}`}
               style={{ position: "relative", overflow: "hidden" }}
-              className={`w-[80px] h-[60px] cursor-pointer ${selectedArt === index ? 'border-2 border-blue-500' : ''}`}
+              className={`w-[80px] h-[60px] cursor-pointer ${selectedArt === index ? 'border-2 border-teal-500' : ''}`}
               onClick={() => handleArtSelection(index)}
             >
               <Image

@@ -27,7 +27,6 @@ import CardCreatorHeader from "@/components/card-creator/card-creator-header";
 import CardCreatorFooter from "@/components/card-creator/card-creator-footer"; 
 import CardFormInitial from "@/components/card-creator/card-form-initial";
 import CardFormAnomaly from "@/components/card-creator/card-form-anomaly";
-import GradeCycler from "@/components/card-creator/grade-cycler";
 
 type CardFormProps = {
   currentUserId?: string | null;
@@ -65,6 +64,7 @@ export default function CardForm({
         lore: "",
         prompt_art: "",
         art_options: [],
+        art_direction_options: [],
         art_selected: 0,
         energy_value: 0,
         energy_cost: {
@@ -89,6 +89,7 @@ export default function CardForm({
         lore: "",
         prompt_art: "",
         art_options: [],
+        art_direction_options: [],
         art_selected: 0,
       }
     }
@@ -177,7 +178,7 @@ export default function CardForm({
         nexus_card_data: {
           user_id: data.nexus_card_data.user_id,
           username: data.nexus_card_data.username,
-          approved: data.nexus_card_data.approved ? data.nexus_card_data.approved : false,
+          approved: data.nexus_card_data.approved ?? false,
           grade: data.nexus_card_data.grade
         },
         initialMode: {
@@ -190,7 +191,14 @@ export default function CardForm({
           keywords: data.initialMode.keywords,
           lore: data.initialMode.lore,
           prompt_art: data.initialMode.prompt_art,
-          art_options: initialModeArtUrls,
+          art_options: data.initialMode.art_options,
+          art_direction_options: data.initialMode.art_direction_options?.map(
+            (opt, index) => ({
+              section: opt.section,
+              option: opt.option,
+              url: initialModeArtUrls[index] ?? null
+            })
+          ) || [],
           art_selected: initialModeArtSelectedIndex,
           energy_value: data.initialMode.energy_value,
           energy_cost: data.initialMode.energy_cost,
@@ -207,7 +215,14 @@ export default function CardForm({
           text: data.anomalyMode.text,
           lore: data.anomalyMode.lore,
           prompt_art: data.anomalyMode.prompt_art,
-          art_options: anomalyModeArtUrls,
+          art_options: data.anomalyMode.art_options,
+          art_direction_options: data.anomalyMode.art_direction_options?.map(
+            (opt, index) => ({
+              section: opt.section,
+              option: opt.option,
+              url: anomalyModeArtUrls[index] ?? null
+            })
+          ) || [],
           art_selected: anomalyModeArtSelectedIndex,
         },
       };

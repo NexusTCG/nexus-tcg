@@ -57,6 +57,7 @@ export default function CardArtSheet() {
 
   const form = watch()
   const characterCount = form.initialMode.prompt_art ? form.initialMode.prompt_art.length : 0;
+  const artDirectionOptions = form[`${mode}Mode`].art_direction_options;
   const artOptions = form[`${mode}Mode`].art_options;
   const selectedArt = form[`${mode}Mode`].art_selected;
 
@@ -87,7 +88,7 @@ export default function CardArtSheet() {
           option: value as ArtPromptOptionType["id"]
         }));
 
-      setValue(`${mode}Mode.art_options`, updatedArtOptions);
+      setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
 
       return newOptions;
     });
@@ -107,7 +108,7 @@ export default function CardArtSheet() {
           option: value as ArtPromptOptionType["id"]
         }));
 
-      setValue(`${mode}Mode.art_options`, updatedArtOptions);
+      setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
 
       return newOptions;
     });
@@ -258,7 +259,7 @@ export default function CardArtSheet() {
           "
         >
           <h2>Generate art</h2>
-          {JSON.stringify(artOptions)}
+          {JSON.stringify(artDirectionOptions)}
           <div
             className="
               flex
