@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useCallback, useEffect, useRef } from "react"
-import { useFloating, offset, shift } from '@floating-ui/react';
 import { useFormContext } from 'react-hook-form';
 import { useOverlay } from "@/app/utils/context/OverlayContext";
 import { useMode } from "@/app/utils/context/CardFormModeContext";
@@ -9,7 +8,6 @@ import { useMode } from "@/app/utils/context/CardFormModeContext";
 import Image from 'next/image';
 import clsx from 'clsx';
 import posthog from 'posthog-js';
-import { Portal } from "@radix-ui/react-portal";
 // Data
 import { artPromptOptions } from "@/app/lib/data/components";
 // Validation
@@ -29,12 +27,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
@@ -49,16 +41,9 @@ export default function CardArtSheet() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [openTooltip, setOpenTooltip] = useState(false);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const tooltipRef = useRef<HTMLDivElement>(null);
-  
-  const {x, y, refs, floatingStyles, strategy} = useFloating({
-    placement: 'right',
-    middleware: [offset(10), shift()],
-    open: openTooltip,
-  });
 
   const { showOverlay, hideOverlay } = useOverlay();
   const { watch, control, setValue } = useFormContext();
@@ -184,7 +169,6 @@ export default function CardArtSheet() {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
     <Sheet 
       open={isSheetOpen} 
       onOpenChange={(open) => {
@@ -471,7 +455,5 @@ export default function CardArtSheet() {
         </div>
       </SheetContent>
     </Sheet>
-    </div>
-    
   )
 }
