@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 // Icons
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 
 const MAX_PROMPT_LENGTH = 100;
 const MAX_ART_GENERATIONS = 5;
@@ -284,7 +284,9 @@ export default function CardArtSheet() {
                     <div className="relative w-full">
                       <Textarea
                         placeholder="Write a prompt describing your card's art"
-                        className="w-full h-[100px] pr-16 resize-none"
+                        className={clsx("w-full h-[100px] pr-16 resize-none", {
+                          "opacity-50": isGenerating
+                        })}
                         maxLength={MAX_PROMPT_LENGTH}
                         {...field}
                       />
@@ -298,18 +300,21 @@ export default function CardArtSheet() {
               )}
             />
             <div className="flex flex-col gap-2 w-full">
-              <Button
+            <Button
                 type="button"
                 onClick={handleGenerateArt}
                 size="sm"
-                className={clsx("w-full font-semibold",
-                  {
-                    "animate-pulse": isGenerating,
-                  }
-                )}
+                className="w-full font-semibold"
                 disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
               >
-                {isGenerating ? "Generating..." : "Generate art"}
+                {isGenerating ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generating...
+                  </div>
+                ) : (
+                  "Generate art"
+                )}
               </Button>
               <small className="flex items-center space-x-0.5 font-medium">
                 <span className={clsx(
@@ -403,7 +408,14 @@ export default function CardArtSheet() {
                     const BadgeComponent = (
                       <Badge
                         key={option.id}
-                        variant="outline" // TODO: Default if selected
+                        variant={selectedOptions[sectionKey] === option.id ? "default" : "outline"}
+                        className={clsx(
+                          "font-normal cursor-pointer transition-colors duration-200",
+                          selectedOptions[sectionKey] === option.id
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-background",
+                          "hover:bg-primary/90 hover:text-primary-foreground"
+                        )}
                         onClick={() => handleOptionClick(sectionKey, option.id)}
                         onMouseEnter={(e) => {
                           if (option.image) {
