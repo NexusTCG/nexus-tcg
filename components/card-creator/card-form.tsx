@@ -1,7 +1,7 @@
 "use client"
 
 // Hooks
-import React, { useEffect } from "react"
+import React, { useCallback } from "react"
 import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 import { useMode } from "@/app/utils/context/CardFormModeContext"
@@ -121,7 +121,7 @@ export default function CardForm({
     }
   };
 
-  function toggleMode() {
+  const toggleMode = useCallback(() => {
     const newMode = mode === 'initial' ? 'anomaly' : 'initial';
     toast(`Editing ${newMode} mode!`);
     setMode(newMode);
@@ -129,7 +129,7 @@ export default function CardForm({
     if (newMode === 'initial') {
       setValue('initialMode.type', 'agent');
     }
-  };
+  }, [mode, setMode, setValue]);
 
   async function onSubmit(
     data: CardFormDataType

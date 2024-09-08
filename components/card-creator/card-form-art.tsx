@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useCallback, useEffect, useRef } from "react"
+import { useFloating, offset, shift } from '@floating-ui/react';
 import { useFormContext } from 'react-hook-form';
 import { useOverlay } from "@/app/utils/context/OverlayContext";
 import { useMode } from "@/app/utils/context/CardFormModeContext";
@@ -8,6 +9,7 @@ import { useMode } from "@/app/utils/context/CardFormModeContext";
 import Image from 'next/image';
 import clsx from 'clsx';
 import posthog from 'posthog-js';
+import { Portal } from "@radix-ui/react-portal";
 // Data
 import { artPromptOptions } from "@/app/lib/data/components";
 // Validation
@@ -47,6 +49,16 @@ export default function CardArtSheet() {
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [openTooltip, setOpenTooltip] = useState(false);
+  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  
+  const {x, y, refs, floatingStyles, strategy} = useFloating({
+    placement: 'right',
+    middleware: [offset(10), shift()],
+    open: openTooltip,
+  });
 
   const { showOverlay, hideOverlay } = useOverlay();
   const { watch, control, setValue } = useFormContext();
@@ -69,28 +81,39 @@ export default function CardArtSheet() {
     return option ? option.option : null;
   }
 
-  function handleOptionClick(
+  const handleOptionClick = useCallback((
     section: string, 
     optionId: number
-  ) {
-    setSelectedOptions(prev => {
-      const newOptions = {
-        ...prev,
-        [section]: prev[section] === optionId ? null : optionId
-      };
+  ) => {
+    setSelectedOptions(prev => ({
+      ...prev,
+      [section]: prev[section] === optionId ? null : optionId
+    }));
+  }, []);
 
-      const updatedArtOptions = Object.entries(newOptions)
-        .filter(([_, value]) => value !== null)
-        .map(([key, value]) => ({
-          section: key,
-          option: value as ArtPromptOptionType["id"]
-        }));
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+        setTooltipContent(null);
+      }
+    }
 
-      setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-      return newOptions;
-    });
-  }
+  useEffect(() => {
+    const updatedArtOptions = Object.entries(selectedOptions)
+      .filter(([_, value]) => value !== null)
+      .map(([key, value]) => ({
+        section: key,
+        option: value as ArtPromptOptionType["id"]
+      }));
+
+    setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
+  }, [selectedOptions, setValue, mode]);
 
   function handleBadgeClick(
     sectionKey: string
@@ -161,6 +184,7 @@ export default function CardArtSheet() {
   }
 
   return (
+    <div style={{ position: 'relative' }}>
     <Sheet 
       open={isSheetOpen} 
       onOpenChange={(open) => {
@@ -242,7 +266,6 @@ export default function CardArtSheet() {
           border-l
           border-zinc-700
           p-0
-          gap-0
         "
       >
         <SheetHeader
@@ -393,68 +416,62 @@ export default function CardArtSheet() {
                 <h4>{section.title}</h4>
                 <div className="flex flex-wrap gap-1 mb-2">
                   {section.options.map((option: ArtPromptOptionType) => {
-                    const isSelected = selectedOptions[sectionKey] === option.id;
                     const BadgeComponent = (
                       <Badge
                         key={option.id}
-                        variant={isSelected ? "default" : "outline"}
-                        className={clsx(
-                          "font-normal cursor-pointer transition-colors duration-200",
-                          isSelected 
-                            ? "bg-primary text-primary-foreground" 
-                            : "bg-background",
-                          "hover:bg-primary/90 hover:text-primary-foreground"
-                        )}
+                        variant="outline" // TODO: Default if selected
                         onClick={() => handleOptionClick(sectionKey, option.id)}
+                        onMouseEnter={(e) => {
+                          if (option.image) {
+                            setTooltipContent(option.image);
+                            setTooltipPosition({ x: e.clientX, y: e.clientY });
+                          }
+                        }}
+                        onMouseLeave={() => setTooltipContent(null)}
                       >
                         {option.option}
                       </Badge>
                     );
 
-                    if (option.image) {
-                      return (
-                        <TooltipProvider key={option.id}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              {BadgeComponent}
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="right"
-                              className="
-                                w-[200px] 
-                                p-0 
-                                overflow-hidden 
-                                border 
-                                border-zinc-600 
-                                shadow-md 
-                                shadow-black/60
-                              "
-                            >
-                              <div className="w-full h-[150px] relative">
-                                <Image
-                                  src={option.image}
-                                  alt={option.option}
-                                  fill
-                                  style={{ objectFit: "cover" }}
-                                />
-                              </div>
-                              {option.description && (
-                                <p className="p-2 text-sm">{option.description}</p>
-                              )}
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      );
-                    }
-
                     return BadgeComponent;
                   })}
                 </div>
+
+                {tooltipContent && (
+                  <div
+                    ref={tooltipRef}
+                    style={{
+                      position: 'fixed',
+                      top: `${tooltipPosition.y + 10}px`,
+                      left: `${tooltipPosition.x + 10}px`,
+                      zIndex: 9999,
+                    }}
+                    className="
+                      w-[200px]
+                      h-[150px]
+                      overflow-hidden 
+                      border 
+                      border-zinc-600 
+                      shadow-md 
+                      shadow-black/60
+                      rounded-md
+                    "
+                  >
+                    <Image
+                      src={tooltipContent}
+                      alt="Option preview"
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       </SheetContent>
     </Sheet>
+    </div>
+    
   )
 }
