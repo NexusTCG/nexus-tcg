@@ -419,8 +419,12 @@ export default function CardArtSheet() {
                         onClick={() => handleOptionClick(sectionKey, option.id)}
                         onMouseEnter={(e) => {
                           if (option.image) {
+                            const rect = e.currentTarget.getBoundingClientRect();
                             setTooltipContent(option.image);
-                            setTooltipPosition({ x: e.clientX, y: e.clientY });
+                            setTooltipPosition({ 
+                              x: rect.left - 210, // 200px width + 10px gap
+                              y: rect.top
+                            });
                           }
                         }}
                         onMouseLeave={() => setTooltipContent(null)}
@@ -433,13 +437,14 @@ export default function CardArtSheet() {
                   })}
                 </div>
 
+                {/* Custom Tooltip cause shadcn/ui tooltip doesn't work inside SheetContent */}
                 {tooltipContent && (
                   <div
                     ref={tooltipRef}
                     style={{
                       position: 'fixed',
-                      top: `${tooltipPosition.y + 10}px`,
-                      left: `${tooltipPosition.x + 10}px`,
+                      top: `${tooltipPosition.y}px`,
+                      left: `${tooltipPosition.x}px`,
                       zIndex: 9999,
                     }}
                     className="

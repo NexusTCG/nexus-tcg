@@ -38,98 +38,98 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Abstract",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/abstract.jpg?t=2024-09-08T15%3A21%3A04.355Z",
+        "image": "/images/art-option-tooltips/abstract.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Anime",
-        "image": null,
+        "image": "/images/art-option-tooltips/anime.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Art Deco",
-        "image": null,
+        "image": "/images/art-option-tooltips/art-deco.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Art Nouveau",
-        "image": null,
+        "image": "/images/art-option-tooltips/art-nouveau.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Baroque",
-        "image": null,
+        "image": "/images/art-option-tooltips/baroque.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 6,
         "option": "Cyberpunk",
-        "image": null,
+        "image": "/images/art-option-tooltips/cyberpunk.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 7,
         "option": "Gothic",
-        "image": null,
+        "image": "/images/art-option-tooltips/gothic.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 8,
         "option": "Glitch art",
-        "image": null,
+        "image": "/images/art-option-tooltips/glitch-art.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 9,
         "option": "Naturalism",
-        "image": null,
+        "image": "/images/art-option-tooltips/naturalism.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 10,
         "option": "Pixel art",
-        "image": null,
+        "image": "/images/art-option-tooltips/pixel-art.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 11,
         "option": "Psychedelic",
-        "image": null,
+        "image": "/images/art-option-tooltips/psychedelic.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 12,
         "option": "Stylized",
-        "image": null,
+        "image": "/images/art-option-tooltips/stylized.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 13,
         "option": "Surrealism",
-        "image": null,
+        "image": "/images/art-option-tooltips/surrealism.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 14,
         "option": "Vaporwave",
-        "image": null,
+        "image": "/images/art-option-tooltips/vaporwave.jpg",
         "description": null,
         "prompt": null
       },
@@ -142,42 +142,42 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Black and white",
-        "image": null,
+        "image": "/images/art-option-tooltips/black-and-white.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "High contrast",
-        "image": null,
+        "image": "/images/art-option-tooltips/high-contrast.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "High saturation",
-        "image": null,
+        "image": "/images/art-option-tooltips/high-saturation.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Duo-tone",
-        "image": null,
+        "image": "/images/art-option-tooltips/duo-tone.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Half-tone",
-        "image": null,
+        "image": "/images/art-option-tooltips/half-tone.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 6,
         "option": "Desaturated",
-        "image": null,
+        "image": "/images/art-option-tooltips/desaturated.jpg",
         "description": null,
         "prompt": null
       },
@@ -190,70 +190,70 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Airbrush",
-        "image": null,
+        "image": "/images/art-option-tooltips/airbrush.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Charcoal",
-        "image": null,
+        "image": "/images/art-option-tooltips/charcoal.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Fine liner",
-        "image": null,
+        "image": "/images/art-option-tooltips/fine-liner.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Gouache",
-        "image": null,
+        "image": "/images/art-option-tooltips/gouache.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Ligne claire",
-        "image": null,
+        "image": "/images/art-option-tooltips/ligne-claire.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 6,
         "option": "Oil painting",
-        "image": null,
+        "image": "/images/art-option-tooltips/oil-painting.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 7,
         "option": "Pastel",
-        "image": null,
+        "image": "/images/art-option-tooltips/pastel.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 8,
         "option": "Watercolor",
-        "image": null,
+        "image": "/images/art-option-tooltips/watercolor.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 9,
         "option": "Cell shading",
-        "image": null,
+        "image": "/images/art-option-tooltips/cell-shading.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 10,
         "option": "Stained glass",
-        "image": null,
+        "image": "/images/art-option-tooltips/stained-glass.jpg",
         "description": null,
         "prompt": null
       },
@@ -266,42 +266,42 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Natural light",
-        "image": null,
+        "image": "/images/art-option-tooltips/natural-light.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Florescent light",
-        "image": null,
+        "image": "/images/art-option-tooltips/florescent-light.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Tungsten light",
-        "image": null,
+        "image": "/images/art-option-tooltips/tungsten-light.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Backlight",
-        "image": null,
+        "image": "/images/art-option-tooltips/backlight.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Soft light",
-        "image": null,
+        "image": "/images/art-option-tooltips/soft-light.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 6,
         "option": "Neon Light",
-        "image": null,
+        "image": "/images/art-option-tooltips/neon-light.jpg",
         "description": null,
         "prompt": null
       },
@@ -756,35 +756,35 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Aerial",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/aerial.jpg?t=2024-09-08T19%3A26%3A49.398Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Close-Up",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/close-up.jpg?t=2024-09-08T19%3A30%3A11.006Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Panorama",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/panorama.jpg?t=2024-09-08T19%3A36%3A58.076Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Low angle",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/low-angle.jpg?t=2024-09-08T19%3A34%3A57.177Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Extreme Close-Up",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/extreme-close-up.jpg?t=2024-09-08T19%3A32%3A01.408Z",
         "description": null,
         "prompt": null
       },
@@ -797,28 +797,28 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Face portrait",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/face-portrait.jpg?t=2024-09-08T19%3A32%3A10.519Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Full-body portrait",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/full-body-portrait.jpg?t=2024-09-08T19%3A32%3A48.199Z",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Half-body portrait",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/half-body-portrait.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "One-quarter portrait",
-        "image": null,
+        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/one-quarter-portrait.jpg?t=2024-09-08T19%3A36%3A45.802Z",
         "description": null,
         "prompt": null
       },

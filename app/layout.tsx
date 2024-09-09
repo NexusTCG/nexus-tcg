@@ -2,6 +2,10 @@ import React from "react";
 // Providers
 import { ThemeProvider } from "@/app/lib/styles/theme-provider"
 import { Analytics } from "@vercel/analytics/react";
+import { PHProvider } from "@/app/providers";
+// Utils
+import Script from 'next/script';
+import dynamic from 'next/dynamic';
 // Styles
 import { Inter } from "next/font/google";
 import "@/app/lib/styles/globals.css";
@@ -10,6 +14,15 @@ import type { Metadata } from 'next'
 import { metadataKeywords } from "@/app/lib/data/data"
 // Components
 import { Toaster } from "@/components/ui/sonner"
+
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
+})
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const PostHogPageView = dynamic(() => import('@/app/PostHogPageView'), {
+//   ssr: false,
+// })
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,19 +57,30 @@ export default function RootLayout(
 
   return (
     <html lang="en" className={inter.className}>
+      <head>
+        <Script
+          type="text/javascript"
+          src="https://app.termly.io/resource-blocker/c38fdc46-d3b8-4bf8-8c5d-460cba620841?autoBlock=on"
+          strategy="beforeInteractive"
+          async
+        />
+      </head>
       <body className="bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="min-h-screen flex flex-col items-center">
-            {children}
+        <PHProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <PostHogPageView />
+            <main className="min-h-screen flex flex-col items-center">
+              {children}
+            </main>
+            <Toaster />
             <Analytics />
-          </main>
-          <Toaster />
-        </ThemeProvider>
+          </ThemeProvider>
+        </PHProvider>
       </body>
     </html>
   );
