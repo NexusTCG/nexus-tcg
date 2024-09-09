@@ -6,7 +6,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@floating-ui/react": "^0.26.23",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-avatar": "^1.1.0",

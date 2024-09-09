@@ -15,17 +15,8 @@ import { metadataKeywords } from "@/app/lib/data/data"
 // Components
 import { Toaster } from "@/components/ui/sonner"
 
-const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
-  ssr: false,
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const PostHogPageView = dynamic(() => import('@/app/PostHogPageView'), {
-//   ssr: false,
-// })
-
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), { ssr: false })
 const inter = Inter({ subsets: ["latin"] });
-
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
