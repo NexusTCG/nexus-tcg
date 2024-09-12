@@ -40,6 +40,7 @@
     "next": "^14.2.7",
     "next-themes": "^0.3.0",
     "node-fetch": "^3.3.2",
+    "node-html-to-image": "^5.0.0",
     "postcss": "8.4.33",
     "posthog-js": "^1.160.3",
     "posthog-node": "^4.1.0",

@@ -242,19 +242,28 @@ export default function CardForm({
       });
   
       const insertData = await insertResponse.json();
+
+      console.log("Server response:", insertData);
   
-      if (insertData.ok && insertData.data) {
+      if (
+        insertResponse.ok && 
+        insertData.success && 
+        insertData.data?.id
+      ) {
         // Capture event
         (posthog.capture as any)("card_created", {
           distinctId: insertData.data.id,
           creator: insertData.data.username,
         });
   
+        // toast("Card saved successfully!");
+        // setTimeout(() => {
+        //   toast("Redirecting...");
+        //   router.push(`/cards/${insertData.data.id}`);
+        // }, 2000);
         toast("Card saved successfully!");
-        setTimeout(() => {
-          toast("Redirecting...");
-          router.push(`/cards/${insertData.data.id}`);
-        }, 2000);
+        toast("Redirecting...");
+        router.push(`/cards/${insertData.data.id}`);
       } else {
         toast("Failed to save card!");
         console.error("Card submit error:", insertData.error);
