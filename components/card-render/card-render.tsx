@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 // Utils
 import Image from "next/image";
@@ -41,7 +43,13 @@ export default function CardRender({
       <div>
         <h1>{cardName}</h1>
         <Image 
-          src={cardArt || (mode === "initial" ? "/images/default-art.jpg" : "/images/default-anomaly-art.webp")} 
+          src={
+            cardArt || (
+              mode === "initial" 
+                ? "/images/default-art.jpg" 
+                : "/images/default-anomaly-art.webp"
+            )
+          } 
           alt={cardData.name} 
           width={200} 
           height={200} 

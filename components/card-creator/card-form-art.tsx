@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react"
 import { useFormContext } from 'react-hook-form';
 import { useOverlay } from "@/app/utils/context/OverlayContext";
-import { useMode } from "@/app/utils/context/CardFormModeContext";
+import { useMode } from "@/app/utils/context/CardModeContext";
 // Utils
 import Image from 'next/image';
 import clsx from 'clsx';

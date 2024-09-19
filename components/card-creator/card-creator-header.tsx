@@ -3,7 +3,7 @@
 // Hooks
 import React from "react";
 import { useFormContext } from 'react-hook-form';
-import { useMode } from "@/app/utils/context/CardFormModeContext";
+import { useMode } from "@/app/utils/context/CardModeContext";
 // Components
 import { Button } from "@/components/ui/button";
 

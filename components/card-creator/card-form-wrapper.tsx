@@ -3,7 +3,7 @@
 // Hooks
 import React from "react"
 import { OverlayProvider } from "@/app/utils/context/OverlayContext"
-import { ModeProvider } from "@/app/utils/context/CardFormModeContext"
+import { ModeProvider } from "@/app/utils/context/CardModeContext"
 import Overlay from "@/components/overlay"
 // Types
 import { ProfileDTO } from "@/app/lib/types/dto";
