@@ -24,7 +24,8 @@ export const getKeywordsDTO = cache(
       throw new Error("No keywords found in the database");
     }
 
-    const mappedData = data.map((keyword): KeywordsDTO => ({
+    const mappedData = data
+      .map((keyword): KeywordsDTO => ({
       name: keyword.name,
       reminder: keyword.reminder,
       type: keyword.type,

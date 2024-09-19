@@ -2,8 +2,8 @@ import "server-only";
 
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
-// // Server
-// import { getCurrentUserId } from "@/app/server/auth";
+// Server
+import { getCurrentUserId } from "@/app/server/auth";
 
 // TODO: Add action to delete a card
 // TODO: Add action to update a card
@@ -61,7 +61,7 @@ export async function uploadGeneratedArt(
   }
 }
 
-// FETCH DATA
+// --- FETCH DATA --- //
 
 export async function fetchRandomKeyword() {
   const cookieStore = cookies();
