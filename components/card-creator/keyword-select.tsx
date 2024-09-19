@@ -36,7 +36,7 @@ import Keyword from "@/components/card-creator/keyword"
 import { Check } from "lucide-react"
 
 type KeywordSelectProps = {
-  cardGrade: "core" | "uncommon" | "epic" | "prime";
+  cardGrade: "core" | "uncommon" | "rare" | "prime";
   truncateKeywords: boolean;
 }
 
@@ -58,29 +58,32 @@ export default function KeywordSelect({
   const maxKeywords = {
     core: 2,
     uncommon: 3,
-    epic: 4,
+    rare: 4,
     prime: 4
   }[cardGrade];
 
   function handleKeywordToggle(
     keyword: string
   ) {
-    const index = selectedKeywords
-      .findIndex(
-        (kw: { id: string }) => kw.id === keyword
-      );
+    // TODO: Change to object
+    // const index = selectedKeywords.findIndex((kw: { id: string }) => kw.id === keyword);
+    
+    const index = selectedKeywords.findIndex((kw: string) => kw === keyword);
+
     if (index > -1) {
-      // Remove if: Keyword is already selected
       remove(index);
     } else if (selectedKeywords.length < maxKeywords) {
-      // Add if: Keyword not selected, and max not reached
       // append({ id: keyword });
       append(keyword);
     }
   }
 
-  function renderKeyword(keywordName: string) {
-    const keywordData = keywords?.find((kw: KeywordsDTO) => kw.name === keywordName);
+  function renderKeyword(
+    keywordName: string
+  ) {
+    const keywordData = keywords?.find((
+      kw: KeywordsDTO
+    ) => kw.name === keywordName);
     if (!keywordData) return keywordName;
   
     return (
@@ -95,7 +98,10 @@ export default function KeywordSelect({
 
   function renderKeywords() {
     if (truncateKeywords) {
-      return selectedKeywords.map((keyword: string, index: number) => (
+      return selectedKeywords.map((
+        keyword: string, 
+        index: number
+      ) => (
         <React.Fragment key={keyword}>
           {renderKeyword(keyword)}
           {index < selectedKeywords.length - 1 && <span className="mr-1">,</span>}
