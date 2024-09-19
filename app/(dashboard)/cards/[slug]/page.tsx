@@ -1,8 +1,9 @@
 import React from "react";
-// Utils
-import Image from "next/image";
+
 // DTO
 import { CardDTO } from "@/app/lib/types/dto";
+// Custom components
+import CardRender from "@/components/card-render/card-render";
 
 async function fetchCard(
   slug: string
@@ -33,16 +34,8 @@ export default async function CardSlug({
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-zinc-900">
-      {/* <CardDisplay card={card} /> */}
-      {/* Component to display the card */}
-      {card.initialMode.name} by {card.username}
-      {/* Need to upload images to Supabase bucket and then to the database */}
-      <Image 
-        src={card.initialMode.art_options?.[card.initialMode.art_selected] || ''} 
-        alt={card.initialMode.name} 
-        width={200} 
-        height={200} 
-      />
+      <CardRender card={card} mode="initial" />
+      <CardRender card={card} mode="anomaly" />
     </div>
   );
 }

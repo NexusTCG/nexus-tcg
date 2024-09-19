@@ -35,7 +35,6 @@ export type InitialCardType = {
     chaos?: number;
     growth?: number;
     void?: number;
-    voidx?: boolean;
   };
   speed: number;
   attack?: number;

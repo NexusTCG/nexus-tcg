@@ -1,81 +1,52 @@
-// // components/CardRender.tsx
-// import React, { useState } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import { InitialModeCard, AnomalyModeCard } from '@/app/lib/types/database';
-// import { Button } from '@/components/ui/button';
+import React from "react";
+// Utils
+import Image from "next/image";
+// Types
+import { CardDTO } from "@/app/lib/types/dto";
+import { EnergyCost } from "@/app/lib/types/components"
+// Custom components
+import CardRenderContainer from "@/components/card-render/card-render-container";
 
-// type CardRenderProps = {
-//   initialMode: InitialModeCard;
-//   anomalyMode: AnomalyModeCard;
-// };
+type CardRenderProps = {
+  card: CardDTO;
+  mode: "initial" | "anomaly";
+};
 
-// const cardVariants = {
-//   top: { 
-//     scale: 1, 
-//     y: 0, 
-//     zIndex: 2, 
-//     transition: { duration: 0.3 } 
-//   },
-//   bottom: { 
-//     scale: 0.95, 
-//     y: 40, 
-//     zIndex: 1, 
-//     transition: { duration: 0.3 } 
-//   },
-//   exit: (direction: 'left' | 'right') => ({ 
-//     x: direction === 'left' ? -300 : 300, 
-//     opacity: 0, 
-//     transition: { duration: 0.2 } 
-//   }),
-//   enter: (direction: 'left' | 'right') => ({ 
-//     x: direction === 'left' ? 300 : -300, 
-//     opacity: 0 
-//   }),
-// };
+export default function CardRender({ 
+  card,
+  mode, 
+}: CardRenderProps) {
+  const cardData = mode === "initial" 
+    ? card.initialMode 
+    : card.anomalyMode;
+  const cardName = mode === "initial" 
+    ? card.initialMode.name 
+    : card.anomalyMode.uncommon 
+      ? card.anomalyMode.name 
+      : "Common Anomaly";
+  const cardArt = mode === "initial" 
+    ? card.initialMode.art_options?.[card.initialMode.art_selected] 
+    : card.anomalyMode.uncommon 
+      ? card.anomalyMode.art_options?.[card.anomalyMode.art_selected] 
+      : "/images/default-anomaly-art.webp";
 
-// export default function CardRender({ initialMode, anomalyMode }: CardRenderProps) {
-//   const [activeMode, setActiveMode] = useState<'initial' | 'anomaly'>('initial');
-//   const [direction, setDirection] = useState<'left' | 'right'>('right');
-
-//   const toggleMode = () => {
-//     setDirection(activeMode === 'initial' ? 'left' : 'right');
-//     setActiveMode(prev => prev === 'initial' ? 'anomaly' : 'initial');
-//   };
-
-//   const renderCard = (card: InitialModeCard | AnomalyModeCard, position: 'top' | 'bottom') => (
-//     <motion.div 
-//       className="absolute bg-white rounded-lg shadow-lg p-4 w-[300px] h-[420px] cursor-pointer"
-//       variants={cardVariants}
-//       initial="enter"
-//       animate={position}
-//       exit="exit"
-//       custom={direction}
-//       onClick={position === 'bottom' ? toggleMode : undefined}
-//     >
-//       <h2 className="text-xl font-bold">{card.name}</h2>
-//       <p>Type: {card.type}</p>
-//       {/* Render other card details here */}
-//     </motion.div>
-//   );
-
-//   return (
-//     <div className="relative h-[500px] w-[320px]">
-//       <AnimatePresence initial={false} custom={direction}>
-//         {activeMode === 'initial' ? (
-//           <React.Fragment key="initial">
-//             {renderCard(initialMode, 'top')}
-//             {renderCard(anomalyMode, 'bottom')}
-//           </React.Fragment>
-//         ) : (
-//           <React.Fragment key="anomaly">
-//             {renderCard(anomalyMode, 'top')}
-//             {renderCard(initialMode, 'bottom')}
-//           </React.Fragment>
-//         )}
-//       </AnimatePresence>
-//       <Button onClick={toggleMode} className="mt-4">
-//         Switch Mode
-//       </Button>
-//     </div>
-//   );
-// }
+  return (
+    <CardRenderContainer 
+      mode={mode} 
+      username={card.username || ""} 
+      grade={card.grade || ""} 
+      isUncommon={card.anomalyMode.uncommon} 
+      energyCost={card.initialMode.energy_cost as EnergyCost}
+    >
+      <div>
+        <h1>{cardName}</h1>
+        <Image 
+          src={cardArt || (mode === "initial" ? "/images/default-art.jpg" : "/images/default-anomaly-art.webp")} 
+          alt={cardData.name} 
+          width={200} 
+          height={200} 
+        />
+      </div>
+    </CardRenderContainer>
+  );
+}
