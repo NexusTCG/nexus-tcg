@@ -139,6 +139,7 @@ export default function CardForm({
       let initialModeArtUrls: string[] = [];
       let anomalyModeArtUrls: string[] = [];
 
+      toast("Uploading card art...")
       // Upload initial mode art
       if (data.initialMode.art_options.length > 0) {
         const response = await fetch('/api/data/upload-generated-art', {
@@ -153,7 +154,7 @@ export default function CardForm({
       // Upload anomaly mode art if it exists
       if (
         data.anomalyMode.uncommon && 
-        data.anomalyMode.art_options !== undefined &&
+        data.anomalyMode.art_options && 
         data.anomalyMode.art_options.length > 0
       ) {
         const response = await fetch('/api/data/upload-generated-art', {
@@ -191,7 +192,7 @@ export default function CardForm({
           keywords: data.initialMode.keywords,
           lore: data.initialMode.lore,
           prompt_art: data.initialMode.prompt_art,
-          art_options: data.initialMode.art_options,
+          art_options: initialModeArtUrls,
           art_direction_options: data.initialMode.art_direction_options?.map(
             (opt, index) => ({
               section: opt.section,
@@ -215,7 +216,7 @@ export default function CardForm({
           text: data.anomalyMode.text,
           lore: data.anomalyMode.lore,
           prompt_art: data.anomalyMode.prompt_art,
-          art_options: data.anomalyMode.art_options,
+          art_options: anomalyModeArtUrls,
           art_direction_options: data.anomalyMode.art_direction_options?.map(
             (opt, index) => ({
               section: opt.section,

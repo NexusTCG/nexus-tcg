@@ -37,12 +37,12 @@ export default async function CardSlug({
       {/* Component to display the card */}
       {card.initialMode.name} by {card.username}
       {/* Need to upload images to Supabase bucket and then to the database */}
-      {/* <Image 
+      <Image 
         src={card.initialMode.art_options?.[card.initialMode.art_selected] || ''} 
         alt={card.initialMode.name} 
-        width={500} 
-        height={500} 
-      /> */}
+        width={200} 
+        height={200} 
+      />
     </div>
   );
 }

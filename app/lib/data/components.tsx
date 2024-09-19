@@ -756,35 +756,35 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Aerial",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/aerial.jpg?t=2024-09-08T19%3A26%3A49.398Z",
+        "image": "/images/art-option-tooltips/aerial.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Close-Up",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/close-up.jpg?t=2024-09-08T19%3A30%3A11.006Z",
+        "image": "/images/art-option-tooltips/close-up.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Panorama",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/panorama.jpg?t=2024-09-08T19%3A36%3A58.076Z",
+        "image": "/images/art-option-tooltips/panorama.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "Low angle",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/low-angle.jpg?t=2024-09-08T19%3A34%3A57.177Z",
+        "image": "/images/art-option-tooltips/low-angle.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 5,
         "option": "Extreme Close-Up",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/extreme-close-up.jpg?t=2024-09-08T19%3A32%3A01.408Z",
+        "image": "/images/art-option-tooltips/extreme-close-up.jpg",
         "description": null,
         "prompt": null
       },
@@ -797,28 +797,28 @@ export const artPromptOptions: ArtPromptOptionsType = {
       { 
         "id": 1,
         "option": "Face portrait",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/face-portrait.jpg?t=2024-09-08T19%3A32%3A10.519Z",
+        "image": "/images/art-option-tooltips/face-portrait.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 2,
         "option": "Full-body portrait",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/full-body-portrait.jpg?t=2024-09-08T19%3A32%3A48.199Z",
+        "image": "/images/art-option-tooltips/full-body-portrait.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 3,
         "option": "Half-body portrait",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/half-body-portrait.jpg",
+        "image": "/images/art-option-tooltips/half-body-portrait.jpg",
         "description": null,
         "prompt": null
       },
       { 
         "id": 4,
         "option": "One-quarter portrait",
-        "image": "https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/art-direction-option-tooltip/one-quarter-portrait.jpg?t=2024-09-08T19%3A36%3A45.802Z",
+        "image": "/images/art-option-tooltips/one-quarter-portrait.jpg",
         "description": null,
         "prompt": null
       },

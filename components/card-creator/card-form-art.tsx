@@ -122,7 +122,10 @@ export default function CardArtSheet() {
 
   async function handleGenerateArt() {
     if (artOptions.length >= MAX_ART_GENERATIONS) {
-      toast.error(`You've reached the maximum of ${MAX_ART_GENERATIONS} art generations for ${mode === "initial" ? "initial mode" : "anomaly mode"}.`)
+      toast.error(
+        `You've reached the maximum of ${MAX_ART_GENERATIONS} art generations for ${
+          mode === "initial" ? "initial mode" : "anomaly mode"
+        }.`)
       return;
     }
 
