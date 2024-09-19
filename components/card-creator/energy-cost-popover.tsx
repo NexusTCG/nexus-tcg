@@ -40,19 +40,11 @@ export default function EnergyCostPopover() {
     'void'
   ];
 
-  function calculateTotalEnergy(
-    costs: Record<EnergyType, number>
-  ): number {
+  function calculateTotalEnergy(costs: Record<EnergyType, number>): number {
     return Object.entries(costs).reduce((total, [type, cost]) => {
-      if (type === 'void') return total;
+      if (type === 'void' && cost === -1) return total;
       return total + (cost || 0);
     }, 0);
-  }
-
-  function calculateTotalVoidEnergy(
-    costs: Record<EnergyType, number>
-  ): number {
-    return costs['void'] || 0;
   }
 
   function calculateTotalCost(
@@ -106,36 +98,36 @@ export default function EnergyCostPopover() {
     e.preventDefault();
     e.stopPropagation();
     const currentValue = energyCosts[type] || 0;
-    const totalNonVoidEnergy = calculateTotalEnergy(energyCosts);
-    const totalVoidEnergy = calculateTotalVoidEnergy(energyCosts);
+    const totalEnergy = calculateTotalEnergy(energyCosts);
     
     let newValue: number;
     if (type === 'void') {
       if (currentValue === 0 && delta < 0) {
-        newValue = -1;
+        newValue = -1; // This represents 'X'
       } else if (currentValue === -1 && delta > 0) {
         newValue = 0;
       } else {
-        newValue = Math.max(-1, Math.min(15 - totalNonVoidEnergy, currentValue + delta));
+        newValue = Math.max(-1, Math.min(15, currentValue + delta));
       }
     } else {
-      if (totalNonVoidEnergy >= 5 && delta > 0) {
+      if (totalEnergy >= 15 && delta > 0) {
         return;
       }
-      newValue = Math.max(0, Math.min(5, currentValue + delta));
+      newValue = Math.max(0, Math.min(15, currentValue + delta));
     }
     
-    if (totalNonVoidEnergy + totalVoidEnergy + delta <= 15) {
+    const newTotalEnergy = calculateTotalEnergy({...energyCosts, [type]: newValue});
+    
+    if (newTotalEnergy <= 15) {
       toast(`
-        ${type.charAt(0).toUpperCase() + type.slice(1)} energy changed to ${(
-          type === "void" && newValue === -1) 
-            ? "X" 
-            : newValue}!`
-          );
+        ${type.charAt(0).toUpperCase() + type.slice(1)} energy changed to ${
+          type === "void" && newValue === -1 ? "X" : newValue
+        }!
+      `);
       
       setValue(`initialMode.energy_cost.${type}`, newValue);
-      trigger("initialMode.energy_cost") // Remove?
-      console.log("New energy cost: ", energyCosts)
+      trigger("initialMode.energy_cost")
+      console.log("New energy cost: ", {...energyCosts, [type]: newValue})
     }
   }
 
@@ -283,8 +275,7 @@ export default function EnergyCostPopover() {
                         disabled={
                           (type === 'void' && (
                             energyCosts[type] === 15 || 
-                            calculateTotalEnergy(energyCosts) + 
-                            calculateTotalVoidEnergy(energyCosts) >= 15)
+                            calculateTotalEnergy(energyCosts) >= 15)
                           ) ||
                           (type !== 'void' && (
                             energyCosts[type] === 5 || 
@@ -309,8 +300,7 @@ export default function EnergyCostPopover() {
                             )
                           ? ""
                           : type === "void" && (
-                              calculateTotalEnergy(energyCosts) + 
-                              calculateTotalVoidEnergy(energyCosts) >= 15
+                              calculateTotalEnergy(energyCosts) >= 15
                             )
                           ? ""
                           : "+"}

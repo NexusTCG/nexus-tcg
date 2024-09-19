@@ -17,8 +17,9 @@ export const EnergyCostSchema = z
     dark: z.number().int().min(0).default(0).optional(),
     chaos: z.number().int().min(0).default(0).optional(),
     growth: z.number().int().min(0).default(0).optional(),
-    void: z.number().int().min(0).default(0).optional(),
-    voidx: z.boolean().default(false).nullable().optional(),
+    void: z.number().int().min(-1).default(0).optional(),
+    // void: z.number().int().min(0).default(0).optional(),
+    // voidx: z.boolean().default(false).nullable().optional(),
   });
 
 export const SpeedTypeSchema = z
