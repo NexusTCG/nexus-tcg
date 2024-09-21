@@ -12,18 +12,27 @@ import ClientWrapper from "@/components/card-render/client-wrapper";
 async function fetchCard(
   slug: string
 ): Promise<CardDTO | null> {
-  const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const isProduction = process.env.NODE_ENV === 'production';
+  let baseUrl: string;
+
+  if (isProduction) {
+    baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${process.env.VERCEL_URL}`;
+  } else {
+    baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  }
+
+  baseUrl = baseUrl.replace(/\/$/, ''); // Remove any trailing slash
+  const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
+
+  console.log('[Server] Fetching from URL:', fetchUrl);
   
-  const res = await fetch(
-    `${defaultUrl}/api/data/fetch-cards?id=${slug}`, { 
-    cache: 'no-store' 
-  });
+  const res = await fetch(fetchUrl, { cache: 'no-store' });
   
   if (!res.ok) {
+    console.error('[Server] Fetch failed:', res.status, res.statusText);
     throw new Error('Failed to fetch card');
   }
+  
   const data = await res.json();
   return data[0] || null;
 }
