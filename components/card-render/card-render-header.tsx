@@ -1,17 +1,17 @@
 import React from "react";
-// Components
-import { Button } from "@/components/ui/button";
+// Custom components
+import CardVotes from "@/components/card-render/card-render-votes";
 
 type CardRenderHeaderProps = {
+  cardId: number;
   cardName: string;
   mode: 'initial' | 'anomaly';
-  toggleMode: () => void;
 }
 
 export default function CardRenderHeader({ 
+  cardId,
   cardName,
   mode,
-  toggleMode
 }: CardRenderHeaderProps) {
   return (
     <div
@@ -42,7 +42,7 @@ export default function CardRenderHeader({
         <h2 className="font-medium">{cardName ? cardName : "Card name"}</h2>
         <small className="opacity-50 text-xs">{mode.toUpperCase()}</small>
       </div>
-      <>Votes</>
+      {cardId && (<CardVotes cardId={cardId} />)}
     </div>
   )
 }

@@ -24,7 +24,7 @@ export default function ClientWrapper({
       <CardRenderHeader 
         cardName={card.initialMode.name} 
         mode={activeMode} 
-        toggleMode={toggleMode}
+        cardId={card?.id || 0}
       />
       <CardContent
         activeMode={activeMode}
