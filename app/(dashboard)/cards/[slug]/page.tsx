@@ -17,7 +17,7 @@ async function fetchCard(
   : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?id=${slug}`, { 
+    `${defaultUrl}/api/data/fetch-cards?id=${slug}`, { 
     cache: 'no-store' 
   });
   
