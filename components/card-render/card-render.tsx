@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 // Utils
 import Image from "next/image";
@@ -8,15 +6,18 @@ import { CardDTO } from "@/app/lib/types/dto";
 import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
 import CardRenderContainer from "@/components/card-render/card-render-container";
+import CardAnimationWrapper from "@/components/card-render/card-animation-wrapper";
 
 type CardRenderProps = {
   card: CardDTO;
   mode: "initial" | "anomaly";
+  isActive: boolean;
 };
 
 export default function CardRender({ 
   card,
   mode, 
+  isActive,
 }: CardRenderProps) {
   const cardData = mode === "initial" 
     ? card.initialMode 
@@ -33,28 +34,28 @@ export default function CardRender({
       : "/images/default-anomaly-art.webp";
 
   return (
-    <CardRenderContainer 
-      mode={mode} 
-      username={card.username || ""} 
-      grade={card.grade || ""} 
-      isUncommon={card.anomalyMode.uncommon} 
-      energyCost={card.initialMode.energy_cost as EnergyCost}
-    >
-      <div>
-        <h1>{cardName}</h1>
-        <Image 
-          src={
-            cardArt || (
+    <CardAnimationWrapper isActive={isActive}>
+      <CardRenderContainer 
+        mode={mode} 
+        username={card.username || ""} 
+        grade={card.grade || ""} 
+        isUncommon={card.anomalyMode.uncommon} 
+        energyCost={card.initialMode.energy_cost as EnergyCost}
+      >
+        <div>
+          <h1>{cardName}</h1>
+          <Image 
+            src={cardArt || (
               mode === "initial" 
                 ? "/images/default-art.jpg" 
                 : "/images/default-anomaly-art.webp"
-            )
-          } 
-          alt={cardData.name} 
-          width={200} 
-          height={200} 
-        />
-      </div>
-    </CardRenderContainer>
+            )}
+            alt={cardData.name} 
+            width={200} 
+            height={200} 
+          />
+        </div>
+      </CardRenderContainer>
+    </CardAnimationWrapper>
   );
-}
+};

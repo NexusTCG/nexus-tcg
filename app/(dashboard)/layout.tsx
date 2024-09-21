@@ -24,12 +24,27 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row w-full min-h-screen">
+    <div
+      id="dashboard-layout-container"
+      className="
+        flex
+        flex-col
+        sm:flex-row
+        w-full
+        min-h-screen
+      "
+    >
       <div className="hidden sm:block">
-        <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
+        <Sidebar
+          currentUserId={currentUserId}
+          userProfile={userProfile}
+        />
       </div>
       <div className="sm:hidden">
-        <HorizontalNav currentUserId={currentUserId} userProfile={userProfile} />
+        <HorizontalNav
+          currentUserId={currentUserId}
+          userProfile={userProfile}
+        />
       </div>
       <div className="flex-1 p-4">
         {children}
