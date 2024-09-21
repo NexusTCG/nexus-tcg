@@ -43,8 +43,6 @@ export default async function Create() {
           md:px-8
           py-4
           gap-4
-          border
-          border-lime-500
         "
       >
         {/* <Banner

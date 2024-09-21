@@ -12,10 +12,15 @@ import ClientWrapper from "@/components/card-render/client-wrapper";
 async function fetchCard(
   slug: string
 ): Promise<CardDTO | null> {
+  const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?id=${slug}`, { 
     cache: 'no-store' 
   });
+  
   if (!res.ok) {
     throw new Error('Failed to fetch card');
   }
@@ -65,8 +70,6 @@ export default async function CardSlug({
           md:px-8
           py-4
           gap-4
-          border
-          border-blue-500
         "
       >
         <div 
