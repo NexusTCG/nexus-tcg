@@ -6,9 +6,9 @@ export const getCurrentUserId = cache(async () => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { 
-    data, 
-    error 
+  const {
+    data,
+    error,
   } = await supabase
     .auth
     .getUser();

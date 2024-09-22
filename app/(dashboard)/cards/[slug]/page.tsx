@@ -3,12 +3,14 @@ import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
+// Server
+import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Components
 import { Skeleton } from "@/components/ui/skeleton";
 // Custom components
 import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
-
+import CardFooter from "@/components/card-render/card-render-footer";
 async function fetchCard(
   slug: string
 ): Promise<CardDTO | null> {
@@ -32,7 +34,7 @@ async function fetchCard(
     console.error('[Server] Fetch failed:', res.status, res.statusText);
     throw new Error('Failed to fetch card');
   }
-  
+
   const data = await res.json();
   return data[0] || null;
 }
@@ -53,6 +55,7 @@ export default async function CardSlug({
   params: { slug: string },
   searchParams: { mode?: "initial" | "anomaly" } 
 }) {
+  const user = await getUserProfileDTO();
   const card = await fetchCard(params.slug);
   const activeMode = searchParams.mode || "initial";
 
@@ -98,6 +101,7 @@ export default async function CardSlug({
           "
         >
           <ClientWrapper
+            user={user}
             card={card} 
             activeMode={activeMode} 
             toggleMode={toggleMode}
@@ -116,6 +120,7 @@ export default async function CardSlug({
                 isActive={activeMode === "anomaly"}
               />
             </Suspense>
+            <CardFooter />
           </ClientWrapper>
         </div>
       </div>

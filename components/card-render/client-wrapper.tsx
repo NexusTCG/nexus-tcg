@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { CardDTO } from "@/app/lib/types/dto";
+import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
 import CardRenderHeader from "@/components/card-render/card-render-header";
 import CardContent from "@/components/card-render/card-render-content";
 
 type ClientWrapperProps = {
+  user?: ProfileDTO | null;
   card: CardDTO;
   activeMode: "initial" | "anomaly";
   toggleMode: () => void;
@@ -13,6 +14,7 @@ type ClientWrapperProps = {
 };
 
 export default function ClientWrapper({ 
+  user,
   card, 
   activeMode, 
   toggleMode, 
@@ -22,9 +24,9 @@ export default function ClientWrapper({
   return (
     <>
       <CardRenderHeader 
-        cardName={card.initialMode.name} 
+        user={user}
+        card={card} 
         mode={activeMode} 
-        cardId={card?.id || 0}
       />
       <CardContent
         activeMode={activeMode}

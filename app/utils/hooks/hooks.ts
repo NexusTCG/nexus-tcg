@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export function useClickAway(handler: () => void) {
   const ref = useRef<HTMLDivElement>(null);
@@ -12,9 +12,9 @@ export function useClickAway(handler: () => void) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [handler]);
 

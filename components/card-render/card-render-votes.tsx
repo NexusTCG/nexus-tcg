@@ -53,7 +53,12 @@ export default function CardVotes({
         rounded-lg
       "
     >
-      <p className="text-lg font-semibold">{votes ? votes : 1} <span className="text-sm font-light opacity-80">votes</span></p>
+      <p className="text-lg font-semibold">
+        {votes ? votes : 1}{" "}
+        <span className="text-sm font-light opacity-80">
+          {votes > 1 ? "votes" : "vote"}
+        </span>
+      </p>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
