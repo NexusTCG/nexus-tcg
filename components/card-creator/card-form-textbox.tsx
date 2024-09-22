@@ -51,21 +51,6 @@ export default function CardFormTextBox({
           />
         </div>
       )}
-      {/* {activeMode === "initial" && (
-        <div className="flex-shrink-0 w-full">
-          <KeywordDrawer
-            cardGrade={
-              cardGrade 
-                ? cardGrade.toLowerCase() 
-                : "core"
-              } 
-            truncateKeywords={
-              (cardText > 150 ? true : false) || 
-              (keywords.length > 2 ? true : false)
-            } 
-          />
-        </div>
-      )} */}
       <div className="flex-grow w-full overflow-hidden">
         <CardText 
           activeMode={activeMode}

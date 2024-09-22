@@ -49,6 +49,8 @@ export default function CardRenderArtDirection({
 
   console.log('Parsed options:', options);
 
+  if (options.length === 0) return null;
+
   return (
     <div
       className="

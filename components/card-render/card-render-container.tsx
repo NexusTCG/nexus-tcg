@@ -4,7 +4,7 @@ import Image from 'next/image';
 // Types
 import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
-// import CardFormFooter from "@/components/card-creator/card-form-footer";
+import CardRenderFooter from '@/components/card-render/card-render-footer';
 
 type CardContainerProps = {
   children: React.ReactNode;
@@ -18,8 +18,8 @@ type CardContainerProps = {
 export default function CardRenderContainer({
   children,
   mode,
-  username,
   grade,
+  username,
   isUncommon,
   energyCost
 }: CardContainerProps) {
@@ -68,7 +68,7 @@ export default function CardRenderContainer({
 
   return (
     <div
-      id="nexus-card-container"
+      id="card-render-container"
       style={{ borderRadius: "16px" }}
       className="
         relative
@@ -108,7 +108,18 @@ export default function CardRenderContainer({
         {mode === "anomaly" && isUncommon === false ? (
           null
         ) : (
-          <div className="absolute bottom-0 right-0 z-50 p-2 rounded-tl-2xl bg-black mb-1 mr-1 pl-">
+          <div
+            className="
+              absolute 
+              bottom-0 
+              right-0 
+              z-50 
+              p-2 
+              rounded-tl-2xl 
+              bg-black 
+              mb-1 mr-1 pl-1
+            "
+          >
             <Image 
               src={`/icons/grade-icons/${grade.toLowerCase()}.svg`}
               alt={grade}
@@ -117,7 +128,11 @@ export default function CardRenderContainer({
             />
           </div>
         )}
-        {/* <CardFormFooter username={username} /> */}
+        <CardRenderFooter
+          username={username}
+          mode={mode}
+          isUncommon={isUncommon || false}
+        />
       </div>
     </div>
   )
