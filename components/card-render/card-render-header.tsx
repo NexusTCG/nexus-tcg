@@ -1,163 +1,110 @@
-import React from "react";
+import React from "react"
+// Utils
+import clsx from "clsx"
+// Actions
+import { calculateBgColor } from "@/app/utils/actions/actions";
 // Types
-import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
-// Components
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { CardDTO } from "@/app/lib/types/dto";
+import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
-import CardVotes from "@/components/card-render/card-render-votes";
-// Icons
-import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md";
+import CardRenderCost from "@/components/card-render/card-render-cost"
+import CardRenderSpeed from "@/components/card-render/card-render-speed"
 
 type CardRenderHeaderProps = {
-  user?: ProfileDTO | null;
   card: CardDTO;
-  mode: 'initial' | 'anomaly';
+  activeMode: "initial" | "anomaly"
 }
 
-export default function CardRenderHeader({ 
-  user,
+export default function CardRenderHeader({
   card,
-  mode,
+  activeMode
 }: CardRenderHeaderProps) {
+  const cardEnergyCost: EnergyCost = card.initialMode.energy_cost as EnergyCost;
+  const cardSpeed = card.initialMode.speed;
+  const isUncommonAnomaly = card.anomalyMode.uncommon;
+
+  const bgColorClass50 = activeMode === "anomaly" 
+    ? null : calculateBgColor(cardEnergyCost, 50)[0];
+  const bgColorClass100 = activeMode === "anomaly" 
+    ? null : calculateBgColor(cardEnergyCost, 100)[0]; 
+
   return (
     <div
-      id="card-render-header"
-      className="
-        flex
-        flex-row
-        justify-between
-        items-center
-        w-full
-        px-4
-        py-2
-        bg-zinc-900
-        border-b
-        border-zinc-700
-      "
+      id="card-form-header-container"
+      style={{ maxHeight: "60px" }}
+      className={clsx(
+        "flex flex-row justify-start items-start w-full",
+        "gap-2 pl-0.5 pr-1 pt-0.5 pb-1 z-20 text-black font-medium",
+        "border border-b-2 shadow shadow-black/50 relative",
+        bgColorClass50 || 'bg-neutral-50'
+      )}
     >
-      <div
-        id="card-render-header-content"
-        className="
-          flex
-          flex-col
-          justify-start
-          items-start
-          gap-0.5
-        "
-      >
+      {activeMode === "initial" && (
         <div
-          id="card-render-header-content-name"
+          id="card-speed-cost-container"
           className="
-            flex
-            flex-row
-            justify-start
-            items-baseline
-            gap-2
+            flex 
+            flex-col 
+            justify-start 
+            items-start
+            z-10
+            h-[64px]
+            w-[32px]
+            left-0
           "
         >
-          <h2 className="font-medium">
-            {
-              card.initialMode.name ? 
-                card.initialMode.name : 
-                "Card name"
-            }
-          </h2>
-          {user?.user_id === card.user_id && (
-            <div
-              className="
-                flex
-                flex-row
-                justify-start
-                items-baseline
-                gap-1
-              "
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <MdOutlineEdit
-                      className="
-                        w-[16px]
-                        h-[16px]
-                        opacity-40
-                        hover:opacity-60
-                        cursor-pointer
-                      "
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    Edit {
-                      mode === "initial" 
-                        ? card.initialMode.name 
-                        : card.anomalyMode.name
-                    }
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <MdOutlineDelete
-                          className="
-                            w-[16px]
-                            h-[16px]
-                            opacity-40
-                            hover:opacity-60
-                            cursor-pointer
-                          "
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        Delete {
-                          mode === "initial" 
-                            ? card.initialMode.name 
-                            : card.anomalyMode.name
-                        }
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to delete this card?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone.{" "}
-                      This will permanently delete {card.initialMode.name}.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Delete</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          )}
+          <div className="absolute">
+            <CardRenderSpeed speed={cardSpeed} />
+          </div>
+          <div className="absolute top-[32px]">
+            <CardRenderCost energyCost={cardEnergyCost} />
+          </div>
         </div>
-        <small className="opacity-60 text-xs">{mode.toUpperCase()} MODE</small>
+      )}
+      <div
+        id="card-name-type-container"
+        className="
+          flex 
+          flex-col 
+          justify-between 
+          items-start 
+          w-full
+          h-full
+        "
+      >
+        <div className="text-md">
+          {
+            activeMode === "initial" 
+              ? card.initialMode.name 
+              : isUncommonAnomaly 
+                ? card.anomalyMode.name 
+                : "Common Anomaly"
+          }
+        </div>
+        <div
+          id="card-type-container"
+          className={clsx(
+            "flex flex-row justify-start items-center",
+            "w-full text-sm rounded-sm p-0.5",
+            bgColorClass100 || 'bg-neutral-100'
+          )}
+        >
+          {
+            activeMode === "initial" 
+              ? card.initialMode.type.charAt(0).toUpperCase() + card.initialMode.type.slice(1)
+              : "Anomaly"
+          }
+          {
+            activeMode === "initial" && 
+            card.initialMode.type_sub && (
+              <>
+                <span className="opacity-80 text-xs font-normal mx-1">•</span>
+                {card.initialMode.type_sub}
+              </>
+            )
+          }
+        </div>
       </div>
-      {card.id && (<CardVotes cardId={card.id} />)}
     </div>
   )
 }

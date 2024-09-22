@@ -6,17 +6,17 @@ import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Components
 import { Button } from "@/components/ui/button";
 
-type CardRenderFooterProps = {
+type CardRenderPageFooterProps = {
   createdAt?: string | null;
   updatedAt?: string;
   username: string;
 }
 
-export default function CardRenderFooter({
+export default function CardRenderPageFooter({
   createdAt,
   updatedAt,
   username,
-}: CardRenderFooterProps) {
+}: CardRenderPageFooterProps) {
   return (
     <div 
       id="card-creator-footer" 

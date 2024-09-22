@@ -2,8 +2,8 @@
 
 import React from "react";
 import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
-import CardRenderHeader from "@/components/card-render/card-render-header";
-import CardRenderFooter from "@/components/card-render/card-render-footer";
+import CardRenderPageHeader from "@/components/card-render/card-render-page-header";
+import CardRenderPageFooter from "@/components/card-render/card-render-page-footer";
 import CardRenderContent from "@/components/card-render/card-render-content";
 
 type ClientWrapperProps = {
@@ -22,7 +22,7 @@ export default function ClientWrapper({
 
   return (
     <>
-      <CardRenderHeader 
+      <CardRenderPageHeader 
         user={user}
         card={card} 
         mode={activeMode} 
@@ -34,7 +34,7 @@ export default function ClientWrapper({
         {children}
       </CardRenderContent>
       {card && (
-        <CardRenderFooter
+        <CardRenderPageFooter
           createdAt={card.created_at ?? undefined}
           updatedAt={card.updated_at ?? undefined}
           username={card.username ?? ''}

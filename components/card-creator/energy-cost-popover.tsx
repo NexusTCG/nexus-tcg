@@ -40,17 +40,23 @@ export default function EnergyCostPopover() {
     'void'
   ];
 
-  function calculateTotalEnergy(costs: Record<EnergyType, number>): number {
-    return Object.entries(costs).reduce((total, [type, cost]) => {
-      if (type === 'void' && cost === -1) return total;
-      return total + (cost || 0);
-    }, 0);
+  function calculateTotalEnergy(
+    costs: Record<EnergyType, number>
+  ): number {
+    return Object
+      .entries(costs)
+      .reduce((total, [type, cost]) => {
+        if (type === 'void' && cost === -1) return total;
+        return total + (cost || 0);
+      }, 0);
   }
 
   function calculateTotalCost(
     costs: Record<EnergyType, number>
   ): number {
-    const total = Object.values(costs).reduce((total, cost) => total + (cost || 0), 0);
+    const total = Object
+      .values(costs)
+      .reduce((total, cost) => total + (cost || 0), 0);
     return total === -1 ? 0 : total;
   }
 

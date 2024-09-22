@@ -6,6 +6,7 @@ import { CardDTO } from "@/app/lib/types/dto";
 import { EnergyCost } from "@/app/lib/types/components"
 // Custom components
 import CardRenderContainer from "@/components/card-render/card-render-container";
+import CardRenderHeader from "@/components/card-render/card-render-header";
 import CardAnimationWrapper from "@/components/card-render/card-animation-wrapper";
 
 type CardRenderProps = {
@@ -42,8 +43,11 @@ export default function CardRender({
         isUncommon={card.anomalyMode.uncommon} 
         energyCost={card.initialMode.energy_cost as EnergyCost}
       >
+        <CardRenderHeader 
+          card={card} 
+          activeMode={mode} 
+        />
         <div>
-          <h1>{cardName}</h1>
           <Image 
             src={cardArt || (
               mode === "initial" 

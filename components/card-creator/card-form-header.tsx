@@ -134,7 +134,7 @@ export default function CardFormHeader({
                       activeMode === "initial" 
                         ? randomCardNamePlaceholder 
                         : cardIsUncommon 
-                        ? "Uncommon Anomaly" 
+                          ? "Uncommon Anomaly" 
                           : "Common Anomaly"
                     }
                     autoComplete="off"
