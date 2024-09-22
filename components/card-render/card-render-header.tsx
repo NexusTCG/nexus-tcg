@@ -112,31 +112,29 @@ export default function CardRenderHeader({
               </TooltipProvider>
 
               <AlertDialog>
-                <AlertDialogTrigger>
-                  <>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <MdOutlineDelete
-                            className="
-                              w-[16px]
-                              h-[16px]
-                              opacity-40
-                              hover:opacity-60
-                              cursor-pointer
-                            "
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">
-                          Delete {
-                            mode === "initial" 
-                              ? card.initialMode.name 
-                              : card.anomalyMode.name
-                          }
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </>
+                <AlertDialogTrigger asChild>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <MdOutlineDelete
+                          className="
+                            w-[16px]
+                            h-[16px]
+                            opacity-40
+                            hover:opacity-60
+                            cursor-pointer
+                          "
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Delete {
+                          mode === "initial" 
+                            ? card.initialMode.name 
+                            : card.anomalyMode.name
+                        }
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

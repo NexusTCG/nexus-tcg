@@ -2,6 +2,7 @@
 
 import React from "react";
 // Utils
+import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
 // Components
 import {
@@ -11,17 +12,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-type CardContentProps = {
+type CardRenderContentProps = {
   activeMode: 'initial' | 'anomaly';
-  toggleMode: () => void;
+  cardId: number;
   children: React.ReactNode;
 }
 
-export default function CardContent({ 
+export default function CardRenderContent({ 
   activeMode,
-  toggleMode,
+  cardId,
   children
-}: CardContentProps) {
+}: CardRenderContentProps) {
+  const newMode = activeMode === "initial" ? "anomaly" : "initial";
+
   return (
     <div 
       id="card-creator-content" 
@@ -42,6 +45,7 @@ export default function CardContent({
         id="card-frames-wrapper"
         className="
           flex 
+          flex-col
           justify-center 
           items-center
           w-full 
@@ -53,28 +57,22 @@ export default function CardContent({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <form action={toggleMode}>
-                  <button
-                    type="submit"
-                    className="
-                      w-full
-                      h-full
-                      flex
-                      justify-center
-                      items-center
-                      cursor-pointer
-                    "
-                  >
-                    {children}
-                  </button>
-                </form>
+                <Link
+                  href={`/cards/${cardId}?mode=${newMode}`}
+                  className="
+                    w-full
+                    h-full
+                    flex
+                    justify-center
+                    items-center
+                    cursor-pointer
+                  "
+                >
+                  {children}
+                </Link>
               </TooltipTrigger>
               <TooltipContent side="top">
-                <p>View {
-                  activeMode === "initial" 
-                    ? "Anomaly" 
-                    : "Initial"
-                } mode</p>
+                <p>View {newMode} mode</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

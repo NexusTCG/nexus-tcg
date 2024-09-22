@@ -3,13 +3,13 @@
 import React from "react";
 import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
 import CardRenderHeader from "@/components/card-render/card-render-header";
-import CardContent from "@/components/card-render/card-render-content";
+import CardRenderFooter from "@/components/card-render/card-render-footer";
+import CardRenderContent from "@/components/card-render/card-render-content";
 
 type ClientWrapperProps = {
   user?: ProfileDTO | null;
   card: CardDTO;
   activeMode: "initial" | "anomaly";
-  toggleMode: () => void;
   children: React.ReactNode;
 };
 
@@ -17,7 +17,6 @@ export default function ClientWrapper({
   user,
   card, 
   activeMode, 
-  toggleMode, 
   children 
 }: ClientWrapperProps) {
 
@@ -28,12 +27,19 @@ export default function ClientWrapper({
         card={card} 
         mode={activeMode} 
       />
-      <CardContent
+      <CardRenderContent
         activeMode={activeMode}
-        toggleMode={toggleMode}
+        cardId={card.id ?? 0}
       >
         {children}
-      </CardContent>
+      </CardRenderContent>
+      {card && (
+        <CardRenderFooter
+          createdAt={card.created_at ?? undefined}
+          updatedAt={card.updated_at ?? undefined}
+          username={card.username ?? ''}
+        />
+      )}
     </>
   );
 }

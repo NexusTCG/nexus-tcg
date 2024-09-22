@@ -1,6 +1,4 @@
 import React, { Suspense } from "react";
-// Utils
-import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
@@ -10,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Custom components
 import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
-import CardFooter from "@/components/card-render/card-render-footer";
+import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
+
 async function fetchCard(
   slug: string
 ): Promise<CardDTO | null> {
@@ -63,66 +62,64 @@ export default async function CardSlug({
     return <div>Card not found</div>;
   }
 
-  async function toggleMode() {
-    "use server";
-    const newMode = activeMode === "initial" ? "anomaly" : "initial";
-    redirect(`/cards/${params.slug}?mode=${newMode}`);
-  }
-
   return (
     <div
-        id={`${card.id}-page-container`}
+      id={`${card.id}-page-container`}
+      className="
+        flex
+        flex-col
+        justify-start
+        items-start
+        w-full
+        px-4
+        md:px-8
+        py-4
+        gap-8
+      "
+    >
+      <div 
+        id={`${card.id}-content-container`}
         className="
-          flex
-          flex-col
-          justify-start
-          items-start
-          w-full
-          px-4
-          md:px-8
-          py-4
-          gap-4
+          flex 
+          flex-col 
+          justify-start 
+          items-center 
+          w-full 
+          h-full
+          min-h-[calc(100vh-10rem)]
+          border 
+          border-zinc-700 
+          rounded-sm 
+          overflow-hidden
         "
       >
-        <div 
-          id={`${card.id}-content-container`}
-          className="
-            flex 
-            flex-col 
-            justify-start 
-            items-center 
-            w-full 
-            h-full
-            min-h-[calc(100vh-10rem)]
-            border 
-            border-zinc-700 
-            rounded-sm 
-            overflow-hidden
-          "
+        <ClientWrapper
+          user={user}
+          card={card} 
+          activeMode={activeMode}
         >
-          <ClientWrapper
-            user={user}
-            card={card} 
-            activeMode={activeMode} 
-            toggleMode={toggleMode}
-          >
-            <Suspense fallback={<CardSkeleton />}>
-              <CardRender
-                card={card}
-                mode="initial"
-                isActive={activeMode === "initial"}
-              />
-            </Suspense>
-            <Suspense fallback={<CardSkeleton />}>
-              <CardRender
-                card={card}
-                mode="anomaly"
-                isActive={activeMode === "anomaly"}
-              />
-            </Suspense>
-            <CardFooter />
-          </ClientWrapper>
-        </div>
+          <Suspense fallback={<CardSkeleton />}>
+            <CardRender
+              card={card}
+              mode="initial"
+              isActive={activeMode === "initial"}
+            />
+          </Suspense>
+          <Suspense fallback={<CardSkeleton />}>
+            <CardRender
+              card={card}
+              mode="anomaly"
+              isActive={activeMode === "anomaly"}
+            />
+          </Suspense>
+        </ClientWrapper>
       </div>
+      <Suspense fallback={null}>
+        <CardRenderArtDirection
+          card={card}
+          activeMode={activeMode}
+        />
+      </Suspense>
+    </div>
   );
 }

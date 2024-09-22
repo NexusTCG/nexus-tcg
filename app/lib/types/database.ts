@@ -16,6 +16,11 @@ export type GlossaryTermType = {
   tip?: "string";
 };
 
+export type ArtDirectionOption = {
+  section: string;
+  option: number;
+};
+
 export type InitialCardType = {
   id?: number;
   card_id?: number;
@@ -41,7 +46,7 @@ export type InitialCardType = {
   defense?: number;
   reach?: boolean;
   art_selected: number;
-  art_direction_options?: string;
+  art_direction_options?: ArtDirectionOption[];
   keywords?: string;
   art_options?: string;
 };
@@ -57,7 +62,7 @@ export type AnomalyCardType = {
   lore?: string;
   prompt_art?: string;
   art_selected: number;
-  art_direction_options?: string;
+  art_direction_options?: ArtDirectionOption[];
   art_options?: string;
 };
 

@@ -1,12 +1,28 @@
-// Reusable actions
+// Utils
+import { formatDistanceToNow } from "date-fns";
+// Types
 import { EnergyCost } from "@/app/lib/types/components";
-import { energyToColorMap, energyOrder } from "@/app/lib/data/data"
+import { energyOrder, energyToColorMap } from "@/app/lib/data/data";
+
+// CALCULATIONS //
+
+export function calculateTimeAgo(
+  date: string | null | undefined,
+): string {
+  if (!date) return "Unknown";
+  return formatDistanceToNow(
+    new Date(date),
+    {
+      addSuffix: true,
+    },
+  );
+}
 
 export function calculateBgColor(
-  energyCost: EnergyCost | null, 
-  shade: number = 50
+  energyCost: EnergyCost | null,
+  shade: number = 50,
 ): string[] {
-  if (!energyCost || Object.values(energyCost).every(cost => cost === 0)) {
+  if (!energyCost || Object.values(energyCost).every((cost) => cost === 0)) {
     return [`bg-neutral-${shade}`];
   }
 
@@ -18,22 +34,23 @@ export function calculateBgColor(
     return [`bg-neutral-${shade}`];
   }
 
-  if (activeTypes.includes('void') && activeTypes.length === 1) {
+  if (activeTypes.includes("void") && activeTypes.length === 1) {
     return [`bg-slate-${shade}`];
   }
 
-  const nonVoidTypes = activeTypes.filter(type => type !== 'void');
+  const nonVoidTypes = activeTypes.filter((type) => type !== "void");
 
   if (nonVoidTypes.length === 1) {
-    const colorName = energyToColorMap[nonVoidTypes[0] as keyof typeof energyToColorMap];
+    const colorName =
+      energyToColorMap[nonVoidTypes[0] as keyof typeof energyToColorMap];
     return [`bg-${colorName}-${shade}`];
   }
 
   if (nonVoidTypes.length === 2) {
-    const sortedTypes = nonVoidTypes.sort((a, b) => 
+    const sortedTypes = nonVoidTypes.sort((a, b) =>
       energyOrder.indexOf(a) - energyOrder.indexOf(b)
     );
-    const gradientName = sortedTypes.join('-').toLowerCase();
+    const gradientName = sortedTypes.join("-").toLowerCase();
     return [`bg-${gradientName}-${shade}`];
   }
 
