@@ -20,6 +20,22 @@ type CardRenderProps = {
   isActive: boolean;
 };
 
+function getCardArt(
+  card: CardDTO, 
+  mode: "initial" | "anomaly"
+) {
+  if (mode === "initial") {
+    return card.initialMode.art_options?.[card.initialMode.art_selected];
+  } else {
+    if (card.anomalyMode.uncommon) {
+      return card.anomalyMode.art_options?.[card.anomalyMode.art_selected] || 
+        "/images/default-anomaly-art.webp";
+    } else {
+      return "/images/default-anomaly-art.webp";
+    }
+  }
+}
+
 export default function CardRender({ 
   card,
   mode, 
@@ -38,11 +54,13 @@ export default function CardRender({
     : card.anomalyMode.uncommon 
       ? "Uncommon Anomaly" 
       : "Common Anomaly";
-  const cardArt = mode === "initial" 
-    ? card.initialMode.art_options?.[card.initialMode.art_selected] 
-    : card.anomalyMode.uncommon 
-      ? card.anomalyMode.art_options?.[card.anomalyMode.art_selected] 
-      : "/images/default-anomaly-art.webp";
+  // const cardArt = mode === "initial" 
+  //   ? card.initialMode.art_options?.[card.initialMode.art_selected] 
+  //   : card.anomalyMode.uncommon
+  //     ? card.anomalyMode.art_options?.[card.anomalyMode.art_selected] || 
+  //       "/images/default-anomaly-art.webp"
+  //     : "/images/default-anomaly-art.webp";
+  const cardArt = getCardArt(card, mode);
 
   const bgColorClass500 = mode === "anomaly" 
     ? null : calculateBgColor(card.initialMode.energy_cost as EnergyCost, 500)[0]; 
@@ -55,6 +73,7 @@ export default function CardRender({
         grade={card.grade || ""} 
         isUncommon={card.anomalyMode.uncommon} 
         energyCost={card.initialMode.energy_cost as EnergyCost}
+        cardId={card.id ?? 0}
       >
         <CardRenderHeader 
           card={card} 

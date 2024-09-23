@@ -23,7 +23,7 @@ export default function CardRenderArtDirection({
     card[`${activeMode.toLowerCase()}Mode` as keyof CardDTO] as InitialCardType | AnomalyCardType
   )?.art_direction_options;
   
-  console.log(`Art Direction Options (${activeMode} mode):`, artDirectionOptions);
+  // console.log(`Art Direction Options (${activeMode} mode):`, artDirectionOptions);
 
   if (!artDirectionOptions) return null;
 
@@ -47,7 +47,7 @@ export default function CardRenderArtDirection({
     return null;
   }
 
-  console.log('Parsed options:', options);
+  // console.log('Parsed options:', options);
 
   if (options.length === 0) return null;
 

@@ -3,6 +3,8 @@ import React, { Suspense } from "react";
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
+// Actions
+import { getBaseUrl } from '@/app/utils/actions/actions';
 // Components
 import { Skeleton } from "@/components/ui/skeleton";
 // Custom components
@@ -10,24 +12,22 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
+// TODO: If open for the first time, use htmm-to-image to convert both renders to JPEG upload to public Supabase bucket
+// TODO: Implement functionality to download images from Supabase bucket
+// TODO: Implement share functionality
+
+export const revalidate = 3600;
+
 async function fetchCard(
   slug: string
 ): Promise<CardDTO | null> {
-  const isProduction = process.env.NODE_ENV === 'production';
-  let baseUrl: string;
-
-  if (isProduction) {
-    baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${process.env.VERCEL_URL}`;
-  } else {
-    baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  }
-
-  baseUrl = baseUrl.replace(/\/$/, ''); // Remove any trailing slash
+  const baseUrl = getBaseUrl();
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
 
   console.log('[Server] Fetching from URL:', fetchUrl);
   
-  const res = await fetch(fetchUrl, { cache: 'no-store' });
+  // const res = await fetch(fetchUrl, { cache: 'no-store' });
+  const res = await fetch(fetchUrl, { next: { revalidate: 3600 } });
   
   if (!res.ok) {
     console.error('[Server] Fetch failed:', res.status, res.statusText);

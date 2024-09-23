@@ -13,6 +13,7 @@ type CardContainerProps = {
   grade: string;
   isUncommon?: boolean;
   energyCost?: EnergyCost;
+  cardId: number;
 };
 
 export default function CardRenderContainer({
@@ -21,7 +22,8 @@ export default function CardRenderContainer({
   grade,
   username,
   isUncommon,
-  energyCost
+  energyCost,
+  cardId
 }: CardContainerProps) {
 
   function getCardFrameImage() {
@@ -68,7 +70,7 @@ export default function CardRenderContainer({
 
   return (
     <div
-      id="card-render-container"
+      id={`card-render-container-${cardId}-${mode}`}
       style={{ borderRadius: "16px" }}
       className="
         relative

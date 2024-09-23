@@ -1,6 +1,7 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+import { toPng } from 'html-to-image';
 // Actions
 import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Components
@@ -10,13 +11,33 @@ type CardRenderPageFooterProps = {
   createdAt?: string | null;
   updatedAt?: string;
   username: string;
+  cardId: number; 
+  activeMode: 'initial' | 'anomaly';
 }
 
 export default function CardRenderPageFooter({
   createdAt,
   updatedAt,
   username,
+  cardId,
+  activeMode,
 }: CardRenderPageFooterProps) {
+
+  const handleDownload = async () => {
+    const element = document.getElementById(`card-render-container-${cardId}-${activeMode}`);
+    if (element) {
+      try {
+        const dataUrl = await toPng(element, { quality: 0.95 });
+        const link = document.createElement('a');
+        link.download = `card-${cardId}-${activeMode}.png`;
+        link.href = dataUrl;
+        link.click();
+      } catch (error) {
+        console.error('Error generating image:', error);
+      }
+    }
+  };
+
   return (
     <div 
       id="card-creator-footer" 
@@ -78,7 +99,11 @@ export default function CardRenderPageFooter({
         <Button size="sm" className="font-medium">
           Share
         </Button>
-        <Button size="sm" className="font-medium">
+        <Button
+          size="sm"
+          className="font-medium"
+          onClick={handleDownload}
+        >
           Download
         </Button>
       </div>

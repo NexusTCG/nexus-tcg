@@ -38,6 +38,8 @@ export default function ClientWrapper({
           createdAt={card.created_at ?? undefined}
           updatedAt={card.updated_at ?? undefined}
           username={card.username ?? ''}
+          cardId={card.id ?? 0}
+          activeMode={activeMode}
         />
       )}
     </>

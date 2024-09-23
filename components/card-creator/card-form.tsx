@@ -257,14 +257,9 @@ export default function CardForm({
           creator: insertData.data.username,
         });
   
-        // toast("Card saved successfully!");
-        // setTimeout(() => {
-        //   toast("Redirecting...");
-        //   router.push(`/cards/${insertData.data.id}`);
-        // }, 2000);
         toast("Card saved successfully!");
         toast("Redirecting...");
-        router.push(`/cards/${insertData.data.id}`);
+        router.push(`/cards/${insertData.data.id}?mode=initial`);
       } else {
         toast("Failed to save card!");
         console.error("Card submit error:", insertData.error);
