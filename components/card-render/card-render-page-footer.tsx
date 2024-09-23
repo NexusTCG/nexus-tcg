@@ -23,11 +23,20 @@ export default function CardRenderPageFooter({
   activeMode,
 }: CardRenderPageFooterProps) {
 
-  const handleDownload = async () => {
-    const element = document.getElementById(`card-render-container-${cardId}-${activeMode}`);
+  async function handleDownload(
+    mode: 'initial' | 'anomaly'
+  ) {
+    const element = document.getElementById(
+      `card-render-container-${cardId}-${mode}`
+    );
     if (element) {
       try {
-        const dataUrl = await toPng(element, { quality: 0.95 });
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const dataUrl = await toPng(element, { 
+          quality: 0.95,
+          cacheBust: true,
+        });
         const link = document.createElement('a');
         link.download = `card-${cardId}-${activeMode}.png`;
         link.href = dataUrl;
@@ -99,13 +108,23 @@ export default function CardRenderPageFooter({
         <Button size="sm" className="font-medium">
           Share
         </Button>
-        <Button
-          size="sm"
-          className="font-medium"
-          onClick={handleDownload}
-        >
-          Download
-        </Button>
+        {activeMode === "initial" ? (
+          <Button
+            size="sm"
+            className="font-medium"
+            onClick={() => handleDownload("initial")}
+          >
+            Download
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            className="font-medium"
+            onClick={() => handleDownload("anomaly")}
+          >
+            Download
+          </Button>
+        )}
       </div>
     </div>
   )

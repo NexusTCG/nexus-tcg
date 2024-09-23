@@ -94,6 +94,8 @@ export default function CardRender({
         >
           {cardArt && cardArt !== undefined &&(
             <CardRenderArt
+              mode={mode}
+              cardId={card.id ?? 0}
               cardArt={cardArt}
               cardName={cardName}
               username={card.username || ""}

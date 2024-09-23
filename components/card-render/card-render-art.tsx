@@ -3,12 +3,16 @@ import React from "react";
 import Image from "next/image";
 
 type CardRenderArtProps = {
+  mode: "initial" | "anomaly";
+  cardId: number;
   cardArt: string;
   cardName: string;
   username: string;
 }
 
 export default function CardRenderArt({
+  mode,
+  cardId,
   cardArt,
   cardName,
   username,
@@ -36,6 +40,7 @@ export default function CardRenderArt({
     >
       <div className="w-full h-full overflow-hidden">
         <Image
+          key={`${cardId}-${mode}`}
           src={cardArt}
           alt={`${cardName} by ${username}`}
           fill
