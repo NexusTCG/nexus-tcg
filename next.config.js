@@ -15,8 +15,5 @@ module.exports = withBundleAnalyzer({
         hostname: 'oaidalleapiprodscus.blob.core.windows.net'
       },
     ],
-    experimental: {
-      turbo: false,
-    },
   },
 });
