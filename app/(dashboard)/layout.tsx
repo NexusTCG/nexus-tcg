@@ -1,12 +1,14 @@
+export const dynamic = 'force-dynamic';
+
 import React from "react";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Custom components
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
-const Sidebar = dynamic(() => import('@/components/dashboard-nav/sidebar'), { ssr: false });
-const HorizontalNav = dynamic(() => import('@/components/dashboard-nav/horizontal-nav'), { ssr: false });
+const Sidebar = dynamicImport(() => import('@/components/dashboard-nav/sidebar'), { ssr: false });
+const HorizontalNav = dynamicImport(() => import('@/components/dashboard-nav/horizontal-nav'), { ssr: false });
 
 export default async function DashboardLayout({
   children,
