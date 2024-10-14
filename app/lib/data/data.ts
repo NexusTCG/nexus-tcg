@@ -13,7 +13,7 @@ import {
   MdDesignServices,
   MdHome,
   MdNotifications,
-  MdOutlineBook,
+  // MdOutlineBook,
   MdOutlineLayers,
   MdOutlinePeople,
 } from "react-icons/md";
@@ -31,7 +31,7 @@ export const navItems = [
 ];
 
 export const secondaryNavItems = [
-  { href: "/learn", icon: MdOutlineBook, label: "Learn" },
+  // { href: "/learn", icon: MdOutlineBook, label: "Learn" },
   { href: "/play", icon: MdOutlinePeople, label: "Play" },
 ];
 

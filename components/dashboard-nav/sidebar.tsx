@@ -29,6 +29,7 @@ import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon"
 import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu"
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
+import { MdOutlineBook } from "react-icons/md";
 
 export default function Sidebar({ 
   currentUserId,
@@ -146,6 +147,30 @@ export default function Sidebar({
         </div>
         <Separator />
         <div id="nav-secondary" className="flex flex-col w-full gap-1">
+            <a
+              href={"https://mintlify.com/"} // Temporary
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                variant="ghost"
+                size={isCollapsed ? "icon" : "default"}
+                className={clsx(
+                  "w-full",
+                  isCollapsed ? "justify-center" : "justify-start"
+                )}
+              >
+                {isLoading ? (
+                  <Skeleton className="h-[1.2rem] w-[1.2rem] rounded-full" />
+                ) : (
+                  <MdOutlineBook className={clsx(
+                    "h-[1.2rem] w-[1.2rem]",
+                    isCollapsed ? "m-0" : "mr-2"
+                  )} />
+                )}
+                {!isCollapsed && (isLoading ? <Skeleton className="h-4 w-20" /> : "Learn")}
+              </Button>
+            </a>
           {renderNavItems(secondaryNavItems)}
         </div>
         <Separator />
@@ -264,70 +289,6 @@ export default function Sidebar({
             </Button>
           </Link>
         )}
-        {/* {currentUserId ? (
-          <div
-            id="sidebar-profile"
-            className={clsx(
-              "flex flex-row items-center w-full",
-              isCollapsed ? "justify-center" : "justify-between"
-            )}
-          >
-            {!isCollapsed && (
-              <div
-                id="avatar-username-container"
-                className="flex flex-row justify-start items-center w-full gap-2"
-              >
-                {userProfile?.avatar_url && userProfile?.username ? (
-                  <UserAvatar
-                    avatarUrl={userProfile.avatar_url}
-                    userName={userProfile.username}
-                    size={"sm"}
-                  />
-                ) : (
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                )}
-                {userProfile?.username ? (
-                  <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
-                    {userProfile.username}
-                  </p>
-                ) : (
-                  <Skeleton className="w-20 h-4" />
-                )}
-              </div>
-            )}
-            {isCollapsed ? (
-              <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SidebarProfileMenu />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  Profile Menu
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            ) : (
-              <div>
-                <SidebarProfileMenu />
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link href="/login" className="w-full">
-            <Button
-              variant="default"
-              size={isCollapsed ? "icon" : "default"}
-              className={clsx(
-                 "w-full font-semibold",
-                isCollapsed ? "justify-center" : "justify-center"
-              )}
-            >
-              {!isCollapsed && "Create account"}
-            </Button>
-          </Link>
-        )} */}
       </div>
     </div>
   );
