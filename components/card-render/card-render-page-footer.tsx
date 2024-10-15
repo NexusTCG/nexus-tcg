@@ -1,19 +1,19 @@
 import React from "react";
 // Utils
 import Link from "next/link";
-import { toPng } from 'html-to-image';
 // Actions
 import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Components
 import { Button } from "@/components/ui/button";
+import { DownloadButton } from "@/components/card-render/download-button";
 
 type CardRenderPageFooterProps = {
   createdAt?: string | null;
   updatedAt?: string;
   username: string;
-  cardId: number; 
-  activeMode: 'initial' | 'anomaly';
-}
+  cardId: number;
+  activeMode: "initial" | "anomaly";
+};
 
 export default function CardRenderPageFooter({
   createdAt,
@@ -22,34 +22,9 @@ export default function CardRenderPageFooter({
   cardId,
   activeMode,
 }: CardRenderPageFooterProps) {
-
-  async function handleDownload(
-    mode: 'initial' | 'anomaly'
-  ) {
-    const element = document.getElementById(
-      `card-render-container-${cardId}-${mode}`
-    );
-    if (element) {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        const dataUrl = await toPng(element, { 
-          quality: 0.95,
-          cacheBust: true,
-        });
-        const link = document.createElement('a');
-        link.download = `card-${cardId}-${activeMode}.png`;
-        link.href = dataUrl;
-        link.click();
-      } catch (error) {
-        console.error('Error generating image:', error);
-      }
-    }
-  };
-
   return (
-    <div 
-      id="card-creator-footer" 
+    <div
+      id="card-creator-footer"
       className="
         flex 
         flex-row 
@@ -65,24 +40,16 @@ export default function CardRenderPageFooter({
       <p className="text-sm">
         {updatedAt && updatedAt !== createdAt ? (
           <>
-            <span className="opacity-60">
-              Updated{" "}
-            </span>
-            <span className="font-medium">
-              {calculateTimeAgo(updatedAt)}
-            </span>
+            <span className="opacity-60">Updated </span>
+            <span className="font-medium">{calculateTimeAgo(updatedAt)}</span>
           </>
         ) : (
           <>
-            <span className="opacity-60">
-              Created{" "}
-            </span>
-            <span className="font-medium">
-              {calculateTimeAgo(createdAt)}
-            </span>
+            <span className="opacity-60">Created </span>
+            <span className="font-medium">{calculateTimeAgo(createdAt)}</span>
           </>
         )}
-        <span className="opacity-60">{" "}by{" "}</span>
+        <span className="opacity-60"> by </span>
         <span
           className="
             font-medium 
@@ -91,9 +58,7 @@ export default function CardRenderPageFooter({
             hover:opacity-80
           "
         >
-          <Link href={`/profile/${username}`}>
-            {username}
-          </Link>
+          <Link href={`/profile/${username}`}>{username}</Link>
         </span>
       </p>
       <div
@@ -108,24 +73,8 @@ export default function CardRenderPageFooter({
         <Button size="sm" className="font-medium">
           Share
         </Button>
-        {activeMode === "initial" ? (
-          <Button
-            size="sm"
-            className="font-medium"
-            onClick={() => handleDownload("initial")}
-          >
-            Download
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            className="font-medium"
-            onClick={() => handleDownload("anomaly")}
-          >
-            Download
-          </Button>
-        )}
+        <DownloadButton cardId={cardId} mode={activeMode} />
       </div>
     </div>
-  )
+  );
 }

@@ -4,7 +4,7 @@ import { CardDTO } from "@/app/lib/types/dto";
 // Server
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Actions
-import { getBaseUrl } from '@/app/utils/actions/actions';
+import { getBaseUrl } from "@/app/utils/actions/actions";
 // Components
 import { Skeleton } from "@/components/ui/skeleton";
 // Custom components
@@ -18,20 +18,18 @@ import CardRenderArtDirection from "@/components/card-render/card-render-art-dir
 
 export const revalidate = 3600;
 
-async function fetchCard(
-  slug: string
-): Promise<CardDTO | null> {
+async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
 
-  console.log('[Server] Fetching from URL:', fetchUrl);
-  
+  console.log("[Server] Fetching from URL:", fetchUrl);
+
   // const res = await fetch(fetchUrl, { cache: 'no-store' });
   const res = await fetch(fetchUrl, { next: { revalidate: 3600 } });
-  
+
   if (!res.ok) {
-    console.error('[Server] Fetch failed:', res.status, res.statusText);
-    throw new Error('Failed to fetch card');
+    console.error("[Server] Fetch failed:", res.status, res.statusText);
+    throw new Error("Failed to fetch card");
   }
 
   const data = await res.json();
@@ -47,12 +45,12 @@ function CardSkeleton() {
   );
 }
 
-export default async function CardSlug({ 
+export default async function CardSlug({
   params,
-  searchParams 
-}: { 
-  params: { slug: string },
-  searchParams: { mode?: "initial" | "anomaly" } 
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { mode?: "initial" | "anomaly" };
 }) {
   const user = await getUserProfileDTO();
   const card = await fetchCard(params.slug);
@@ -77,7 +75,7 @@ export default async function CardSlug({
         gap-8
       "
     >
-      <div 
+      <div
         id={`${card.id}-content-container`}
         className="
           flex 
@@ -93,11 +91,7 @@ export default async function CardSlug({
           overflow-hidden
         "
       >
-        <ClientWrapper
-          user={user}
-          card={card} 
-          activeMode={activeMode}
-        >
+        <ClientWrapper user={user} card={card} activeMode={activeMode}>
           <Suspense fallback={<CardSkeleton />}>
             <CardRender
               card={card}
@@ -115,10 +109,7 @@ export default async function CardSlug({
         </ClientWrapper>
       </div>
       <Suspense fallback={null}>
-        <CardRenderArtDirection
-          card={card}
-          activeMode={activeMode}
-        />
+        <CardRenderArtDirection card={card} activeMode={activeMode} />
       </Suspense>
     </div>
   );
