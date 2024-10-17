@@ -9,16 +9,12 @@ type DownloadButtonProps = {
   cardId: number;
   mode: "initial" | "anomaly";
   currentCardArtUrl?: string;
-  initialCardArtUrl?: string;
-  anomalyCardArtUrl?: string;
 };
 
 export function DownloadButton({
   cardId,
   mode,
   currentCardArtUrl,
-  initialCardArtUrl,
-  anomalyCardArtUrl,
 }: DownloadButtonProps) {
   const [isPending, setIsPending] = useState(false);
 
@@ -40,14 +36,8 @@ export function DownloadButton({
         const imgElement = element.querySelector(
           'img[data-testid="card-art-image"]'
         ) as HTMLImageElement;
-        if (imgElement) {
-          const correctUrl =
-            mode === "initial" ? initialCardArtUrl : anomalyCardArtUrl;
-          if (correctUrl) {
-            // Add a cache-busting parameter
-            const cacheBustUrl = `${correctUrl}?t=${new Date().getTime()}`;
-            imgElement.src = cacheBustUrl;
-          }
+        if (imgElement && currentCardArtUrl) {
+          imgElement.src = currentCardArtUrl;
         }
 
         // Wait for the image to load

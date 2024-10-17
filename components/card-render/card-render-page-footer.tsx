@@ -14,8 +14,6 @@ type CardRenderPageFooterProps = {
   cardId: number;
   activeMode: "initial" | "anomaly";
   currentCardArtUrl?: string;
-  initialCardArtUrl?: string;
-  anomalyCardArtUrl?: string;
 };
 
 export default function CardRenderPageFooter({
@@ -25,8 +23,6 @@ export default function CardRenderPageFooter({
   cardId,
   activeMode,
   currentCardArtUrl,
-  initialCardArtUrl,
-  anomalyCardArtUrl,
 }: CardRenderPageFooterProps) {
   return (
     <div
@@ -83,8 +79,6 @@ export default function CardRenderPageFooter({
           cardId={cardId} 
           mode={activeMode} 
           currentCardArtUrl={currentCardArtUrl}
-          initialCardArtUrl={initialCardArtUrl}
-          anomalyCardArtUrl={anomalyCardArtUrl}
         />
       </div>
     </div>

@@ -10,8 +10,6 @@ type ClientWrapperProps = {
   user?: ProfileDTO | null;
   card: CardDTO;
   activeMode: "initial" | "anomaly";
-  initialCardArtUrl?: string;
-  anomalyCardArtUrl?: string;
   children: React.ReactNode;
 };
 
@@ -19,11 +17,13 @@ export default function ClientWrapper({
   user,
   card,
   activeMode,
-  initialCardArtUrl,
-  anomalyCardArtUrl,
   children,
 }: ClientWrapperProps) {
-  const currentCardArtUrl = activeMode === "initial" ? initialCardArtUrl : anomalyCardArtUrl;
+  // const currentCardArtUrl = activeMode === "initial" ? initialCardArtUrl : anomalyCardArtUrl;
+  const currentCardArtUrl =
+    activeMode === "initial"
+      ? card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0]
+      : card.anomalyMode?.art_options?.[card.anomalyMode?.art_selected ?? 0];
 
   return (
     <>
@@ -39,8 +39,6 @@ export default function ClientWrapper({
           cardId={card.id ?? 0}
           activeMode={activeMode}
           currentCardArtUrl={currentCardArtUrl}
-          initialCardArtUrl={initialCardArtUrl}
-          anomalyCardArtUrl={anomalyCardArtUrl}
         />
       )}
     </>

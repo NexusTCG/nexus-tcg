@@ -66,12 +66,6 @@ export default async function CardSlug({
     return <div>Card not found</div>;
   }
 
-  // Store both card art URLs as constants
-  const initialCardArtUrl =
-    card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0];
-  const anomalyCardArtUrl =
-    card.anomalyMode?.art_options?.[card.anomalyMode?.art_selected ?? 0];
-
   return (
     <div
       id={`${card.id}-page-container`}
@@ -107,8 +101,6 @@ export default async function CardSlug({
           user={user}
           card={card}
           activeMode={activeMode}
-          initialCardArtUrl={initialCardArtUrl}
-          anomalyCardArtUrl={anomalyCardArtUrl}
         >
           <Suspense fallback={<CardSkeleton />}>
             <CardRender
