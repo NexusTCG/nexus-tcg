@@ -97,11 +97,7 @@ export default async function CardSlug({
           overflow-hidden
         "
       >
-        <ClientWrapper
-          user={user}
-          card={card}
-          activeMode={activeMode}
-        >
+        <ClientWrapper user={user} card={card} activeMode={activeMode}>
           <Suspense fallback={<CardSkeleton />}>
             <CardRender
               card={card}

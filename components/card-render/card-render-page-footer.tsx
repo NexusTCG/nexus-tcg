@@ -3,15 +3,16 @@ import React from "react";
 import Link from "next/link";
 // Actions
 import { calculateTimeAgo } from "@/app/utils/actions/actions";
-// Components
-import { Button } from "@/components/ui/button";
+// Custom components
 import { DownloadButton } from "@/components/card-render/download-button";
+import { ShareModal } from "@/components/card-render/share-modal";
 
 type CardRenderPageFooterProps = {
   createdAt?: string | null;
   updatedAt?: string;
   username: string;
   cardId: number;
+  cardName: string;
   activeMode: "initial" | "anomaly";
   currentCardArtUrl?: string;
 };
@@ -21,6 +22,7 @@ export default function CardRenderPageFooter({
   updatedAt,
   username,
   cardId,
+  cardName,
   activeMode,
   currentCardArtUrl,
 }: CardRenderPageFooterProps) {
@@ -72,12 +74,10 @@ export default function CardRenderPageFooter({
           gap-2
         "
       >
-        <Button size="sm" className="font-medium">
-          Share
-        </Button>
-        <DownloadButton 
-          cardId={cardId} 
-          mode={activeMode} 
+        <ShareModal cardId={cardId} cardName={cardName} />
+        <DownloadButton
+          cardId={cardId}
+          mode={activeMode}
           currentCardArtUrl={currentCardArtUrl}
         />
       </div>
