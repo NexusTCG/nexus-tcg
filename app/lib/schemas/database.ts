@@ -77,6 +77,7 @@ export const CardFormSchema = z.object({
     attack: z.number().default(0).optional(),
     defense: z.number().default(0).optional(),
     reach: z.boolean().default(false).optional(),
+    card_art_url: z.string().nullable().optional(),
   }),
   anomalyMode: z.object({
     render: z.string().nullable().optional(),
@@ -89,5 +90,6 @@ export const CardFormSchema = z.object({
     art_options: z.array(z.string()).optional(),
     art_direction_options: z.array(ArtDirectionOptionSchema).optional(),
     art_selected: z.number().default(0).optional(),
+    card_art_url: z.string().nullable().optional(),
   }),
 });

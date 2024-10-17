@@ -8,7 +8,7 @@ type CardRenderArtProps = {
   cardArt: string;
   cardName: string;
   username: string;
-}
+};
 
 export default function CardRenderArt({
   mode,
@@ -20,7 +20,7 @@ export default function CardRenderArt({
   return (
     <div
       id="card-render-art-container"
-      style={{ 
+      style={{
         borderRadius: "0 0 20px 20px",
         position: "relative",
         overflow: "hidden",
@@ -43,12 +43,13 @@ export default function CardRenderArt({
           key={`${cardId}-${mode}`}
           src={cardArt}
           alt={`${cardName} by ${username}`}
+          data-testid="card-art-image"
           fill
-          style={{ 
+          style={{
             objectFit: "cover",
           }}
         />
       </div>
     </div>
-  )
-};
+  );
+}

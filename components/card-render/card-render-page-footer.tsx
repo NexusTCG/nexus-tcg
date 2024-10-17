@@ -13,6 +13,9 @@ type CardRenderPageFooterProps = {
   username: string;
   cardId: number;
   activeMode: "initial" | "anomaly";
+  currentCardArtUrl?: string;
+  initialCardArtUrl?: string;
+  anomalyCardArtUrl?: string;
 };
 
 export default function CardRenderPageFooter({
@@ -21,6 +24,9 @@ export default function CardRenderPageFooter({
   username,
   cardId,
   activeMode,
+  currentCardArtUrl,
+  initialCardArtUrl,
+  anomalyCardArtUrl,
 }: CardRenderPageFooterProps) {
   return (
     <div
@@ -73,7 +79,13 @@ export default function CardRenderPageFooter({
         <Button size="sm" className="font-medium">
           Share
         </Button>
-        <DownloadButton cardId={cardId} mode={activeMode} />
+        <DownloadButton 
+          cardId={cardId} 
+          mode={activeMode} 
+          currentCardArtUrl={currentCardArtUrl}
+          initialCardArtUrl={initialCardArtUrl}
+          anomalyCardArtUrl={anomalyCardArtUrl}
+        />
       </div>
     </div>
   );

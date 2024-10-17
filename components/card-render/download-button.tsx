@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -8,9 +8,18 @@ import { toast } from "sonner";
 type DownloadButtonProps = {
   cardId: number;
   mode: "initial" | "anomaly";
+  currentCardArtUrl?: string;
+  initialCardArtUrl?: string;
+  anomalyCardArtUrl?: string;
 };
 
-export function DownloadButton({ cardId, mode }: DownloadButtonProps) {
+export function DownloadButton({
+  cardId,
+  mode,
+  currentCardArtUrl,
+  initialCardArtUrl,
+  anomalyCardArtUrl,
+}: DownloadButtonProps) {
   const [isPending, setIsPending] = useState(false);
 
   const handleDownload = async () => {
@@ -27,6 +36,32 @@ export function DownloadButton({ cardId, mode }: DownloadButtonProps) {
         `card-render-container-${cardId}-${mode}`
       );
       if (element) {
+        // Update the card art URL before generating the image
+        const imgElement = element.querySelector(
+          'img[data-testid="card-art-image"]'
+        ) as HTMLImageElement;
+        if (imgElement) {
+          const correctUrl =
+            mode === "initial" ? initialCardArtUrl : anomalyCardArtUrl;
+          if (correctUrl) {
+            // Add a cache-busting parameter
+            const cacheBustUrl = `${correctUrl}?t=${new Date().getTime()}`;
+            imgElement.src = cacheBustUrl;
+          }
+        }
+
+        // Wait for the image to load
+        await new Promise((resolve) => {
+          if (imgElement && imgElement.complete) {
+            resolve(null);
+          } else if (imgElement) {
+            imgElement.onload = () => resolve(null);
+            imgElement.onerror = () => resolve(null);
+          } else {
+            resolve(null);
+          }
+        });
+
         const dataUrl = await toPng(element, {
           quality: 0.95,
           pixelRatio: 2,

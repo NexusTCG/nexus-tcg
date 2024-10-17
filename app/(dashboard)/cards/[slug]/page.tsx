@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
@@ -52,6 +53,11 @@ export default async function CardSlug({
   params: { slug: string };
   searchParams: { mode?: "initial" | "anomaly" };
 }) {
+  // Redirect if mode is not specified
+  if (!searchParams.mode) {
+    redirect(`/cards/${params.slug}?mode=initial`);
+  }
+
   const user = await getUserProfileDTO();
   const card = await fetchCard(params.slug);
   const activeMode = searchParams.mode || "initial";
@@ -59,6 +65,12 @@ export default async function CardSlug({
   if (!card) {
     return <div>Card not found</div>;
   }
+
+  // Store both card art URLs as constants
+  const initialCardArtUrl =
+    card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0];
+  const anomalyCardArtUrl =
+    card.anomalyMode?.art_options?.[card.anomalyMode?.art_selected ?? 0];
 
   return (
     <div
@@ -91,7 +103,13 @@ export default async function CardSlug({
           overflow-hidden
         "
       >
-        <ClientWrapper user={user} card={card} activeMode={activeMode}>
+        <ClientWrapper
+          user={user}
+          card={card}
+          activeMode={activeMode}
+          initialCardArtUrl={initialCardArtUrl}
+          anomalyCardArtUrl={anomalyCardArtUrl}
+        >
           <Suspense fallback={<CardSkeleton />}>
             <CardRender
               card={card}

@@ -2,34 +2,32 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
-import { 
-  NexusCardType, 
-  InitialCardType, 
-  AnomalyCardType 
+import {
+  NexusCardType,
+  InitialCardType,
+  AnomalyCardType,
 } from "@/app/lib/types/database";
 
 type FetchCardsOptions = {
   id?: number;
   limit?: number;
   filters?: Record<string, any>;
-  order?: { 
-    column: string; 
-    direction: 'asc' | 'desc' 
-  } | 'random';
+  order?:
+    | {
+        column: string;
+        direction: "asc" | "desc";
+      }
+    | "random";
 };
 
 export const getCardsDTO = cache(
-  async (
-    options: FetchCardsOptions = {}
-  ): Promise<CardsDTO | null> => {
+  async (options: FetchCardsOptions = {}): Promise<CardsDTO | null> => {
     const cookieStore = cookies();
     const supabase = createClient(cookieStore);
 
     try {
       // Create a base query
-      let query = supabase
-        .from("nexus_cards")
-        .select(`
+      let query = supabase.from("nexus_cards").select(`
           *,
           initial_mode_cards(*),
           anomaly_mode_cards(*)
@@ -37,24 +35,19 @@ export const getCardsDTO = cache(
 
       // Add filter by specific card ID if provided
       if (options.id) {
-        query = query.eq(
-          'id', 
-          options.id
-        );
+        query = query.eq("id", options.id);
       }
 
       // Add additional filters if provided
       if (options.filters) {
-        Object
-          .entries(options.filters)
-          .forEach(([column, value]) => {
-            query = query.eq(column, value);
-          });
+        Object.entries(options.filters).forEach(([column, value]) => {
+          query = query.eq(column, value);
+        });
       }
 
-      if (options.order && options.order !== 'random') {
-        query = query.order(options.order.column, { 
-          ascending: options.order.direction === 'asc' 
+      if (options.order && options.order !== "random") {
+        query = query.order(options.order.column, {
+          ascending: options.order.direction === "asc",
         });
       }
 
@@ -64,7 +57,7 @@ export const getCardsDTO = cache(
         console.error(`[Server] Supabase error: ${error.message}`);
         throw new Error("Failed to fetch cards");
       }
-      
+
       if (!data || data.length === 0) {
         console.log("[Server] No cards found in the database");
         return null;
@@ -84,11 +77,11 @@ export const getCardsDTO = cache(
           grade: nexusCard.grade ?? null,
           approved: nexusCard.approved ?? null,
           initialMode: initialCard ?? null,
-          anomalyMode: anomalyCard ?? null
+          anomalyMode: anomalyCard ?? null,
         };
       });
 
-      if (options.order === 'random') {
+      if (options.order === "random") {
         mappedData = mappedData.sort(() => Math.random() - 0.5);
       }
 
@@ -99,10 +92,13 @@ export const getCardsDTO = cache(
       console.log(`[Server] Mapped ${mappedData.length} cards`);
 
       return mappedData;
-
     } catch (error) {
-      console.error(`[Server] Unexpected error in getCardsDTO: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(
+        `[Server] Unexpected error in getCardsDTO: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
       throw new Error("An unexpected error occurred while fetching cards");
     }
   }
-)
+);
