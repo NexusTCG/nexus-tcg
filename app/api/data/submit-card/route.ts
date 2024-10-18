@@ -1,6 +1,9 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+// Trigger
+import { generateCardRender } from "@/app/trigger/generate-card-render";
+// Types
 import { CardFormSchema } from "@/app/lib/schemas/database";
 
 export async function POST(req: NextRequest) {
@@ -44,6 +47,30 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("[Server] Card submitted successfully:", data);
+
+    // Trigger card render generation
+    const initialRenderHandle = await generateCardRender.trigger({
+      cardId: data.id,
+      mode: "initial",
+    });
+
+    console.log(
+      "[Server] Task is running with handle:",
+      initialRenderHandle.id,
+    );
+
+    if (parsedCardData.anomalyMode.uncommon) {
+      const anomalyRenderHandle = await generateCardRender.trigger({
+        cardId: data.id,
+        mode: "anomaly",
+      });
+
+      console.log(
+        "[Server] Task is running with handle:",
+        anomalyRenderHandle.id,
+      );
+    }
+
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

@@ -1,5 +1,7 @@
 import React, { Suspense } from "react";
+// Utils
 import { redirect } from "next/navigation";
+import { toPng } from "html-to-image";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
 // Server

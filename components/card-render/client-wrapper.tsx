@@ -19,7 +19,6 @@ export default function ClientWrapper({
   activeMode,
   children,
 }: ClientWrapperProps) {
-  // const currentCardArtUrl = activeMode === "initial" ? initialCardArtUrl : anomalyCardArtUrl;
   const currentCardArtUrl =
     activeMode === "initial"
       ? card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0]

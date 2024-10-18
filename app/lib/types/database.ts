@@ -74,6 +74,7 @@ export type NexusCardType = {
   username: string;
   grade: string;
   approved: boolean;
+  card_render?: string[];
 };
 
 export type NexusCardsType = NexusCardType[];

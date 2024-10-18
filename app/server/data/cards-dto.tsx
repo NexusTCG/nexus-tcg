@@ -76,6 +76,7 @@ export const getCardsDTO = cache(
           username: nexusCard.username ?? null,
           grade: nexusCard.grade ?? null,
           approved: nexusCard.approved ?? null,
+          card_render: nexusCard.card_render ?? null,
           initialMode: initialCard ?? null,
           anomalyMode: anomalyCard ?? null,
         };

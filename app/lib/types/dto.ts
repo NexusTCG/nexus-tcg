@@ -28,6 +28,7 @@ export type CardDTO = {
   username?: string | null;
   grade?: string | null;
   approved?: boolean | null;
+  card_render?: string[] | null;
   initialMode: InitialCardType;
   anomalyMode: AnomalyCardType;
 };
