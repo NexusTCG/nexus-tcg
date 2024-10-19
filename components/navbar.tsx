@@ -1,11 +1,8 @@
 "use client";
 
 // Hooks
-import React, { 
-  useState, 
-  useEffect 
-} from "react";
-import { useParams } from 'next/navigation'
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 // Utils
 import Image from "next/image";
 import Link from "next/link";
@@ -21,24 +18,19 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 // Icons
-import { 
-  FaSteam, 
-  FaTwitter,
-  FaDiscord, 
-  FaGithub 
-} from "react-icons/fa";
+import { FaSteam, FaTwitter, FaDiscord, FaGithub } from "react-icons/fa";
 
 export default function NavBar() {
-  const [route, setRoute] = useState("/")
-  const params = useParams()
-  
+  const [route, setRoute] = useState("/");
+  const params = useParams();
+
   useEffect(() => {
     if (typeof params.route === "string") {
-      setRoute(params.route)
+      setRoute(params.route);
     }
-  }, [params])
+  }, [params]);
 
   return (
     <div
@@ -97,35 +89,27 @@ export default function NavBar() {
       >
         <div>
           <Link href="/cards">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="font-medium"
-            >
+            <Button variant="ghost" size="sm" className="font-medium">
               Cards
             </Button>
           </Link>
         </div>
         <div>
-          <Link href="/learn">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="font-medium"
-            >
+          <a
+            href="https://nexusgamesinc.mintlify.app/quick-start"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="ghost" size="sm" className="font-medium">
               Learn
             </Button>
-          </Link>
+          </a>
         </div>
         {/* Separator is not showing */}
         <Separator orientation="vertical" />
         <div>
           <Link href="/login">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="font-medium"
-            >
+            <Button variant="ghost" size="sm" className="font-medium">
               Login
             </Button>
           </Link>
@@ -199,5 +183,5 @@ export default function NavBar() {
         </TooltipProvider>
       </div>
     </div>
-  )
+  );
 }
