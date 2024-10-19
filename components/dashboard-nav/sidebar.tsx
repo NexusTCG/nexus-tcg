@@ -24,7 +24,6 @@ import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon"
 import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu";
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
-import { MdOutlineBook } from "react-icons/md";
 import { MdLogin } from "react-icons/md";
 
 export default function Sidebar({
@@ -36,7 +35,6 @@ export default function Sidebar({
 }) {
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const isLoading = currentUserId === null || userProfile === null;
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed);
@@ -53,7 +51,7 @@ export default function Sidebar({
   ) {
     return items
       .map((item) => {
-        if (item.requiresUser && !currentUserId && !isLoading) {
+        if (item.requiresUser && !currentUserId) {
           return null;
         }
 
