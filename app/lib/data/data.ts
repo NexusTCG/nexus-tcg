@@ -13,6 +13,7 @@ import {
   MdDesignServices,
   MdHome,
   MdNotifications,
+  MdOutlineDifference,
   // MdOutlineBook,
   MdOutlineLayers,
   MdOutlinePeople,
@@ -33,6 +34,7 @@ export const navItems = [
 export const secondaryNavItems = [
   // { href: "/learn", icon: MdOutlineBook, label: "Learn" },
   { href: "/play", icon: MdOutlinePeople, label: "Play" },
+  // { href: "/changelog", icon: MdOutlineDifference, label: "Changelog" },
 ];
 
 export const socialChannels = {

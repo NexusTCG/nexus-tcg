@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "@/app/hooks/user-media-query";
@@ -8,89 +8,87 @@ import clsx from "clsx";
 // Types
 import { ProfileDTO } from "@/app/lib/types/dto";
 // Data
-import { 
-  navItems, 
-  secondaryNavItems, 
-  policyLinks 
-} from "@/app/lib/data/data";
+import { navItems, secondaryNavItems, policyLinks } from "@/app/lib/data/data";
 // Shadcn components
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 // Custom components
-import UserAvatar from "@/components/user-avatar"
-import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon"
-import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu"
+import UserAvatar from "@/components/user-avatar";
+import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon";
+import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu";
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
 import { MdOutlineBook } from "react-icons/md";
+import { MdLogin } from "react-icons/md";
 
-export default function Sidebar({ 
+export default function Sidebar({
   currentUserId,
   userProfile,
-}: { 
-  currentUserId: string | null,
-  userProfile: ProfileDTO | null
+}: {
+  currentUserId: string | null;
+  userProfile: ProfileDTO | null;
 }) {
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isLoading = currentUserId === null || userProfile === null;
 
   function toggleSidebar() {
-    setIsCollapsed(!isCollapsed)
-  };
+    setIsCollapsed(!isCollapsed);
+  }
 
-  function renderNavItems(items: { 
-    href: string; 
-    icon: React.ElementType; 
-    label: string;
-    requiresUser?: boolean;
-  }[]) {
-    return items.map((item) => {
-      if (item.requiresUser && !currentUserId && !isLoading) {
-        return null;
-      }
-  
-      return (
-        <TooltipProvider key={item.href}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href={item.href}>
-                <Button
-                  variant="ghost"
-                  size={isCollapsed ? "icon" : "default"}
-                  className={clsx(
-                    "w-full",
-                    isCollapsed ? "justify-center" : "justify-start"
-                  )}
-                >
-                  {isLoading ? (
-                    <Skeleton className="h-[1.2rem] w-[1.2rem] rounded-full" />
-                  ) : (
-                    <item.icon className={clsx(
-                      "h-[1.2rem] w-[1.2rem]",
-                      isCollapsed ? "m-0" : "mr-2"
-                    )} />
-                  )}
-                  {!isCollapsed && (isLoading ? <Skeleton className="h-4 w-20" /> : item.label)}
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            {isCollapsed && (
-              <TooltipContent side="right">
-                <p>{item.label}</p>
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-      );
-    }).filter(Boolean);
+  function renderNavItems(
+    items: {
+      href: string;
+      icon: React.ElementType;
+      label: string;
+      requiresUser?: boolean;
+    }[]
+  ) {
+    return items
+      .map((item) => {
+        if (item.requiresUser && !currentUserId && !isLoading) {
+          return null;
+        }
+
+        return (
+          <TooltipProvider key={item.href}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href={item.href}>
+                  <Button
+                    variant="ghost"
+                    size={isCollapsed ? "icon" : "default"}
+                    className={clsx(
+                      "w-full",
+                      isCollapsed ? "justify-center" : "justify-start"
+                    )}
+                  >
+                    <item.icon
+                      className={clsx(
+                        "h-[1.2rem] w-[1.2rem]",
+                        isCollapsed ? "m-0" : "mr-2"
+                      )}
+                    />
+                    {!isCollapsed && item.label}
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right">
+                  <p>{item.label}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      })
+      .filter(Boolean);
   }
 
   useEffect(() => {
@@ -105,7 +103,7 @@ export default function Sidebar({
         flex-col
         justify-between
         items-center
-        ${isCollapsed ? 'w-[80px]' : 'w-[240px]'}
+        ${isCollapsed ? "w-[80px]" : "w-[240px]"}
         border-r
         min-h-screen
         p-4
@@ -115,10 +113,7 @@ export default function Sidebar({
         top-0
       `}
     >
-      <div
-        id="sidebar-content"
-        className="flex flex-col w-full gap-4"
-      >
+      <div id="sidebar-content" className="flex flex-col w-full gap-4">
         <div
           id="sidebar-header"
           className="flex flex-row justify-between items-center w-full"
@@ -127,11 +122,7 @@ export default function Sidebar({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleSidebar} 
-                >
+                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
                   <GoSidebarCollapse className="h-[1.2rem] w-[1.2rem]" />
                 </Button>
               </TooltipTrigger>
@@ -147,30 +138,28 @@ export default function Sidebar({
         </div>
         <Separator />
         <div id="nav-secondary" className="flex flex-col w-full gap-1">
-            <a
-              href={"https://mintlify.com/"} // Temporary
-              target="_blank"
-              rel="noopener noreferrer"
+          <a
+            href={"https://mintlify.com/"} // Temporary URL
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant="ghost"
+              size={isCollapsed ? "icon" : "default"}
+              className={clsx(
+                "w-full",
+                isCollapsed ? "justify-center" : "justify-start"
+              )}
             >
-              <Button
-                variant="ghost"
-                size={isCollapsed ? "icon" : "default"}
+              <MdOutlineBook
                 className={clsx(
-                  "w-full",
-                  isCollapsed ? "justify-center" : "justify-start"
+                  "h-[1.2rem] w-[1.2rem]",
+                  isCollapsed ? "m-0" : "mr-2"
                 )}
-              >
-                {isLoading ? (
-                  <Skeleton className="h-[1.2rem] w-[1.2rem] rounded-full" />
-                ) : (
-                  <MdOutlineBook className={clsx(
-                    "h-[1.2rem] w-[1.2rem]",
-                    isCollapsed ? "m-0" : "mr-2"
-                  )} />
-                )}
-                {!isCollapsed && (isLoading ? <Skeleton className="h-4 w-20" /> : "Learn")}
-              </Button>
-            </a>
+              />
+              {!isCollapsed && "Learn"}
+            </Button>
+          </a>
           {renderNavItems(secondaryNavItems)}
         </div>
         <Separator />
@@ -217,18 +206,17 @@ export default function Sidebar({
           gap-2
         "
       >
-        {isLoading ? (
-          <Skeleton className="w-full h-10" />
-        ) : currentUserId ? (
-          <div 
+        {currentUserId ? (
+          <div
             id="sidebar-profile"
-            className={clsx("flex flex-row items-center w-full",
+            className={clsx(
+              "flex flex-row items-center w-full",
               isCollapsed ? "justify-center" : "justify-between"
             )}
           >
             {!isCollapsed && (
               <div
-                id="avatar-username-container" 
+                id="avatar-username-container"
                 className="
                   flex 
                   flex-row 
@@ -238,37 +226,31 @@ export default function Sidebar({
                   gap-2
                 "
               >
-                {(userProfile?.avatar_url && userProfile?.username) ? (
+                {userProfile?.avatar_url && userProfile?.username && (
                   <UserAvatar
                     avatarUrl={userProfile.avatar_url}
                     userName={userProfile.username}
                     size={"sm"}
                   />
-                ) : (
-                  <Skeleton className="w-8 h-8 rounded-full" />
                 )}
-                {userProfile?.username ? (
+                {userProfile?.username && (
                   <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
                     {userProfile.username}
                   </p>
-                ) : (
-                  <Skeleton className="w-20 h-4" />
                 )}
               </div>
             )}
             {isCollapsed ? (
               <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SidebarProfileMenu />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  Profile Menu
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <SidebarProfileMenu />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Profile Menu</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ) : (
               <div>
                 <SidebarProfileMenu />
@@ -278,14 +260,20 @@ export default function Sidebar({
         ) : (
           <Link href="/login" className="w-full">
             <Button
-              variant="default"
+              variant={isCollapsed ? "ghost" : "default"}
               size={isCollapsed ? "icon" : "default"}
               className={clsx(
-                "w-full font-semibold",
-                isCollapsed ? "justify-center" : "justify-center"
+                "w-full",
+                isCollapsed ? "justify-center" : "justify-start"
               )}
             >
-              {!isCollapsed && "Create account"}
+              <MdLogin
+                className={clsx(
+                  "h-[1.2rem] w-[1.2rem]",
+                  isCollapsed ? "m-0" : "mr-2"
+                )}
+              />
+              {!isCollapsed && "Login"}
             </Button>
           </Link>
         )}
