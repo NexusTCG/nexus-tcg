@@ -6,14 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 
 export default function Learn() {
   return (
@@ -55,16 +50,18 @@ export default function Learn() {
               <CardHeader>
                 <CardTitle>Game Manual</CardTitle>
                 <CardDescription>
-                  Dive into the rules of Nexus TCG and learn how to play. The rules may change over time, so make sure to check back often.
+                  Dive into the rules of Nexus TCG and learn how to play. The
+                  rules may change over time, so make sure to check back often.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                <iframe 
-                  style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }} 
-                  width="575" 
-                  height="960" 
-                  src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fg4cssoPU52hHs08alvRuf1%2FContent%3Fnode-id%3D2091-575%26t%3DVqQypbFoweVrSClO-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D1%253A2%26starting-point-node-id%3D2091%253A575" 
-                  allowFullScreen></iframe>
+                <iframe
+                  style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
+                  width="575"
+                  height="960"
+                  src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fg4cssoPU52hHs08alvRuf1%2FContent%3Fnode-id%3D2091-575%26t%3DVqQypbFoweVrSClO-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D1%253A2%26starting-point-node-id%3D2091%253A575"
+                  allowFullScreen
+                ></iframe>
               </CardContent>
             </Card>
           </TabsContent>
@@ -74,14 +71,13 @@ export default function Learn() {
               <CardHeader>
                 <CardTitle>Game Documentation</CardTitle>
                 <CardDescription>
-                  Learn about the game's mechanics, card types, and more. The documentation may change over time, so make sure to check back often.
+                  Learn about the game's mechanics, card types, and more. The
+                  documentation may change over time, so make sure to check back
+                  often.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                TODO: Embed docs here
-                Glossary
-                Keywords
-                Lore
+                TODO: Embed docs here Glossary Keywords Lore
               </CardContent>
             </Card>
           </TabsContent>
@@ -91,14 +87,12 @@ export default function Learn() {
               <CardHeader>
                 <CardTitle>Game Info</CardTitle>
                 <CardDescription>
-                  View the latest information about the game, including patch notes, updates, and more.
+                  View the latest information about the game, including patch
+                  notes, updates, and more.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                Game lore
-                Roadmap
-                Team
-                About
+                Game lore Roadmap Team About
               </CardContent>
             </Card>
           </TabsContent>
@@ -112,8 +106,7 @@ export default function Learn() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                YouTube playlist
-                Interactive tutorial with Figma
+                YouTube playlist Interactive tutorial with Figma
               </CardContent>
             </Card>
           </TabsContent>
@@ -123,13 +116,12 @@ export default function Learn() {
               <CardHeader>
                 <CardTitle>Game News</CardTitle>
                 <CardDescription>
-                  View the latest news about the game, including patch notes, updates, and more.
+                  View the latest news about the game, including patch notes,
+                  updates, and more.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                news
-                Patch notes
-                Updates
+                news Patch notes Updates
               </CardContent>
             </Card>
           </TabsContent>
@@ -159,5 +151,5 @@ export default function Learn() {
         <Input type="text" placeholder="Your message" />
       </div>
     </div>
-  )
+  );
 }

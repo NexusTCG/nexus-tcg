@@ -48,6 +48,7 @@ export default function Sidebar({
       icon: React.ElementType;
       label: string;
       requiresUser?: boolean;
+      internalUrl?: boolean;
     }[]
   ) {
     return items
@@ -60,24 +61,45 @@ export default function Sidebar({
           <TooltipProvider key={item.href}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href={item.href}>
-                  <Button
-                    variant="ghost"
-                    size={isCollapsed ? "icon" : "default"}
-                    className={clsx(
-                      "w-full",
-                      isCollapsed ? "justify-center" : "justify-start"
-                    )}
-                  >
-                    <item.icon
+                {item.internalUrl ? (
+                  <Link href={item.href}>
+                    <Button
+                      variant="ghost"
+                      size={isCollapsed ? "icon" : "default"}
                       className={clsx(
-                        "h-[1.2rem] w-[1.2rem]",
-                        isCollapsed ? "m-0" : "mr-2"
+                        "w-full",
+                        isCollapsed ? "justify-center" : "justify-start"
                       )}
-                    />
-                    {!isCollapsed && item.label}
-                  </Button>
-                </Link>
+                    >
+                      <item.icon
+                        className={clsx(
+                          "h-[1.2rem] w-[1.2rem]",
+                          isCollapsed ? "m-0" : "mr-2"
+                        )}
+                      />
+                      {!isCollapsed && item.label}
+                    </Button>
+                  </Link>
+                ) : (
+                  <a href={item.href} target="_blank" rel="noopener noreferrer">
+                    <Button
+                      variant="ghost"
+                      size={isCollapsed ? "icon" : "default"}
+                      className={clsx(
+                        "w-full",
+                        isCollapsed ? "justify-center" : "justify-start"
+                      )}
+                    >
+                      <item.icon
+                        className={clsx(
+                          "h-[1.2rem] w-[1.2rem]",
+                          isCollapsed ? "m-0" : "mr-2"
+                        )}
+                      />
+                      {!isCollapsed && item.label}
+                    </Button>
+                  </a>
+                )}
               </TooltipTrigger>
               {isCollapsed && (
                 <TooltipContent side="right">
@@ -138,28 +160,6 @@ export default function Sidebar({
         </div>
         <Separator />
         <div id="nav-secondary" className="flex flex-col w-full gap-1">
-          <a
-            href={"https://mintlify.com/"} // Temporary URL
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button
-              variant="ghost"
-              size={isCollapsed ? "icon" : "default"}
-              className={clsx(
-                "w-full",
-                isCollapsed ? "justify-center" : "justify-start"
-              )}
-            >
-              <MdOutlineBook
-                className={clsx(
-                  "h-[1.2rem] w-[1.2rem]",
-                  isCollapsed ? "m-0" : "mr-2"
-                )}
-              />
-              {!isCollapsed && "Learn"}
-            </Button>
-          </a>
           {renderNavItems(secondaryNavItems)}
         </div>
         <Separator />

@@ -13,28 +13,62 @@ import {
   MdDesignServices,
   MdHome,
   MdNotifications,
+  MdOutlineBook,
   MdOutlineDifference,
-  // MdOutlineBook,
   MdOutlineLayers,
   MdOutlinePeople,
 } from "react-icons/md";
 
 export const navItems = [
-  { href: "/home", icon: MdHome, label: "Home", requiresUser: true },
-  { href: "/create", icon: MdDesignServices, label: "Create" },
-  { href: "/cards", icon: MdOutlineLayers, label: "Cards" },
+  {
+    href: "/home",
+    icon: MdHome,
+    label: "Home",
+    requiresUser: true,
+    internalUrl: true,
+  },
+  {
+    href: "/create",
+    icon: MdDesignServices,
+    label: "Create",
+    requiresUser: true,
+    internalUrl: true,
+  },
+  {
+    href: "/cards",
+    icon: MdOutlineLayers,
+    label: "Cards",
+    requiresUser: false,
+    internalUrl: true,
+  },
   {
     href: "/notifications",
     icon: MdNotifications,
     label: "Notifications",
     requiresUser: true,
+    internalUrl: true,
   },
 ];
 
 export const secondaryNavItems = [
-  // { href: "/learn", icon: MdOutlineBook, label: "Learn" },
-  { href: "/play", icon: MdOutlinePeople, label: "Play" },
-  // { href: "/changelog", icon: MdOutlineDifference, label: "Changelog" },
+  {
+    href: "https://nexusgamesinc.mintlify.app/quick-start",
+    icon: MdOutlineBook,
+    label: "Learn",
+    internalUrl: false,
+  },
+  {
+    href: "/play",
+    icon: MdOutlinePeople,
+    label: "Play",
+    internalUrl: true,
+  },
+  // {
+  //   href: "/changelog",
+  //   icon: MdOutlineDifference,
+  //   label: "Changelog",
+  //   internalUrl: true,
+  // },
 ];
 
 export const socialChannels = {
