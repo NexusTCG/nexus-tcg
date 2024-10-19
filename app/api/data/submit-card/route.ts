@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     console.log("[Server] Card submitted successfully:", data);
 
-    // Trigger card render generation
+    // Trigger card render generation for initial mode
     const initialRenderHandle = await generateCardRender.trigger({
       cardId: data.id,
       mode: "initial",
@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       initialRenderHandle.id,
     );
 
+    // Trigger card render generation for anomaly mode if anomaly is uncommon
     if (parsedCardData.anomalyMode.uncommon) {
       const anomalyRenderHandle = await generateCardRender.trigger({
         cardId: data.id,

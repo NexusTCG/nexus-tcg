@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 // Utils
 import { redirect } from "next/navigation";
-import { toPng } from "html-to-image";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
@@ -15,10 +14,6 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
-// TODO: If open for the first time, use htmm-to-image to convert both renders to JPEG upload to public Supabase bucket
-// TODO: Implement functionality to download images from Supabase bucket
-// TODO: Implement share functionality
-
 export const revalidate = 3600;
 
 async function fetchCard(slug: string): Promise<CardDTO | null> {
@@ -27,7 +22,6 @@ async function fetchCard(slug: string): Promise<CardDTO | null> {
 
   console.log("[Server] Fetching from URL:", fetchUrl);
 
-  // const res = await fetch(fetchUrl, { cache: 'no-store' });
   const res = await fetch(fetchUrl, { next: { revalidate: 3600 } });
 
   if (!res.ok) {
@@ -62,11 +56,12 @@ export default async function CardSlug({
 
   const user = await getUserProfileDTO();
   const card = await fetchCard(params.slug);
-  const activeMode = searchParams.mode || "initial";
 
   if (!card) {
     return <div>Card not found</div>;
   }
+
+  const activeMode = searchParams.mode || "initial";
 
   return (
     <div
