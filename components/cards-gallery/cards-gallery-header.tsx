@@ -1,4 +1,8 @@
 import React from "react";
+// Utils
+import Link from "next/link";
+// Components
+import { Button } from "@/components/ui/button";
 // Custom components
 import CardsGallerySearchbar from "@/components/cards-gallery/cards-gallery-searchbar";
 import CardsGallerySortFilter from "@/components/cards-gallery/cards-gallery-sort-filter-options";
@@ -36,9 +40,24 @@ export default function CardsGalleryHeader({
         gap-4
       "
     >
-      <CardsGallerySearchbar initialSearch={search} />
       <div
-        id="cards-gallery-header-actions"
+        id="cards-gallery-header-search-create-container"
+        className="
+          flex
+          flex-row
+          justify-between
+          items-center
+          w-full
+          gap-4
+        "
+      >
+        <CardsGallerySearchbar initialSearch={search} />
+        <Link href="/cards/create">
+          <Button className="min-w-24">Create a card</Button>
+        </Link>
+      </div>
+      <div
+        id="cards-gallery-header-actions-container"
         className="
           flex
           flex-row

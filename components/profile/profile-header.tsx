@@ -146,7 +146,8 @@ export default function ProfileHeader({
             )}
           </div>
         </div>
-        <Button>CTA Message</Button>
+        {/* TODO: Add functionality to open book a play session modal */}
+        {/* <Button>Play with {profile?.username}</Button> */}
       </div>
       <div
         id="profile-header-bio-container"
