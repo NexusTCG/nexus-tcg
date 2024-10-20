@@ -1,18 +1,28 @@
 import React from "react";
 // Utils
-import Image from "next/image";
 import Link from "next/link";
+// Data
+import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Components
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// Custom components
+import CardThumbnail from "@/components/cards-gallery/card-thumbnail";
 
-export default function LatestCards() {
+export default async function LatestCards() {
+  const cards = await getCardsDTO({
+    limit: 4,
+    order: { column: "id", direction: "desc" },
+  });
+
   return (
-    <Card className="w-full border border-zinc-700 overflow-hidden">
+    <Card
+      className="
+        w-full 
+        border 
+        border-zinc-700 
+        overflow-hidden
+      "
+    >
       <CardHeader
         className="
           flex
@@ -25,12 +35,14 @@ export default function LatestCards() {
           px-4
         "
       >
-        <CardTitle className="text-lg">
-          Latest cards
-        </CardTitle>
+        <CardTitle className="text-lg">Latest cards</CardTitle>
         <Link
           href="/cards"
-          className="text-sm opacity-50 hover:opacity-80"
+          className="
+            text-sm 
+            opacity-50 
+            hover:opacity-80
+          "
         >
           More cards
         </Link>
@@ -44,44 +56,33 @@ export default function LatestCards() {
           w-full
           pt-6
           gap-2
-          overflow-hidden
+          overflow-auto
           bg-zinc-800
           pr-0
           rounded-b-md
         "
       >
-        {/* TODO: Fetch latest cards and render each */}
-        <Image
-          src="/images/card-placeholder.png"
-          alt="Placeholder"
-          width={240}
-          height={336}
-        />
-        <Image
-          src="/images/card-placeholder.png"
-          alt="Placeholder"
-          width={240}
-          height={336}
-        />
-        <Image
-          src="/images/card-placeholder.png"
-          alt="Placeholder"
-          width={240}
-          height={336}
-        />
-        <Image
-          src="/images/card-placeholder.png"
-          alt="Placeholder"
-          width={240}
-          height={336}
-        />
-        <Image
-          src="/images/card-placeholder.png"
-          alt="Placeholder"
-          width={240}
-          height={336}
-        />
+        <div
+          id="latest-cards-container"
+          className="
+            flex
+            flex-row
+            justify-start
+            items-center
+            gap-2
+          "
+        >
+          {cards?.map((card) => (
+            <CardThumbnail
+              key={card.id}
+              cardRender={card.initialMode.render}
+              cardName={card.initialMode.name}
+              cardId={card.id}
+              width={"md"}
+            />
+          ))}
+        </div>
       </CardContent>
     </Card>
-  )
+  );
 }

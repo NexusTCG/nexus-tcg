@@ -51,7 +51,18 @@ export default async function DashboardLayout({
           userProfile={userProfile}
         />
       </div>
-      <div className="flex-1 sm:p-4 p-0">{children}</div>
+      <div
+        id="dashboard-content-container"
+        className="
+          flex-1
+          w-full
+          overflow-x-hidden
+          sm:p-4
+          p-0
+        "
+      >
+        {children}
+      </div>
     </div>
   );
 }
