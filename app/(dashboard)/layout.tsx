@@ -1,28 +1,34 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import React from "react";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // Custom components
-import dynamicImport from 'next/dynamic';
+import dynamicImport from "next/dynamic";
 
-const Sidebar = dynamicImport(() => import('@/components/dashboard-nav/sidebar'), { ssr: false });
-const HorizontalNav = dynamicImport(() => import('@/components/dashboard-nav/horizontal-nav'), { ssr: false });
+const Sidebar = dynamicImport(
+  () => import("@/components/dashboard-nav/sidebar"),
+  { ssr: false }
+);
+const HorizontalNav = dynamicImport(
+  () => import("@/components/dashboard-nav/horizontal-nav"),
+  { ssr: false }
+);
 
 export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   let currentUserId = null;
   let userProfile = null;
-  
+
   try {
     currentUserId = await getCurrentUserId();
     userProfile = await getUserProfileDTO();
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error("Error fetching user data:", error);
   }
 
   return (
@@ -37,10 +43,7 @@ export default async function DashboardLayout({
       "
     >
       <div className="hidden sm:block">
-        <Sidebar
-          currentUserId={currentUserId}
-          userProfile={userProfile}
-        />
+        <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
       </div>
       <div className="sm:hidden">
         <HorizontalNav
@@ -48,9 +51,7 @@ export default async function DashboardLayout({
           userProfile={userProfile}
         />
       </div>
-      <div className="flex-1 p-4">
-        {children}
-      </div>
+      <div className="flex-1 p-4">{children}</div>
     </div>
   );
 }

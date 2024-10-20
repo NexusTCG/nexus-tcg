@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
 // Hooks
-import React, { useState } from "react"
-import { useRouter } from 'next/navigation'
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 // Utils
 import Link from "next/link";
-import { createClient } from "@/app/utils/supabase/client"
+import { createClient } from "@/app/utils/supabase/client";
 // Components
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/ui/mode-toggle"
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +17,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 // Icons
-import { 
+import {
   MdChevronRight,
   MdOutlinePerson,
   MdOutlinePayment,
@@ -28,26 +28,26 @@ import {
 
 const stripeUrl = "https://stripe.com"; // Replace with actual URL
 
-export default function SidebarProfileMenu() {
+export default function SidebarProfileMenu({ username }: { username: string }) {
   const supabase = createClient();
   const router = useRouter();
 
   const [signoutDisabled, setSignoutDisabled] = useState<boolean>(false);
 
   async function signOut() {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error("Logout error:", error.message)
-      return
+      console.error("Logout error:", error.message);
+      return;
     } else {
-      router.push("/login")
+      router.push("/login");
     }
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" >
+        <Button variant="ghost" size="icon">
           <MdChevronRight className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DropdownMenuTrigger>
@@ -56,19 +56,30 @@ export default function SidebarProfileMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link href="/profile" className="flex flex-row justify-start items-center gap-1">
+            <Link
+              href={`/${username}`}
+              className="flex flex-row justify-start items-center gap-1"
+            >
               <MdOutlinePerson className="h-[1.2rem] w-[1.2rem]" />
               Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer">
-            <a href={stripeUrl} target="_blank" rel="noopener noreferrer" className="flex flex-row justify-start items-center gap-1">
+            <a
+              href={stripeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-row justify-start items-center gap-1"
+            >
               <MdOutlinePayment className="h-[1.2rem] w-[1.2rem]" />
               Billing
             </a>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer">
-            <Link href="/settings" className="flex flex-row justify-start items-center gap-1">
+            <Link
+              href="/settings"
+              className="flex flex-row justify-start items-center gap-1"
+            >
               <MdOutlineSettings className="h-[1.2rem] w-[1.2rem]" />
               Settings
             </Link>
@@ -85,5 +96,5 @@ export default function SidebarProfileMenu() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-} 
+  );
+}

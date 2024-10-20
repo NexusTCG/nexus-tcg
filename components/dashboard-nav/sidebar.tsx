@@ -213,47 +213,68 @@ export default function Sidebar({
             )}
           >
             {!isCollapsed && (
-              <div
-                id="avatar-username-container"
-                className="
-                  flex 
-                  flex-row 
-                  justify-start 
-                  items-center 
-                  w-full 
-                  gap-2
-                "
-              >
-                {userProfile?.avatar_url && userProfile?.username && (
-                  <UserAvatar
-                    avatarUrl={userProfile.avatar_url}
-                    userName={userProfile.username}
-                    size={"sm"}
-                  />
-                )}
-                {userProfile?.username && (
-                  <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
-                    {userProfile.username}
-                  </p>
-                )}
-              </div>
-            )}
-            {isCollapsed ? (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div>
-                      <SidebarProfileMenu />
-                    </div>
+                    <Link
+                      href={`/${userProfile?.username}`}
+                      className="
+                        w-full 
+                        hover:opacity-80
+                        transition-all
+                        duration-300
+                        cursor-pointer
+                      "
+                    >
+                      <div
+                        id="avatar-username-container"
+                        className="
+                          flex 
+                          flex-row 
+                          justify-start 
+                          items-center 
+                          w-full 
+                          gap-2
+                        "
+                      >
+                        {userProfile?.avatar_url && userProfile?.username && (
+                          <UserAvatar
+                            avatarUrl={userProfile.avatar_url}
+                            userName={userProfile.username}
+                            size={"sm"}
+                          />
+                        )}
+                        {userProfile?.username && (
+                          <p className="w-full max-w-[100px] text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                            {userProfile.username}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
                   </TooltipTrigger>
-                  <TooltipContent side="right">Profile Menu</TooltipContent>
+                  <TooltipContent side="top">
+                    <p>Go to your profile</p>
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            ) : (
-              <div>
-                <SidebarProfileMenu />
-              </div>
             )}
+            {userProfile?.username &&
+              (isCollapsed ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <SidebarProfileMenu username={userProfile?.username} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Profile Menu</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <div>
+                  <SidebarProfileMenu username={userProfile?.username} />
+                </div>
+              ))}
           </div>
         ) : (
           <Link href="/login" className="w-full">

@@ -26,7 +26,7 @@ export default function Notifications() {
           justify-start 
           items-center 
           w-full 
-          h-full
+          h-fulld
           border 
           border-zinc-700 
           rounded-sm 

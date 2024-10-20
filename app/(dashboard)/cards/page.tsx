@@ -10,7 +10,13 @@ export const dynamic = "force-dynamic";
 export default async function Cards({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: {
+    search?: string;
+    sort?: string;
+    order?: string;
+    filter?: string;
+    page?: string;
+  };
 }) {
   const search =
     typeof searchParams.search === "string" ? searchParams.search : "";
