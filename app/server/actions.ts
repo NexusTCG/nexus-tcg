@@ -3,12 +3,6 @@ import "server-only";
 // Utils
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
-import { toPng } from "html-to-image";
-import puppeteer from "puppeteer";
-// Types
-import { CardDTO } from "@/app/lib/types/dto";
-// Server
-import { getCurrentUserId } from "@/app/server/auth";
 // Tasks
 import { generateCardRender } from "@/app/trigger/generate-card-render";
 
@@ -107,60 +101,3 @@ export async function triggerCardRender(
   const result = await generateCardRender.trigger({ cardId, mode });
   return result;
 }
-
-// export async function generateCardRenders(card: CardDTO): Promise<CardDTO> {
-//   const cookieStore = cookies();
-//   const supabase = createClient(cookieStore);
-
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-
-//   const renders: string[] = [];
-
-//   for (const mode of ['initial', 'anomaly']) {
-//     await page.goto(`${process.env.NEXT_PUBLIC_SITE_URL}/cards/${card.id}?mode=${mode}`, {
-//       waitUntil: 'networkidle0'
-//     });
-
-//     const element = await page.$(`#card-render-container-${card.id}-${mode}`);
-
-//     if (element) {
-//       const screenshot = await element.screenshot({ type: 'png' });
-
-//       const { data, error } = await supabase
-//         .storage
-//         .from('card-renders')
-//         .upload(`${card.id}/card-${card.id}-${mode}.png`, screenshot, {
-//           contentType: 'image/png',
-//           upsert: true,
-//         });
-
-//       if (error) throw error;
-
-//       const { data: { publicUrl } } = supabase
-//         .storage
-//         .from('card-renders')
-//         .getPublicUrl(`${card.id}/card-${card.id}-${mode}.png`);
-
-//       renders.push(publicUrl);
-//     }
-//   }
-
-//   await browser.close();
-
-//   if (renders.length === 2) {
-//     const { error } = await supabase
-//       .from('nexus_cards')
-//       .update({ cardRender: renders })
-//       .eq('id', card.id);
-
-//     if (error) throw error;
-
-//     return {
-//       ...card,
-//       card_render: renders,
-//     };
-//   }
-
-//   return card;
-// }
