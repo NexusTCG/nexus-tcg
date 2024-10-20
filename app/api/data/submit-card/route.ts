@@ -2,7 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 // Trigger
-import { triggerCardRender } from "@/app/api/data/generate-card-render/route";
+import { triggerCardRender } from "@/app/server/actions";
 // Types
 import { CardFormSchema } from "@/app/lib/schemas/database";
 

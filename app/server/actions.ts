@@ -9,6 +9,8 @@ import puppeteer from "puppeteer";
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
+// Tasks
+import { generateCardRender } from "@/app/trigger/generate-card-render";
 
 // TODO: Add action to delete a card
 // TODO: Add action to update a card
@@ -97,6 +99,14 @@ export async function fetchRandomKeyword() {
 }
 
 // --- GENERATE DATA --- //
+
+export async function triggerCardRender(
+  cardId: string,
+  mode: "initial" | "anomaly",
+) {
+  const result = await generateCardRender.trigger({ cardId, mode });
+  return result;
+}
 
 // export async function generateCardRenders(card: CardDTO): Promise<CardDTO> {
 //   const cookieStore = cookies();

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateCardRender } from "@/app/trigger/generate-card-render";
+// Actions
+import { triggerCardRender } from "@/app/server/actions";
 
 export async function POST(
   req: NextRequest,
@@ -7,7 +8,7 @@ export async function POST(
   const { cardId, mode } = await req.json();
 
   try {
-    const result = await generateCardRender.trigger({ cardId, mode });
+    const result = await triggerCardRender(cardId, mode);
     return NextResponse.json({
       success: true,
       taskId: result.id,
@@ -19,13 +20,4 @@ export async function POST(
       message: error instanceof Error ? error.message : "Unknown error",
     }, { status: 500 });
   }
-}
-
-// Add this function for internal use
-export async function triggerCardRender(
-  cardId: string,
-  mode: "initial" | "anomaly",
-) {
-  const result = await generateCardRender.trigger({ cardId, mode });
-  return result;
 }
