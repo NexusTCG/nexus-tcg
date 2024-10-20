@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+// Utils
 import { toPng } from "html-to-image";
+import { createClient } from "@/app/utils/supabase/client";
+import { generateCardRender } from "@/app/trigger/generate-card-render";
+// Components
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -17,8 +21,78 @@ export function DownloadButton({
   currentCardArtUrl,
 }: DownloadButtonProps) {
   const [isPending, setIsPending] = useState(false);
+  const supabase = createClient();
+
+  async function downloadImage(path: string, filename: string) {
+    try {
+      const { data, error } = await supabase.storage
+        .from("card-renders")
+        .download(path);
+
+      if (error) throw error;
+
+      const url = URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      toast("Your card has been downloaded.");
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      toast("Failed to download the image. Please try again.");
+    }
+  }
 
   const handleDownload = async () => {
+    setIsPending(true);
+    try {
+      // Fetch card render URL from Supabase
+      const { data, error } = await supabase
+        .from("cards")
+        .select("card_render")
+        .eq("id", cardId)
+        .single();
+
+      if (error) throw error;
+
+      const renderIndex = mode === "initial" ? 0 : 1;
+      const renderUrl = data.card_render?.[renderIndex];
+
+      if (renderUrl) {
+        // Download existing render
+        await downloadImage(renderUrl, `card-${cardId}-${mode}.png`);
+        toast("Your card has been downloaded.");
+      } else {
+        // Trigger render generation via API
+        const response = await fetch("/api/generate-card-render", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cardId: cardId.toString(), mode }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to trigger render generation");
+        }
+
+        toast(
+          "Render generation started. Please try downloading again in a few moments."
+        );
+
+        // Fall back to html-to-image method
+        await generateImageFromDOM();
+      }
+    } catch (error) {
+      console.error("Error downloading card:", error);
+      // Fall back to html-to-image method
+      await generateImageFromDOM();
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  async function generateImageFromDOM() {
     setIsPending(true);
     try {
       // Force a re-render by updating state
@@ -71,7 +145,7 @@ export function DownloadButton({
     } finally {
       setIsPending(false);
     }
-  };
+  }
 
   return (
     <Button

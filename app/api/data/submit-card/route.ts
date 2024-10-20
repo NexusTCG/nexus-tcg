@@ -2,7 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 // Trigger
-import { generateCardRender } from "@/app/trigger/generate-card-render";
+import { triggerCardRender } from "@/app/api/data/generate-card-render/route";
 // Types
 import { CardFormSchema } from "@/app/lib/schemas/database";
 
@@ -49,10 +49,7 @@ export async function POST(req: NextRequest) {
     console.log("[Server] Card submitted successfully:", data);
 
     // Trigger card render generation for initial mode
-    const initialRenderHandle = await generateCardRender.trigger({
-      cardId: data.id,
-      mode: "initial",
-    });
+    const initialRenderHandle = await triggerCardRender(data.id, "initial");
 
     console.log(
       "[Server] Task is running with handle:",
@@ -61,10 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Trigger card render generation for anomaly mode if anomaly is uncommon
     if (parsedCardData.anomalyMode.uncommon) {
-      const anomalyRenderHandle = await generateCardRender.trigger({
-        cardId: data.id,
-        mode: "anomaly",
-      });
+      const anomalyRenderHandle = await triggerCardRender(data.id, "anomaly");
 
       console.log(
         "[Server] Task is running with handle:",

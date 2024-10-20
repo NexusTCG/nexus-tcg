@@ -1,6 +1,8 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+// Server
+import { getCurrentUserId } from "@/app/server/auth";
 // Actions
 import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Custom components
@@ -17,7 +19,7 @@ type CardRenderPageFooterProps = {
   currentCardArtUrl?: string;
 };
 
-export default function CardRenderPageFooter({
+export default async function CardRenderPageFooter({
   createdAt,
   updatedAt,
   username,
@@ -26,6 +28,8 @@ export default function CardRenderPageFooter({
   activeMode,
   currentCardArtUrl,
 }: CardRenderPageFooterProps) {
+  const userId = await getCurrentUserId();
+
   return (
     <div
       id="card-creator-footer"
@@ -66,6 +70,7 @@ export default function CardRenderPageFooter({
         </span>
       </p>
       <div
+        id={`${cardId}-footer-actions-container`}
         className="
           flex 
           flex-row 
@@ -75,11 +80,13 @@ export default function CardRenderPageFooter({
         "
       >
         <ShareModal cardId={cardId} cardName={cardName} />
-        <DownloadButton
-          cardId={cardId}
-          mode={activeMode}
-          currentCardArtUrl={currentCardArtUrl}
-        />
+        {userId && (
+          <DownloadButton
+            cardId={cardId}
+            mode={activeMode}
+            currentCardArtUrl={currentCardArtUrl}
+          />
+        )}
       </div>
     </div>
   );
