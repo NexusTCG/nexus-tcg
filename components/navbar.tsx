@@ -11,7 +11,6 @@ import { socialChannels } from "@/app/lib/data/data";
 // Components
 import NexusLogoWhite from "@/public/brand-assets/nexus-logo-white.svg";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 import {
   Tooltip,
@@ -80,7 +79,7 @@ export default function NavBar() {
           flex
           items-center
           p-1
-          rounded-lg
+          rounded-xl
           bg-zinc-900
           border
           border-zinc-700
@@ -105,8 +104,6 @@ export default function NavBar() {
             </Button>
           </a>
         </div>
-        {/* Separator is not showing */}
-        <Separator orientation="vertical" />
         <div>
           <Link href="/login">
             <Button variant="ghost" size="sm" className="font-medium">

@@ -35,10 +35,13 @@ export default async function SectionFeaturedCards() {
           <div
             key={card.id}
             id={`featured-card-${card.id}-container`}
-            className={clsx("flex-col justify-center items-center gap-2", {
-              "hidden lg:flex": index === 2,
-              "hidden md:flex": index === 1,
-            })}
+            className={clsx(
+              "flex flex-col justify-start items-center gap-2 border border-lime-500",
+              {
+                "hidden lg:flex": index === 2,
+                "hidden md:flex": index === 1,
+              }
+            )}
           >
             <CardThumbnail
               cardRender={card.initialMode.render}
@@ -50,26 +53,34 @@ export default async function SectionFeaturedCards() {
               id={`featured-card-${card.id}-info-container`}
               className="
                 flex
-                flex-row
+                flex-col
                 justify-center
                 items-center
-                text-baseline
-                gap-2
               "
             >
               <Link href={`/cards/${card.id}`}>
-                <h4
-                  className="
-                    font-medium
-                    hover:underline
-                    hover:text-teal-400
-                  "
-                >
+                <p className="font-medium hover:text-teal-400 transition-all duration-300">
                   {card.initialMode.name}
-                </h4>
+                </p>
               </Link>
-              <small className="text-neutral-300 text-sm">by</small>
-              <small className="text-white">{card.username}</small>
+              <div
+                id={`featured-card-${card.id}-author-container`}
+                className="
+                  flex
+                  flex-row
+                  justify-center
+                  items-center
+                  gap-1
+                  text-foreground-muted
+                "
+              >
+                <small>by </small>
+                <Link href={`/${card.username}`}>
+                  <small className="hover:text-white hover:underline transition-all duration-300">
+                    {card.username}
+                  </small>
+                </Link>
+              </div>
             </div>
           </div>
         ))}
