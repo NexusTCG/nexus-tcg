@@ -35,13 +35,10 @@ export default async function SectionFeaturedCards() {
           <div
             key={card.id}
             id={`featured-card-${card.id}-container`}
-            className={clsx(
-              "flex flex-col justify-start items-center gap-2 border border-lime-500",
-              {
-                "hidden lg:flex": index === 2,
-                "hidden md:flex": index === 1,
-              }
-            )}
+            className={clsx("flex flex-col justify-start items-center gap-2", {
+              "hidden lg:flex": index === 2,
+              "hidden md:flex": index === 1,
+            })}
           >
             <CardThumbnail
               cardRender={card.initialMode.render}
