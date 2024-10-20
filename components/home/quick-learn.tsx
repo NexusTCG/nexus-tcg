@@ -1,23 +1,31 @@
 import React from "react";
 // Components
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 // Custom components
-import LearnKeyword from "@/components/home/learn-keyword"
-import LearnTerm from "@/components/home/learn-term"
+import LearnKeyword from "@/components/home/learn-keyword";
+import LearnTerm from "@/components/home/learn-term";
+// Icons
+import { MdOpenInNew } from "react-icons/md";
 
 export default async function QuickLearn() {
-
-  // const keyword = await getKeyword();
-
   return (
-    <Card className="w-full border border-zinc-700 overflow-hidden">
+    <Card
+      className="
+        w-full
+        border
+        border-zinc-700
+        overflow-hidden
+      "
+    >
       <CardHeader
+        id="quick-learn-header"
         className="
           flex
           flex-row
@@ -29,19 +37,39 @@ export default async function QuickLearn() {
           px-4
         "
       >
-        <CardTitle className="text-lg">
-          Quick learn
-        </CardTitle>
-        <a
-          href="https://www.play.nexus/" // Link to game docs on Mintlify
-          rel="noreferrer"
-          target="_blank"
-          className="text-sm opacity-50 hover:opacity-80"
-        >
-          Learn more
-        </a>
+        <CardTitle className="text-lg">Quick learn</CardTitle>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              className="
+                flex
+                flex-row
+                justify-center
+                items-center
+                gap-1
+                text-muted-foreground
+                hover:text-foreground
+                transition-colors
+                duration-300
+                cursor-pointer
+              "
+            >
+              <a
+                href="https://nexusgamesinc.mintlify.app/"
+                rel="noreferrer"
+                target="_blank"
+                className="text-sm"
+              >
+                Learn more
+              </a>
+              <MdOpenInNew className="w-[1rem] h-[1rem]" />
+            </TooltipTrigger>
+            <TooltipContent side="left">Go to documentation</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </CardHeader>
       <CardContent
+        id="quick-learn-content-container"
         className="
           flex
           flex-col
@@ -55,6 +83,7 @@ export default async function QuickLearn() {
         "
       >
         <div
+          id="quick-learn-keyword-container"
           className="
             flex
             flex-col
@@ -64,14 +93,11 @@ export default async function QuickLearn() {
             p-4
           "
         >
-          <LearnKeyword
-            name="Evasion"
-            type="persistent"
-            reminder="Can only be defended by agents with evasion or intercept."
-          />
+          <LearnKeyword />
         </div>
         <Separator />
         <div
+          id="quick-learn-term-container"
           className="
             flex
             flex-col
@@ -81,6 +107,7 @@ export default async function QuickLearn() {
             p-4
           "
         >
+          {/* TODO: Replace dummy data with fetched data */}
           <LearnTerm
             name="Draw"
             type="action"
@@ -89,5 +116,5 @@ export default async function QuickLearn() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

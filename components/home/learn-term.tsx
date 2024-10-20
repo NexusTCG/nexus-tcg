@@ -4,18 +4,14 @@ import { GlossaryTermType } from "@/app/lib/types/database";
 // Icons
 import { MdOpenInNew } from "react-icons/md";
 
-type LearnTermProps = Omit<GlossaryTermType, 'id' | 'created_at' | 'tip'>;
+type LearnTermProps = Omit<GlossaryTermType, "id" | "created_at" | "tip">;
 
-export default function LearnTerm({ 
-  name,
-  description,
-  type 
-}: LearnTermProps) {
+export default function LearnTerm({ name, description, type }: LearnTermProps) {
   // Get dynamic Keyword data from supabase as props
   // Wrap this in suspense
 
   return (
-    <div 
+    <div
       className="
         flex 
         flex-col 
@@ -50,21 +46,34 @@ export default function LearnTerm({
           "
         >
           <h3 className="font-semibold">{name}</h3>
-          <small className="text-xs font-medium opacity-80">{type.toUpperCase()}</small>
+          <small className="text-xs font-medium opacity-80">
+            {type.toUpperCase()}
+          </small>
         </div>
         <div
           className="
             flex
             flex-row
-            justify-end
+            justify-center
             items-center
             gap-1
-            hover:cursor-pointer
-            hover:opacity-80
+            text-muted-foreground
+            hover:text-foreground
+            transition-colors
+            duration-300
+            cursor-pointer
+            text-sm
           "
         >
-          <small className="hidden md:inline-block">Glossary</small>
-          <MdOpenInNew className="text-teal-500 w-[1rem] h-[1rem]"/>
+          <a
+            href="https://nexusgamesinc.mintlify.app/documentation/glossary"
+            rel="noreferrer"
+            target="_blank"
+            className="hidden md:inline-block"
+          >
+            Glossary
+          </a>
+          <MdOpenInNew className="w-[1rem] h-[1rem]" />
         </div>
       </div>
       <p className="text-sm font-light opacity-60">{description}</p>

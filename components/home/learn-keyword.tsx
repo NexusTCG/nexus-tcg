@@ -3,25 +3,28 @@ import React from "react";
 import clsx from "clsx";
 // Validation
 import { KeywordsType } from "@/app/lib/types/database";
+import { getKeywordsDTO } from "@/app/server/data/keywords-dto";
 // Icons
 import { MdOpenInNew } from "react-icons/md";
 
-type LearnKeywordProps = Omit<KeywordsType, 'id' | 'created_at' | 'tip'>;
+export default async function LearnKeyword() {
+  const keywords = await getKeywordsDTO();
+  if (!keywords) return null;
 
-export default function LearnKeyword({ 
-  name,
-  reminder,
-  type 
-}: LearnKeywordProps) {
-  // Get dynamic Keyword data from supabase as props
-  // Wrap this in suspense
+  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+  if (!randomKeyword) return null;
 
   return (
-    <div className={clsx("flex flex-col justify-start items-start w-full gap-2 border p-4 rounded-md", 
+    <div
+      className={clsx(
+        "flex flex-col justify-start items-start w-full gap-2 border p-4 rounded-md",
         {
-          "bg-blue-500/20 border-blue-500/80": type === "persistent",
-          "bg-orange-500/20 border-orange-500/80": type === "reactive",
-          "bg-emerald-500/20 border-emerald-500/80": type === "active",
+          "bg-blue-500/20 border-blue-500/80":
+            randomKeyword.type === "persistent",
+          "bg-orange-500/20 border-orange-500/80":
+            randomKeyword.type === "reactive",
+          "bg-emerald-500/20 border-emerald-500/80":
+            randomKeyword.type === "active",
         }
       )}
     >
@@ -44,25 +47,38 @@ export default function LearnKeyword({
             gap-2
           "
         >
-          <h3 className="font-semibold">{name}</h3>
-          <small className="text-xs font-medium opacity-80">{type.toUpperCase()}</small>
+          <h3 className="font-semibold">{randomKeyword.name}</h3>
+          <small className="text-xs font-medium opacity-80">
+            {randomKeyword?.type?.toUpperCase()}
+          </small>
         </div>
         <div
           className="
             flex
             flex-row
-            justify-end
+            justify-center
             items-center
             gap-1
-            hover:cursor-pointer
-            hover:opacity-80
+            text-muted-foreground
+            hover:text-foreground
+            transition-colors
+            duration-300
+            cursor-pointer
+            text-sm
           "
         >
-          <small className="hidden md:inline-block">Keywords</small>
-          <MdOpenInNew className="text-teal-500 w-[1rem] h-[1rem]"/>
+          <a
+            href="https://nexusgamesinc.mintlify.app/documentation/keywords"
+            rel="noreferrer"
+            target="_blank"
+            className="hidden md:inline-block"
+          >
+            Keywords
+          </a>
+          <MdOpenInNew className="w-[1rem] h-[1rem]" />
         </div>
       </div>
-      <p className="text-sm font-light opacity-60">{reminder}</p>
+      <p className="text-sm font-light opacity-60">{randomKeyword.reminder}</p>
     </div>
   );
 }
