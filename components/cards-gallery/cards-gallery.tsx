@@ -1,54 +1,55 @@
-import React from "react";
-// Utils
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+
+import React, { useState, useEffect } from "react";
 // Types
 import { CardsDTO } from "@/app/lib/types/dto";
+// Custom components
+import CardThumbnail from "@/components/cards-gallery/card-thumbnail";
 
 type CardsGalleryProps = {
   cards: CardsDTO;
-  currentPage: number;
-  totalPages: number;
 };
 
-export default function CardsGallery({
-  cards,
-  currentPage,
-  totalPages,
-}: CardsGalleryProps) {
+export default function CardsGallery({ cards }: CardsGalleryProps) {
+  const [thumbnailSize, setThumbnailSize] = useState<"sm" | "md">("md");
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 768) {
+        setThumbnailSize("sm");
+      } else {
+        setThumbnailSize("md");
+      }
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
+      id="cards-gallery-container"
       className="
-        grid 
-        grid-cols-2 
-        sm:grid-cols-3 
-        md:grid-cols-4 
-        lg:grid-cols-5 
+        flex
+        flex-wrap
+        justify-start
+        items-start
+        w-full
+        h-full
         gap-4
+        sm:gap-4
+        px-auto
       "
     >
       {cards.map((card) => (
-        <Link href={`/cards/${card.id}`} key={card.id}>
-          <div 
-            className="
-              relative 
-              w-full 
-              aspect-[5/7] 
-              rounded-lg 
-              overflow-hidden 
-              hover:shadow-lg 
-              transition-shadow
-            "
-          >
-            <Image
-              src={card.initialMode.render || '/images/card-placeholder.png'}
-              alt={card.initialMode.name}
-              fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-              className="object-cover"
-            />
-          </div>
-        </Link>
+        <CardThumbnail
+          key={card.id}
+          cardRender={card.initialMode.render}
+          cardName={card.initialMode.name}
+          cardId={card.id}
+          width={thumbnailSize}
+        />
       ))}
     </div>
   );

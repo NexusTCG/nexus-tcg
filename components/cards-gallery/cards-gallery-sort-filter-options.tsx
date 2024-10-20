@@ -43,14 +43,15 @@ export default function CardsGallerySortFilter({
         flex-row
         justify-start
         items-center
-        gap-4
+        w-full
+        gap-2
       "
     >
       <Select
         value={sort}
         onValueChange={(value) => updateSearchParams("sort", value)}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="max-w-[180px]">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>
@@ -63,7 +64,7 @@ export default function CardsGallerySortFilter({
         value={order}
         onValueChange={(value) => updateSearchParams("order", value)}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="max-w-[180px]">
           <SelectValue placeholder="Order" />
         </SelectTrigger>
         <SelectContent>
@@ -75,7 +76,7 @@ export default function CardsGallerySortFilter({
         value={filter}
         onValueChange={(value) => updateSearchParams("filter", value)}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="max-w-[180px]">
           <SelectValue placeholder="Filter" />
         </SelectTrigger>
         <SelectContent>

@@ -10,6 +10,8 @@ type CardsGalleryHeaderProps = {
   order: string;
   filter: string;
   totalResults: number;
+  currentPage: number;
+  totalPages: number;
 };
 
 export default function CardsGalleryHeader({
@@ -18,6 +20,8 @@ export default function CardsGalleryHeader({
   order,
   filter,
   totalResults,
+  currentPage,
+  totalPages,
 }: CardsGalleryHeaderProps) {
   return (
     <div
@@ -57,7 +61,10 @@ export default function CardsGalleryHeader({
           <small className="min-w-16">{totalResults} results</small>
           <CardsGallerySortFilter sort={sort} order={order} filter={filter} />
         </div>
-        <CardsGalleryPagination />
+        <CardsGalleryPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );

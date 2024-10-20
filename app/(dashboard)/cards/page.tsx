@@ -53,7 +53,8 @@ export default async function Cards({
         justify-start
         items-start
         w-full
-        px-4
+        px-0
+        sm:px-4
         md:px-8
         py-4
         gap-8
@@ -64,14 +65,12 @@ export default async function Cards({
         className="
           flex 
           flex-col 
-          justify-start 
-          items-center 
+          justify-center 
+          items-start 
           w-full 
-          h-full
-          min-h-[calc(100vh-10rem)]
-          border 
+          sm:border 
           border-zinc-700 
-          rounded-sm 
+          sm:rounded-sm 
           overflow-hidden
         "
       >
@@ -81,6 +80,8 @@ export default async function Cards({
           order={order}
           filter={filter}
           totalResults={totalCards}
+          currentPage={page}
+          totalPages={Math.ceil(totalCards / pageSize)}
         />
         <div
           id="cards-gallery-container"
@@ -91,19 +92,12 @@ export default async function Cards({
             items-center 
             w-full 
             flex-grow
-            py-8 
+            p-4
             bg-zinc-800
             relative
-            pb-36
           "
         >
-          {cards && (
-            <CardsGallery
-              cards={cards}
-              currentPage={page}
-              totalPages={Math.ceil(totalCards / pageSize)}
-            />
-          )}
+          {cards && <CardsGallery cards={cards} />}
         </div>
       </div>
     </div>

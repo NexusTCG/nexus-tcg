@@ -10,7 +10,15 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export default function CardsGalleryPagination() {
+type CardsGalleryPaginationProps = {
+  currentPage: number;
+  totalPages: number;
+};
+
+export default function CardsGalleryPagination({
+  currentPage,
+  totalPages,
+}: CardsGalleryPaginationProps) {
   return (
     <Pagination className="flex justify-end items-center">
       <PaginationContent>

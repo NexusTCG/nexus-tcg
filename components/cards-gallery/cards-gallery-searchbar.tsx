@@ -33,7 +33,7 @@ export default function CardsGallerySearchbar({
         placeholder="Search cards..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full sm:w-[300px]"
+        className="w-full sm:max-w-[300px]"
       />
     </form>
   );

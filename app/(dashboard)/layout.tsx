@@ -51,7 +51,7 @@ export default async function DashboardLayout({
           userProfile={userProfile}
         />
       </div>
-      <div className="flex-1 p-4">{children}</div>
+      <div className="flex-1 sm:p-4 p-0">{children}</div>
     </div>
   );
 }
