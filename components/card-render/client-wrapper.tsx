@@ -35,6 +35,7 @@ export default function ClientWrapper({
           createdAt={card.created_at ?? undefined}
           updatedAt={card.updated_at ?? undefined}
           username={card.username ?? ""}
+          userId={user?.user_id ?? null}
           cardId={card.id ?? 0}
           cardName={card.initialMode?.name ?? "My Nexus TCG Card"}
           activeMode={activeMode}

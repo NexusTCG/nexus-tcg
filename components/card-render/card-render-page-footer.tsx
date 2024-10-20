@@ -1,8 +1,6 @@
 import React from "react";
 // Utils
 import Link from "next/link";
-// Server
-import { getCurrentUserId } from "@/app/server/auth";
 // Actions
 import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Custom components
@@ -13,6 +11,7 @@ type CardRenderPageFooterProps = {
   createdAt?: string | null;
   updatedAt?: string;
   username: string;
+  userId: string | null;
   cardId: number;
   cardName: string;
   activeMode: "initial" | "anomaly";
@@ -23,13 +22,12 @@ export default async function CardRenderPageFooter({
   createdAt,
   updatedAt,
   username,
+  userId,
   cardId,
   cardName,
   activeMode,
   currentCardArtUrl,
 }: CardRenderPageFooterProps) {
-  const userId = await getCurrentUserId();
-
   return (
     <div
       id="card-creator-footer"
