@@ -4,14 +4,13 @@ import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Types
 import { ProfileDTO } from "@/app/lib/types/dto";
 // Components
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
 // Custom components
 import UserAvatar from "@/components/user-avatar";
 // Icons

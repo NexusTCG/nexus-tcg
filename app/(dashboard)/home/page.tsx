@@ -3,10 +3,10 @@ import React, { Suspense } from "react";
 import LatestCards from "@/components/home/latest-cards";
 import LatestNotifications from "@/components/home/latest-notifications";
 import TopCards from "@/components/home/top-cards";
-import ReadyToPlay from "@/components/home/ready-to-play";
 import QuickLearn from "@/components/home/quick-learn";
 import WeeklyTrends from "@/components/home/weekly-trends";
 import CardSkeleton from "@/components/card-skeleton";
+// import ReadyToPlay from "@/components/home/ready-to-play";
 
 export default function Home() {
   return (
@@ -54,7 +54,8 @@ export default function Home() {
             gap-4
           "
         >
-          <ReadyToPlay />
+          {/* TODO: Implement matchmaking system with Cal.com */}
+          {/* <ReadyToPlay /> */}
           <Suspense fallback={<CardSkeleton height="half" />}>
             <QuickLearn />
           </Suspense>

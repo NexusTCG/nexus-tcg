@@ -3,14 +3,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 // Data
-import { socialChannels, policyLinks } from "@/app/lib/data/data"
+import { socialChannels, policyLinks } from "@/app/lib/data/data";
 // Components
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 // Custom components
 import SocialLink from "@/components/social-link";
 import NexusLogoWhite from "@/public/brand-assets/nexus-logo-white.svg";
@@ -64,7 +64,11 @@ export default function SectionFooter() {
                     hover:underline
                   "
                 >
-                  <a href={policy.href} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={policy.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {policy.label}
                   </a>
                 </li>
@@ -91,7 +95,13 @@ export default function SectionFooter() {
               <Link href="/cards">Cards</Link>
             </li>
             <li className="hover:text-neutral-400 hover:underline">
-              <Link href="/learn">Learn</Link>
+              <a
+                href="https://nexusgamesinc.mintlify.app/quick-start"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn
+              </a>
             </li>
           </ul>
         </div>
