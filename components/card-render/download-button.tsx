@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 // Utils
 import { toPng } from "html-to-image";
 import { createClient } from "@/app/utils/supabase/client";
@@ -21,6 +21,8 @@ export function DownloadButton({
   currentCardArtUrl,
 }: DownloadButtonProps) {
   const [isPending, setIsPending] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
   const supabase = createClient();
 
   async function downloadImage(path: string, filename: string) {
@@ -89,6 +91,7 @@ export function DownloadButton({
       await generateImageFromDOM();
     } finally {
       setIsPending(false);
+      setDownloaded(true);
     }
   };
 
@@ -152,7 +155,7 @@ export function DownloadButton({
       type="button"
       size="sm"
       className="font-medium"
-      disabled={isPending}
+      disabled={isPending || downloaded}
       onClick={handleDownload}
     >
       {isPending ? "Downloading..." : "Download"}
