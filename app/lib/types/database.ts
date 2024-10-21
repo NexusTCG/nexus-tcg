@@ -75,6 +75,8 @@ export type NexusCardType = {
   grade: string;
   approved: boolean;
   card_render?: string[];
+  discord_post?: boolean;
+  discord_post_url?: string;
 };
 
 export type NexusCardsType = NexusCardType[];

@@ -77,6 +77,8 @@ export const getCardsDTO = cache(
           grade: nexusCard.grade ?? null,
           approved: nexusCard.approved ?? null,
           card_render: nexusCard.card_render ?? null,
+          discord_post: nexusCard.discord_post ?? null,
+          discord_post_url: nexusCard.discord_post_url ?? null,
           initialMode: initialCard ?? null,
           anomalyMode: anomalyCard ?? null,
         };

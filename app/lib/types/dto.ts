@@ -29,6 +29,8 @@ export type CardDTO = {
   grade?: string | null;
   approved?: boolean | null;
   card_render?: string[] | null;
+  discord_post?: boolean | null;
+  discord_post_url?: string | null;
   initialMode: InitialCardType;
   anomalyMode: AnomalyCardType;
 };
