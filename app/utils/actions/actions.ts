@@ -91,7 +91,7 @@ export async function shareToSocial(
 
   try {
     if (platform === "discord") {
-      const response = await fetch("/api/post-card-to-discord", {
+      const response = await fetch("/api/data/post-card-to-discord", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
