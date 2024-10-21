@@ -14,6 +14,7 @@ type CardRenderPageFooterProps = {
   userId: string | null;
   cardId: number;
   cardName: string;
+  cardCreator: string;
   activeMode: "initial" | "anomaly";
   currentCardArtUrl?: string;
 };
@@ -25,6 +26,7 @@ export default async function CardRenderPageFooter({
   userId,
   cardId,
   cardName,
+  cardCreator,
   activeMode,
   currentCardArtUrl,
 }: CardRenderPageFooterProps) {
@@ -77,7 +79,11 @@ export default async function CardRenderPageFooter({
           gap-2
         "
       >
-        <ShareModal cardId={cardId} cardName={cardName} />
+        <ShareModal
+          cardId={cardId}
+          cardName={cardName}
+          cardCreator={cardCreator}
+        />
         {userId && (
           <DownloadButton
             cardId={cardId}

@@ -1,6 +1,9 @@
+import { SocialShareData } from "@/app/lib/types/components";
+
 // Icons
 import {
   FaDiscord,
+  FaFacebook,
   FaGithub,
   FaLinkedin,
   FaReddit,
@@ -55,12 +58,14 @@ export const secondaryNavItems = [
     href: "https://nexusgamesinc.mintlify.app/quick-start",
     icon: MdOutlineBook,
     label: "Learn",
+    requiresUser: false,
     internalUrl: false,
   },
   {
     href: "/play",
     icon: MdOutlinePeople,
     label: "Play",
+    requiresUser: true,
     internalUrl: true,
   },
   // {
@@ -263,6 +268,8 @@ export const artdirectionOptions = {
   "Prompt": [],
 };
 
+// --> DISTRIBUTION <-- //
+
 export const metadataKeywords = [
   "TCG",
   "Trading Card Game",
@@ -309,3 +316,52 @@ export const metadataKeywords = [
   "trading card game community",
   "how to create your own digital cards with AI",
 ];
+
+export const socialPlatforms = {
+  discord: {
+    name: "Discord",
+    icon: FaDiscord,
+    shareFunction: async (data: SocialShareData) => {
+      return ""; // Doesn't need to return a URL
+    },
+    color: "indigo",
+    description: "Posts to Nexus' server",
+  },
+  reddit: {
+    name: "Reddit",
+    icon: FaReddit,
+    shareFunction: async (data: SocialShareData) => {
+      return `https://new.reddit.com/r/playnexus/submit?url=${
+        encodeURIComponent(
+          data.shareUrl,
+        )
+      }&title=${encodeURIComponent(data.cardName)}&type=link`;
+    },
+    color: "orange",
+    description: "/r/playnexus",
+  },
+  twitter: {
+    name: "X (Twitter)",
+    icon: FaXTwitter,
+    shareFunction: async (data: SocialShareData) => {
+      return `https://twitter.com/intent/tweet?text=${
+        encodeURIComponent(
+          data.shareText,
+        )
+      }&url=${encodeURIComponent(data.shareUrl)}`;
+    },
+    color: "sky",
+    description: "@PlayNexusTcg",
+  },
+  facebook: {
+    name: "Facebook",
+    icon: FaFacebook,
+    shareFunction: async (data: SocialShareData) => {
+      return `https://www.facebook.com/sharer/sharer.php?u=${
+        encodeURIComponent(data.shareUrl)
+      }`;
+    },
+    color: "blue",
+    description: "Share with friends",
+  },
+};

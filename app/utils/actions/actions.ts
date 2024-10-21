@@ -1,10 +1,19 @@
 // Utils
 import { formatDistanceToNow } from "date-fns";
 // Types
-import { EnergyCost } from "@/app/lib/types/components";
-import { energyOrder, energyToColorMap } from "@/app/lib/data/data";
+import {
+  EnergyCost,
+  SocialPlatform,
+  SocialShareData,
+} from "@/app/lib/types/components";
+// Data
+import {
+  energyOrder,
+  energyToColorMap,
+  socialPlatforms,
+} from "@/app/lib/data/data";
 
-// CALCULATIONS //
+// --> CALCULATIONS <-- //
 
 export function calculateTimeAgo(
   date: string | null | undefined,
@@ -57,7 +66,7 @@ export function calculateBgColor(
   return [`bg-multi-${shade}`];
 }
 
-// GET //
+// --> URL <-- //
 
 export function getBaseUrl() {
   const isProduction = process.env.NODE_ENV === "production";
@@ -66,4 +75,45 @@ export function getBaseUrl() {
     : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   return baseUrl.replace(/\/$/, "");
+}
+
+// --> SOCIAL SHARING <-- //
+
+export async function shareToSocial(
+  platform: SocialPlatform,
+  data: SocialShareData,
+): Promise<void> {
+  const platformData = socialPlatforms[platform];
+
+  if (!platformData) {
+    throw new Error(`Unsupported social platform: ${platform}`);
+  }
+
+  try {
+    if (platform === "discord") {
+      const response = await fetch("/api/post-card-to-discord", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to trigger Discord post");
+      }
+
+      // Open the Discord channel in a new tab
+      window.open(
+        "https://discord.com/channels/1136652718929362985/1209430105940824074",
+        "_blank",
+      );
+    } else {
+      const shareUrl = await platformData.shareFunction(data);
+      window.open(shareUrl, "_blank");
+    }
+  } catch (error) {
+    console.error(`Error sharing to ${platform}:`, error);
+    throw error;
+  }
 }

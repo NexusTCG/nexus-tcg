@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 // Utils
-import Image from 'next/image';
+import Image from "next/image";
 // Types
-import { EnergyCost } from "@/app/lib/types/components"
+import { EnergyCost } from "@/app/lib/types/components";
 // Custom components
-import CardRenderFooter from '@/components/card-render/card-render-footer';
+import CardRenderFooter from "@/components/card-render/card-render-footer";
 
 type CardContainerProps = {
   children: React.ReactNode;
@@ -23,12 +23,11 @@ export default function CardRenderContainer({
   username,
   isUncommon,
   energyCost,
-  cardId
+  cardId,
 }: CardContainerProps) {
-
   function getCardFrameImage() {
     if (mode === "anomaly" || !energyCost) {
-      return "anomaly.jpg"
+      return "anomaly.jpg";
     }
 
     const activeTypes = Object.entries(energyCost)
@@ -36,14 +35,13 @@ export default function CardRenderContainer({
       .map(([type]) => type);
 
     if (activeTypes.length === 0) {
-      return 'default.jpg';
+      return "default.jpg";
     }
 
-    const nonVoidTypes = activeTypes
-      .filter(type => type !== 'void');
+    const nonVoidTypes = activeTypes.filter((type) => type !== "void");
 
     if (nonVoidTypes.length === 0) {
-      return 'void.jpg';
+      return "void.jpg";
     }
 
     if (nonVoidTypes.length === 1) {
@@ -51,18 +49,16 @@ export default function CardRenderContainer({
     }
 
     if (nonVoidTypes.length === 2) {
-      return `${nonVoidTypes.sort().join('-')}.jpg`;
+      return `${nonVoidTypes.sort().join("-")}.jpg`;
     }
 
-    if (nonVoidTypes.length >= 3 || 
-      (
-        nonVoidTypes.length === 2 && 
-        activeTypes.includes('void')
-      )
+    if (
+      nonVoidTypes.length >= 3 ||
+      (nonVoidTypes.length === 2 && activeTypes.includes("void"))
     ) {
-      return 'multi.jpg';
+      return "multi.jpg";
     }
-    return 'default.jpg';
+    return "default.jpg";
   }
 
   const cardFrame = getCardFrameImage();
@@ -100,16 +96,14 @@ export default function CardRenderContainer({
         "
         style={{
           backgroundImage: `url(${cardFrameUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         {children}
       </div>
       <div className="w-full z-10">
-        {mode === "anomaly" && isUncommon === false ? (
-          null
-        ) : (
+        {mode === "anomaly" && isUncommon === false ? null : (
           <div
             className="
               absolute 
@@ -122,7 +116,7 @@ export default function CardRenderContainer({
               mb-1 mr-1 pl-1
             "
           >
-            <Image 
+            <Image
               src={`/icons/grade-icons/${grade.toLowerCase()}.svg`}
               alt={grade}
               width={20}
@@ -137,5 +131,5 @@ export default function CardRenderContainer({
         />
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { logger, task, wait } from "@trigger.dev/sdk/v3";
+import { logger, task } from "@trigger.dev/sdk/v3";
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
 import puppeteer from "puppeteer";

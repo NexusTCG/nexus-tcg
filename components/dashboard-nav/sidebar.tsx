@@ -133,10 +133,24 @@ export default function Sidebar({
         top-0
       `}
     >
-      <div id="sidebar-content" className="flex flex-col w-full gap-4">
+      <div
+        id="sidebar-content"
+        className="
+          flex 
+          flex-col 
+          w-full 
+          gap-4
+        "
+      >
         <div
           id="sidebar-header"
-          className="flex flex-row justify-between items-center w-full"
+          className="
+            flex 
+            flex-row 
+            justify-between 
+            items-center 
+            w-full
+          "
         >
           {!isCollapsed && <SidebarPopoverIcon />}
           <TooltipProvider>
@@ -153,12 +167,20 @@ export default function Sidebar({
           </TooltipProvider>
         </div>
         <Separator />
-        <div id="nav-primary" className="flex flex-col w-full gap-1">
-          {renderNavItems(navItems)}
-        </div>
-        <Separator />
-        <div id="nav-secondary" className="flex flex-col w-full gap-1">
-          {renderNavItems(secondaryNavItems)}
+        <div
+          id="nav-links-container"
+          className={clsx(
+            "flex flex-col w-full",
+            currentUserId ? "gap-4" : "gap-1"
+          )}
+        >
+          <div id="nav-primary" className="flex flex-col w-full gap-1">
+            {renderNavItems(navItems)}
+          </div>
+          {currentUserId && <Separator />}
+          <div id="nav-secondary" className="flex flex-col w-full gap-1">
+            {renderNavItems(secondaryNavItems)}
+          </div>
         </div>
         <Separator />
         {!isCollapsed && (

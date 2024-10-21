@@ -1,3 +1,7 @@
+import { socialPlatforms } from "@/app/lib/data/data";
+
+// --> ENERGY & SPEED <-- //
+
 export type EnergyType =
   | "light"
   | "storm"
@@ -17,6 +21,8 @@ export type EnergyCost = {
 
 export type SpeedType = 1 | 2 | 3;
 
+// --> ART PROMPT <-- //
+
 export type ArtPromptOptionType = {
   id: number;
   option: string;
@@ -33,4 +39,29 @@ export type ArtPromptOptionsSectionType = {
 
 export type ArtPromptOptionsType = {
   [section: string]: ArtPromptOptionsSectionType;
+};
+
+// --> SOCIAL SHARING <-- //
+
+export type SocialShareData = {
+  cardId: number;
+  cardName: string;
+  cardCreator: string;
+  shareText: string;
+  shareUrl: string;
+};
+
+export type SocialPlatformData = {
+  name: string;
+  icon: React.ComponentType;
+  shareFunction: (data: SocialShareData) => Promise<string>;
+  getShareUrl?: () => string;
+  color: string;
+  description: string;
+};
+
+export type SocialPlatform = keyof typeof socialPlatforms;
+
+export type SocialPlatforms = {
+  [key in SocialPlatform]: SocialPlatformData;
 };

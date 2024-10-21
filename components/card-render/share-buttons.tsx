@@ -1,85 +1,58 @@
 "use client";
 
 import React from "react";
+// Data
+import { socialPlatforms } from "@/app/lib/data/data";
+// Actions
+import { shareToSocial } from "@/app/utils/actions/actions";
+// Types
+import { SocialShareData } from "@/app/lib/types/components";
+// Components
 import { Button } from "@/components/ui/button";
-import { FaDiscord, FaReddit, FaXTwitter } from "react-icons/fa6";
+// Icons
+import { FaDiscord, FaReddit, FaXTwitter, FaFacebook } from "react-icons/fa6";
 
 type ShareButtonsProps = {
   cardId: number;
   cardName: string;
+  cardCreator: string;
 };
 
-export default function ShareButtons({ cardId, cardName }: ShareButtonsProps) {
+export default function ShareButtons({
+  cardId,
+  cardName,
+  cardCreator,
+}: ShareButtonsProps) {
   const shareUrl = `https://play.nexus/cards/${cardId}`;
-  const shareText = `Check out my Nexus TCG card: ${cardName}`;
+  const shareText = `Check out ${cardName}, a Nexus TCG card created by ${cardCreator}!`;
 
-  // TODO: Move share functionality to API route / server action
-  // TODO: Implement Discord share webhook
-
-  function shareToDiscord() {
-    // Placeholder URL
-    window.open(
-      `https://discord.com/channels/@me?message=${encodeURIComponent(
-        `${shareText}\n${shareUrl}`
-      )}`,
-      "_blank"
-    );
-  }
-
-  function shareToReddit() {
-    const redditShareUrl = `https://new.reddit.com/r/playnexus/submit?url=${encodeURIComponent(
-      shareUrl
-    )}&title=${encodeURIComponent(cardName)}&type=link`;
-
-    window.open(redditShareUrl, "_blank");
-  }
-
-  function shareToTwitter() {
-    // Placeholder URL
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        shareText
-      )}&url=${encodeURIComponent(shareUrl)}`,
-      "_blank"
-    );
-  }
+  const shareData: SocialShareData = {
+    cardId,
+    cardName,
+    cardCreator,
+    shareUrl,
+    shareText,
+  };
 
   return (
     <div className="flex flex-col gap-2">
-      <Button
-        onClick={shareToDiscord}
-        className="flex justify-between items-center"
-      >
-        <div className="flex flex-row gap-2">
-          <FaDiscord className="w-[1.2rem] h-[1.2rem]" />
-          Share on Discord
-        </div>
-        <small className="text-muted-foreground font-light">
-          Posts to Nexus' server
-        </small>
-      </Button>
-      <Button
-        onClick={shareToReddit}
-        className="flex justify-between items-center"
-      >
-        <div className="flex flex-row gap-2">
-          <FaReddit className="w-[1.2rem] h-[1.2rem]" />
-          Share on Reddit
-        </div>
-        <small className="text-muted-foreground font-light">/r/playnexus</small>
-      </Button>
-      <Button
-        onClick={shareToTwitter}
-        className="flex justify-between items-center"
-      >
-        <div className="flex flex-row gap-2">
-          <FaXTwitter className="w-[1.2rem] h-[1.2rem]" />
-          {`Share on X (Twitter)`}
-        </div>
-        <small className="text-muted-foreground font-light">
-          @PlayNexusTcg
-        </small>
-      </Button>
+      {Object.entries(socialPlatforms).map(([key, platform]) => (
+        <Button
+          key={key}
+          onClick={() =>
+            shareToSocial(key as keyof typeof socialPlatforms, shareData)
+          }
+          className="flex justify-between items-center"
+        >
+          <div className="flex flex-row gap-2">
+            <platform.icon className="w-[1.2rem] h-[1.2rem]" />
+            Share on {platform.name}
+          </div>
+          <small className="text-muted-foreground font-light">
+            {platform.description}
+          </small>
+        </Button>
+      ))}
     </div>
   );
 }

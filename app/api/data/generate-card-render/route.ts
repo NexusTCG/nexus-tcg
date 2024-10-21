@@ -14,7 +14,7 @@ export async function POST(
       taskId: result.id,
     });
   } catch (error) {
-    console.error("Error triggering card render generation:", error);
+    console.error("[Server] Error triggering card render generation:", error);
     return NextResponse.json({
       error: "Failed to trigger card render generation",
       message: error instanceof Error ? error.message : "Unknown error",
