@@ -100,7 +100,8 @@ export async function shareToSocial(
       });
 
       if (!response.ok) {
-        throw new Error("Failed to trigger Discord post");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to trigger Discord post");
       }
 
       // Open the Discord channel in a new tab

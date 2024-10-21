@@ -1,16 +1,13 @@
-"use client";
-
 import React from "react";
 // Data
 import { socialPlatforms } from "@/app/lib/data/data";
 // Actions
 import { shareToSocial } from "@/app/utils/actions/actions";
 // Types
-import { SocialShareData } from "@/app/lib/types/components";
+import { SocialShareData, SocialPlatform } from "@/app/lib/types/components";
 // Components
 import { Button } from "@/components/ui/button";
-// Icons
-import { FaDiscord, FaReddit, FaXTwitter, FaFacebook } from "react-icons/fa6";
+import { toast } from "@/components/ui/use-toast";
 
 type ShareButtonsProps = {
   cardId: number;
@@ -34,14 +31,29 @@ export default function ShareButtons({
     shareText,
   };
 
+  const handleShare = async (platform: SocialPlatform) => {
+    try {
+      await shareToSocial(platform, shareData);
+      toast({
+        title: "Shared successfully",
+        description: `Your card has been shared to ${platform}.`,
+      });
+    } catch (error) {
+      console.error(`Error sharing to ${platform}:`, error);
+      toast({
+        title: "Share failed",
+        description: `Failed to share your card to ${platform}. Please try again.`,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       {Object.entries(socialPlatforms).map(([key, platform]) => (
         <Button
           key={key}
-          onClick={() =>
-            shareToSocial(key as keyof typeof socialPlatforms, shareData)
-          }
+          onClick={() => handleShare(key as SocialPlatform)}
           className="flex justify-between items-center"
         >
           <div className="flex flex-row gap-2">
