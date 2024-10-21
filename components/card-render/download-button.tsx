@@ -158,7 +158,7 @@ export function DownloadButton({
       disabled={isPending || downloaded}
       onClick={handleDownload}
     >
-      {isPending ? "Downloading..." : "Download"}
+      {isPending ? "Downloading..." : downloaded ? "Downloaded" : "Download"}
     </Button>
   );
 }
