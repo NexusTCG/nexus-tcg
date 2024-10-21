@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 // Data
 import { socialPlatforms } from "@/app/lib/data/data";
 // Actions
@@ -8,6 +10,7 @@ import { SocialShareData, SocialPlatform } from "@/app/lib/types/components";
 // Components
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 type ShareButtonsProps = {
   cardId: number;
@@ -20,6 +23,8 @@ export default function ShareButtons({
   cardName,
   cardCreator,
 }: ShareButtonsProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const shareUrl = `https://play.nexus/cards/${cardId}`;
   const shareText = `Check out ${cardName}, a Nexus TCG card created by ${cardCreator}!`;
 
@@ -32,6 +37,7 @@ export default function ShareButtons({
   };
 
   const handleShare = async (platform: SocialPlatform) => {
+    setIsLoading(true);
     try {
       await shareToSocial(platform, shareData);
       toast({
@@ -45,6 +51,8 @@ export default function ShareButtons({
         description: `Failed to share your card to ${platform}. Please try again.`,
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,14 +63,21 @@ export default function ShareButtons({
           key={key}
           onClick={() => handleShare(key as SocialPlatform)}
           className="flex justify-between items-center"
+          disabled={isLoading}
         >
           <div className="flex flex-row gap-2">
             <platform.icon className="w-[1.2rem] h-[1.2rem]" />
-            Share on {platform.name}
+            {isLoading && platform.name.toLowerCase() === "discord"
+              ? `Sharing on Discord..`
+              : `Share on ${platform.name}`}
           </div>
-          <small className="text-muted-foreground font-light">
-            {platform.description}
-          </small>
+          {isLoading && platform.name.toLowerCase() === "discord" ? (
+            <Loader2 className="w-[1.2rem] h-[1.2rem] animate-spin" />
+          ) : (
+            <small className="text-muted-foreground font-light">
+              {platform.description}
+            </small>
+          )}
         </Button>
       ))}
     </div>
