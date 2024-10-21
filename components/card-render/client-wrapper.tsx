@@ -43,6 +43,8 @@ export default function ClientWrapper({
           cardCreator={user?.username ?? ""}
           activeMode={activeMode}
           currentCardArtUrl={currentCardArtUrl}
+          discordPost={card.discord_post ?? false}
+          discordPostUrl={card.discord_post_url ?? ""}
         />
       )}
     </>
