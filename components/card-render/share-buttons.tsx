@@ -117,9 +117,7 @@ export default function ShareButtons({
             {isLoading && currentPlatform === platformKey ? (
               <Loader2 className="w-[1.2rem] h-[1.2rem] animate-spin" />
             ) : (
-              <small className="text-muted-foreground font-light">
-                {platform.description}
-              </small>
+              <small>{platform.description}</small>
             )}
           </Button>
         );
