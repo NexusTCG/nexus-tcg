@@ -5,6 +5,10 @@ import { cookies } from "next/headers";
 // Types
 import { SocialShareData } from "@/app/lib/types/components";
 
+type DiscordMessage = {
+  id: string;
+};
+
 export const postCardToDiscord = task({
   id: "post-card-to-discord",
   run: async (payload: SocialShareData) => {
@@ -25,6 +29,8 @@ export const postCardToDiscord = task({
     });
 
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    const serverId = process.env.DISCORD_SERVER_ID;
+    const channelId = process.env.DISCORD_CHANNEL_ID;
 
     if (!webhookUrl) {
       throw new Error("Discord webhook URL is not configured");
@@ -45,50 +51,52 @@ export const postCardToDiscord = task({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        logger.error("Discord API error", errorData);
+        const errorBody = await response.text();
+        logger.error("Failed to post card to Discord", {
+          status: response.status,
+          errorBody,
+        });
         throw new Error(
-          `Failed to post card to Discord: ${
-            errorData.message || response.statusText
-          }`,
+          `Failed to post card to Discord: ${response.status} ${errorBody}`,
         );
       }
 
-      const responseData = await response.json();
-      const messageId = responseData.id;
+      const discordMessage: DiscordMessage = await response.json();
 
-      if (messageId) {
-        const cookieStore = cookies();
-        const supabase = createClient(cookieStore);
-
-        // Extract channel ID from the webhook URL
-        const channelId = webhookUrl.split("/").slice(-2, -1)[0];
-
-        const discordPostUrl =
-          `https://discord.com/channels/${process.env.DISCORD_SERVER_ID}/${channelId}/${messageId}`;
-
-        const { data, error } = await supabase
-          .from("nexus_cards")
-          .update({
-            discord_post: true,
-            discord_post_url: discordPostUrl,
-          })
-          .eq("id", cardId);
-
-        if (error) {
-          logger.error("Error updating card Discord post status", { error });
-          throw error;
-        } else {
-          logger.info("Updated card Discord post status", {
-            cardId,
-            discordPostUrl,
-          });
-        }
-
-        return { success: true, discordPostUrl };
-      } else {
-        throw new Error("Failed to get message ID from Discord response");
+      if (!discordMessage.id) {
+        throw new Error("Invalid response from Discord: missing message id");
       }
+
+      logger.info("Successfully posted to Discord", {
+        messageId: discordMessage.id,
+      });
+
+      const discordPostUrl =
+        `https://discord.com/channels/${serverId}/${channelId}/${discordMessage.id}`;
+
+      const cookieStore = cookies();
+      const supabase = createClient(cookieStore);
+
+      logger.info("Updating Supabase", { cardId, discordPostUrl });
+
+      const { error } = await supabase
+        .from("nexus_cards")
+        .update({
+          discord_post: true,
+          discord_post_url: discordPostUrl,
+        })
+        .eq("id", cardId);
+
+      if (error) {
+        throw error;
+      }
+
+      logger.info("Updated card Discord post status", {
+        cardId,
+        discordPostUrl,
+      });
+
+      return { success: true, discordPostUrl };
     } catch (error) {
       logger.error("Error posting card to Discord", {
         error: error instanceof Error ? error.message : "Unknown error",
