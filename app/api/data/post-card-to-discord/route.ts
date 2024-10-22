@@ -31,7 +31,12 @@ export async function POST(req: NextRequest) {
         `Check out this Nexus TCG card: ${cardName} by ${cardCreator}!\n${shareUrl}`,
     };
 
-    const discordResponse = await fetch(webhookUrl, {
+    console.log("Message to Discord:", message);
+
+    const webhookUrlWithParams = new URL(webhookUrl);
+    webhookUrlWithParams.searchParams.append("wait", "true");
+
+    const discordResponse = await fetch(webhookUrlWithParams.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,16 +44,25 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(message),
     });
 
+    const responseText = await discordResponse.text();
+    console.log("Discord API response:", responseText);
+
     if (!discordResponse.ok) {
-      const errorBody = await discordResponse.text();
       throw new Error(
-        `Failed to post card to Discord: ${discordResponse.status} ${errorBody}`,
+        `Failed to post card to Discord: ${discordResponse.status} ${responseText}`,
       );
     }
 
-    const discordMessage = await discordResponse.json();
+    let discordMessage;
+    try {
+      discordMessage = JSON.parse(responseText);
+    } catch (error) {
+      console.error("Failed to parse Discord response:", error);
+      throw new Error("Invalid JSON response from Discord");
+    }
 
     if (!discordMessage.id) {
+      console.error("Invalid Discord response:", discordMessage);
       throw new Error("Invalid response from Discord: missing message id");
     }
 
