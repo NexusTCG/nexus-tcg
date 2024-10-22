@@ -45,8 +45,12 @@ export const postCardToDiscord = task({
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        logger.error("Discord API error", errorData);
         throw new Error(
-          `Failed to post card to Discord: ${response.statusText}`,
+          `Failed to post card to Discord: ${
+            errorData.message || response.statusText
+          }`,
         );
       }
 
@@ -73,6 +77,7 @@ export const postCardToDiscord = task({
 
         if (error) {
           logger.error("Error updating card Discord post status", { error });
+          throw error;
         } else {
           logger.info("Updated card Discord post status", {
             cardId,
