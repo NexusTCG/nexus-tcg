@@ -18,6 +18,10 @@ export async function POST(req: NextRequest) {
     const serverId = process.env.DISCORD_SERVER_ID;
     const channelId = process.env.DISCORD_CHANNEL_ID;
 
+    console.log("webhookUrl: ", webhookUrl);
+    console.log("serverId: ", serverId);
+    console.log("channelId: ", channelId);
+
     if (!webhookUrl) {
       throw new Error("Discord webhook URL is not configured");
     }
