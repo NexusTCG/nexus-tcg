@@ -51,7 +51,7 @@ export default function ShareButtonDiscord({
         });
 
         setTimeout(() => {
-          window.open(result.shareUrl, "_blank");
+          window.open(result.discordPostUrl, "_blank");
         }, 1000);
       } else {
         throw new Error(result.error || "Failed to share to Discord");
