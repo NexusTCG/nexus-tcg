@@ -1,11 +1,6 @@
 import React from "react";
 // Utils
-import dynamic from "next/dynamic";
-const Image = dynamic(() => import("next/image"), {
-  loading: () => (
-    <div className="w-full h-full bg-gray-200 animate-pulse"></div>
-  ),
-});
+import Image from "next/image";
 
 type CardRenderArtProps = {
   mode: "initial" | "anomaly";
