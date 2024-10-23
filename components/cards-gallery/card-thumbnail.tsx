@@ -1,8 +1,13 @@
 import React from "react";
 // Utils
-import Image from "next/image";
-import Link from "next/link";
 import clsx from "clsx";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+const Image = dynamic(() => import("next/image"), {
+  loading: () => (
+    <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg"></div>
+  ),
+});
 // Components
 import {
   Tooltip,

@@ -1,12 +1,19 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+import dynamic from "next/dynamic";
 // Components
 import { Button } from "@/components/ui/button";
 // Custom components
-import CardsGallerySearchbar from "@/components/cards-gallery/cards-gallery-searchbar";
-import CardsGallerySortFilter from "@/components/cards-gallery/cards-gallery-sort-filter-options";
-import CardsGalleryPagination from "@/components/cards-gallery/cards-gallery-pagination";
+const CardsGallerySearchbar = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-searchbar")
+);
+const CardsGallerySortFilter = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-sort-filter-options")
+);
+const CardsGalleryPagination = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-pagination")
+);
 
 type CardsGalleryHeaderProps = {
   search: string;

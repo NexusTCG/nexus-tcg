@@ -1,12 +1,17 @@
 import React, { Suspense } from "react";
+// Utils
+import dynamic from "next/dynamic";
 // Custom Components
-import LatestCards from "@/components/home/latest-cards";
-import LatestNotifications from "@/components/home/latest-notifications";
-import TopCards from "@/components/home/top-cards";
-import QuickLearn from "@/components/home/quick-learn";
-import WeeklyTrends from "@/components/home/weekly-trends";
 import CardSkeleton from "@/components/card-skeleton";
 // import ReadyToPlay from "@/components/home/ready-to-play";
+// Dynamic custom components
+const LatestCards = dynamic(() => import("@/components/home/latest-cards"));
+const LatestNotifications = dynamic(
+  () => import("@/components/home/latest-notifications")
+);
+const TopCards = dynamic(() => import("@/components/home/top-cards"));
+const QuickLearn = dynamic(() => import("@/components/home/quick-learn"));
+const WeeklyTrends = dynamic(() => import("@/components/home/weekly-trends"));
 
 export default function Home() {
   return (

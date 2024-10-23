@@ -1,5 +1,6 @@
 import React from "react";
 // Utils
+import dynamic from "next/dynamic";
 import clsx from "clsx";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
@@ -9,10 +10,16 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 // Custom components
 import CardRenderContainer from "@/components/card-render/card-render-container";
 import CardRenderHeader from "@/components/card-render/card-render-header";
-import CardRenderArt from "@/components/card-render/card-render-art";
-import CardRenderTextBox from "@/components/card-render/card-render-text-box";
-import CardRenderStats from "@/components/card-render/card-render-stats";
 import CardAnimationWrapper from "@/components/card-render/card-animation-wrapper";
+const CardRenderArt = dynamic(
+  () => import("@/components/card-render/card-render-art")
+);
+const CardRenderTextBox = dynamic(
+  () => import("@/components/card-render/card-render-text-box")
+);
+const CardRenderStats = dynamic(
+  () => import("@/components/card-render/card-render-stats")
+);
 
 type CardRenderProps = {
   card: CardDTO;

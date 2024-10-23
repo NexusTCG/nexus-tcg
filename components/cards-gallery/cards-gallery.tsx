@@ -1,10 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+// Utils
+import dynamic from "next/dynamic";
 // Types
 import { CardsDTO } from "@/app/lib/types/dto";
 // Custom components
-import CardThumbnail from "@/components/cards-gallery/card-thumbnail";
+const CardThumbnail = dynamic(
+  () => import("@/components/cards-gallery/card-thumbnail"),
+  {
+    loading: () => (
+      <div className="w-[240px] h-[336px] bg-gray-200 animate-pulse rounded-lg"></div>
+    ),
+  }
+);
 
 type CardsGalleryProps = {
   cards: CardsDTO;

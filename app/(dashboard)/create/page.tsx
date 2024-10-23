@@ -1,4 +1,6 @@
 import React from "react";
+// Utils
+import dynamic from "next/dynamic";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
@@ -6,17 +8,19 @@ import { getUserProfileDTO } from "@/app/server/data/user-dto";
 // import { Input } from "@/components/ui/input";
 // Custom components
 // import Banner from "@/components/banner";
-import CardFormWrapper from "@/components/card-creator/card-form-wrapper";
+const CardFormWrapper = dynamic(
+  () => import("@/components/card-creator/card-form-wrapper")
+);
 
 export default async function Create() {
   let currentUserId = null;
   let userProfile = null;
-  
+
   try {
     currentUserId = await getCurrentUserId();
     userProfile = await getUserProfileDTO();
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error("Error fetching user data:", error);
   }
 
   return (
@@ -79,5 +83,5 @@ export default async function Create() {
         <Input type="text" placeholder="Your message" />
       </div> */}
     </div>
-  )
+  );
 }

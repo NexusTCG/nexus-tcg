@@ -1,14 +1,29 @@
 import React from "react";
-// Components
+// Utils
+import dynamic from "next/dynamic";
+// Custom components
 import NavBar from "@/components/navbar";
 import SectionHero from "@/components/marketing/section-hero";
-import SectionIntroVideo from "@/components/marketing/section-intro-video";
-import SectionFeaturedCards from "@/components/marketing/section-featured-cards";
-import SectionSocialProof from "@/components/marketing/section-social-proof";
-import SectionAppUI from "@/components/marketing/section-app-ui";
-import SectionSteam from "@/components/marketing/section-steam";
-import SectionCTA from "@/components/marketing/section-cta";
-import SectionFooter from "@/components/marketing/section-footer";
+// Dynamic custom components
+const SectionIntroVideo = dynamic(
+  () => import("@/components/marketing/section-intro-video")
+);
+const SectionFeaturedCards = dynamic(
+  () => import("@/components/marketing/section-featured-cards")
+);
+const SectionSocialProof = dynamic(
+  () => import("@/components/marketing/section-social-proof")
+);
+const SectionAppUI = dynamic(
+  () => import("@/components/marketing/section-app-ui")
+);
+const SectionSteam = dynamic(
+  () => import("@/components/marketing/section-steam")
+);
+const SectionCTA = dynamic(() => import("@/components/marketing/section-cta"));
+const SectionFooter = dynamic(
+  () => import("@/components/marketing/section-footer")
+);
 
 export default function Marketing() {
   return (
