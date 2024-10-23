@@ -24,6 +24,7 @@ export default function ClientWrapper({
   children,
 }: ClientWrapperProps) {
   const [card, setCard] = useState(initialCard);
+  const [error, setError] = useState<Error | null>(null);
 
   const supabase = createClient();
 
@@ -45,7 +46,12 @@ export default function ClientWrapper({
         },
         (payload) => {
           console.log("Change received!", payload);
-          setCard((prevCard) => ({ ...prevCard, ...payload.new }));
+          try {
+            setCard((prevCard) => ({ ...prevCard, ...payload.new }));
+          } catch (err) {
+            console.error("Error updating card state:", err);
+            setError(err instanceof Error ? err : new Error(String(err)));
+          }
         }
       )
       .subscribe();
@@ -54,6 +60,10 @@ export default function ClientWrapper({
       supabase.removeChannel(channel);
     };
   }, [initialCard.id]);
+
+  if (error) {
+    return <div>An error occurred: {error.message}</div>;
+  }
 
   return (
     <>

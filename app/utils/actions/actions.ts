@@ -82,11 +82,14 @@ export function getBaseUrl() {
 export async function shareToSocial(
   platform: SocialPlatform,
   data: SocialShareData,
-): Promise<void> {
+): Promise<{ success: boolean; postUrl?: string; error?: string }> {
   const platformData = socialPlatforms[platform];
 
   if (!platformData) {
-    throw new Error(`Unsupported social platform: ${platform}`);
+    return {
+      success: false,
+      error: `Unsupported social platform: ${platform}`,
+    };
   }
 
   try {
@@ -104,17 +107,25 @@ export async function shareToSocial(
         throw new Error(errorData.error || "Failed to trigger Discord post");
       }
 
+      const result = await response.json();
+
       // Open the Discord channel in a new tab
       window.open(
         "https://discord.com/channels/1136652718929362985/1209430105940824074",
         "_blank",
       );
+
+      return { success: true, postUrl: result.discordPostUrl };
     } else {
       const shareUrl = await platformData.shareFunction(data);
       window.open(shareUrl, "_blank");
+      return { success: true };
     }
   } catch (error) {
     console.error(`Error sharing to ${platform}:`, error);
-    throw error;
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }

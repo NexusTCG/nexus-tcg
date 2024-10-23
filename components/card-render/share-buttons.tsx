@@ -24,13 +24,15 @@ export default function ShareButtons({
   cardId,
   cardName,
   cardCreator,
-  discordPost,
-  discordPostUrl,
+  discordPost: initialDiscordPost,
+  discordPostUrl: initialDiscordPostUrl,
 }: ShareButtonsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPlatform, setCurrentPlatform] = useState<SocialPlatform | null>(
     null
   );
+  const [discordPost, setDiscordPost] = useState(initialDiscordPost);
+  const [discordPostUrl, setDiscordPostUrl] = useState(initialDiscordPostUrl);
 
   const shareUrl = `https://play.nexus/cards/${cardId}`;
   const shareText = `Check out ${cardName}, a Nexus TCG card created by ${cardCreator}!`;
@@ -43,35 +45,35 @@ export default function ShareButtons({
     shareText,
   };
 
-  function handleShare(platform: SocialPlatform) {
+  async function handleShare(platform: SocialPlatform) {
     setIsLoading(true);
     setCurrentPlatform(platform);
-    shareToSocial(platform, shareData)
-      .then(() => {
+    try {
+      const result = await shareToSocial(platform, shareData);
+      if (result.success) {
+        if (platform === "discord" && result.postUrl) {
+          setDiscordPost(true);
+          setDiscordPostUrl(result.postUrl);
+        }
         toast({
           title: "Shared successfully",
-          description: `Your card has been shared to ${platform}.`,
+          description: `Your card has been shared to ${socialPlatforms[platform].name}.`,
         });
-      })
-      .catch((error) => {
-        console.error(`Error sharing to ${platform}:`, error);
-        toast({
-          title: "Share failed",
-          description: `Failed to share your card to ${platform}. Please try again.`,
-          variant: "destructive",
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setCurrentPlatform(null);
+      } else {
+        throw new Error(
+          result.error || `Failed to share to ${socialPlatforms[platform].name}`
+        );
+      }
+    } catch (error) {
+      console.error(`Error sharing to ${platform}:`, error);
+      toast({
+        title: "Share failed",
+        description: `Failed to share your card to ${socialPlatforms[platform].name}. Please try again.`,
+        variant: "destructive",
       });
-  }
-
-  function handleDiscordAction() {
-    if (discordPost && discordPostUrl) {
-      window.open(discordPostUrl, "_blank");
-    } else {
-      handleShare("discord");
+    } finally {
+      setIsLoading(false);
+      setCurrentPlatform(null);
     }
   }
 
@@ -79,38 +81,26 @@ export default function ShareButtons({
     <div className="flex flex-col gap-2">
       {Object.entries(socialPlatforms).map(([key, platform]) => {
         const platformKey = key as SocialPlatform;
-        if (platformKey === "discord") {
-          return (
-            <Button
-              key={platformKey}
-              onClick={handleDiscordAction}
-              className="flex justify-between items-center"
-              disabled={isLoading}
-            >
-              <div className="flex flex-row gap-2">
-                <platform.icon className="w-[1.2rem] h-[1.2rem]" />
-                {discordPost
-                  ? "View on Discord"
-                  : isLoading && currentPlatform === "discord"
-                  ? "Sharing on Discord..."
-                  : "Share on Discord"}
-              </div>
-              {isLoading && currentPlatform === "discord" && !discordPost && (
-                <Loader2 className="w-[1.2rem] h-[1.2rem] animate-spin" />
-              )}
-            </Button>
-          );
-        }
+        const isDiscord = platformKey === "discord";
+        const shouldOpenDiscordPost =
+          isDiscord && discordPost && discordPostUrl;
+
         return (
           <Button
             key={platformKey}
-            onClick={() => handleShare(platformKey)}
+            onClick={() =>
+              shouldOpenDiscordPost
+                ? window.open(discordPostUrl, "_blank")
+                : handleShare(platformKey)
+            }
             className="flex justify-between items-center"
             disabled={isLoading}
           >
             <div className="flex flex-row gap-2">
               <platform.icon className="w-[1.2rem] h-[1.2rem]" />
-              {isLoading && currentPlatform === platformKey
+              {shouldOpenDiscordPost
+                ? "View on Discord"
+                : isLoading && currentPlatform === platformKey
                 ? `Sharing on ${platform.name}...`
                 : `Share on ${platform.name}`}
             </div>
