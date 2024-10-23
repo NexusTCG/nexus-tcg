@@ -16,17 +16,9 @@ type ShareModalProps = {
   cardId: number;
   cardName: string;
   cardCreator: string;
-  discordPost: boolean;
-  discordPostUrl: string;
 };
 
-export function ShareModal({
-  cardId,
-  cardName,
-  cardCreator,
-  discordPost,
-  discordPostUrl,
-}: ShareModalProps) {
+export function ShareModal({ cardId, cardName, cardCreator }: ShareModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -45,8 +37,6 @@ export function ShareModal({
           cardId={cardId}
           cardName={cardName}
           cardCreator={cardCreator}
-          discordPost={discordPost}
-          discordPostUrl={discordPostUrl}
         />
       </DialogContent>
     </Dialog>

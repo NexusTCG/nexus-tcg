@@ -14,20 +14,16 @@ type ShareButtonDiscordProps = {
   cardId: number;
   cardName: string;
   cardCreator: string;
-  discordPost: boolean;
-  discordPostUrl: string | null;
 };
 
 export default function ShareButtonDiscord({
   cardId,
   cardName,
   cardCreator,
-  discordPost: initialDiscordPost,
-  discordPostUrl: initialDiscordPostUrl,
 }: ShareButtonDiscordProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [discordPost, setDiscordPost] = useState(initialDiscordPost);
-  const [discordPostUrl, setDiscordPostUrl] = useState(initialDiscordPostUrl);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [discordPost, setDiscordPost] = useState<boolean>(false);
+  const [discordPostUrl, setDiscordPostUrl] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -68,6 +64,27 @@ export default function ShareButtonDiscord({
     }
   }
 
+  // Fetch initial discord data
+  useEffect(() => {
+    async function fetchDiscordData() {
+      const { data, error } = await supabase
+        .from("nexus_cards")
+        .select("discord_post, discord_post_url")
+        .eq("id", cardId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching discord data:", error);
+      } else if (data) {
+        setDiscordPost(data.discord_post || false);
+        setDiscordPostUrl(data.discord_post_url || null);
+      }
+    }
+
+    fetchDiscordData();
+  }, [cardId]);
+
+  // Subscribe to realtime updates
   useEffect(() => {
     const channel = supabase
       .channel(`public:nexus_cards:id=eq.${cardId}`)

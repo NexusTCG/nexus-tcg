@@ -16,16 +16,12 @@ type ShareButtonsProps = {
   cardId: number;
   cardName: string;
   cardCreator: string;
-  discordPost: boolean;
-  discordPostUrl: string | null;
 };
 
 export default function ShareButtons({
   cardId,
   cardName,
   cardCreator,
-  discordPost,
-  discordPostUrl,
 }: ShareButtonsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPlatform, setCurrentPlatform] = useState<SocialPlatform | null>(
@@ -104,8 +100,6 @@ export default function ShareButtons({
         cardId={cardId}
         cardName={cardName}
         cardCreator={cardCreator}
-        discordPost={discordPost}
-        discordPostUrl={discordPostUrl}
       />
       {Object.entries(socialPlatforms).map(([key, platform]) => {
         const platformKey = key as SocialPlatform;

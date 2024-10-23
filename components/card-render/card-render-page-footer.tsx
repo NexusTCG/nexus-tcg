@@ -17,8 +17,6 @@ type CardRenderPageFooterProps = {
   cardCreator: string;
   activeMode: "initial" | "anomaly";
   currentCardArtUrl?: string;
-  discordPost: boolean;
-  discordPostUrl: string;
 };
 
 export default async function CardRenderPageFooter({
@@ -31,8 +29,6 @@ export default async function CardRenderPageFooter({
   cardCreator,
   activeMode,
   currentCardArtUrl,
-  discordPost,
-  discordPostUrl,
 }: CardRenderPageFooterProps) {
   return (
     <div
@@ -87,8 +83,6 @@ export default async function CardRenderPageFooter({
           cardId={cardId}
           cardName={cardName}
           cardCreator={cardCreator}
-          discordPost={discordPost}
-          discordPostUrl={discordPostUrl}
         />
         {userId && (
           <DownloadButton
