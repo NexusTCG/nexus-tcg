@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 // Data
 import { socialPlatforms } from "@/app/lib/data/data";
-// Actions
-import { shareToSocial } from "@/app/utils/actions/actions";
 // Types
 import { SocialShareData, SocialPlatform } from "@/app/lib/types/components";
 // Components
@@ -24,15 +22,13 @@ export default function ShareButtons({
   cardId,
   cardName,
   cardCreator,
-  discordPost: initialDiscordPost,
-  discordPostUrl: initialDiscordPostUrl,
+  discordPost,
+  discordPostUrl,
 }: ShareButtonsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPlatform, setCurrentPlatform] = useState<SocialPlatform | null>(
     null
   );
-  const [discordPost, setDiscordPost] = useState(initialDiscordPost);
-  const [discordPostUrl, setDiscordPostUrl] = useState(initialDiscordPostUrl);
 
   const shareUrl = `https://play.nexus/cards/${cardId}`;
   const shareText = `Check out ${cardName}, a Nexus TCG card created by ${cardCreator}!`;
@@ -49,16 +45,31 @@ export default function ShareButtons({
     setIsLoading(true);
     setCurrentPlatform(platform);
     try {
-      const result = await shareToSocial(platform, shareData);
+      const response = await fetch("/api/data/share-to-social", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          platform,
+          data: shareData,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to share");
+      }
+
+      const result = await response.json();
+
       if (result.success) {
-        if (platform === "discord" && result.postUrl) {
-          setDiscordPost(true);
-          setDiscordPostUrl(result.postUrl);
-        }
         toast({
           title: "Shared successfully",
           description: `Your card has been shared to ${socialPlatforms[platform].name}.`,
         });
+        if (platform !== "discord" && result.postUrl) {
+          window.open(result.postUrl, "_blank");
+        }
       } else {
         throw new Error(
           result.error || `Failed to share to ${socialPlatforms[platform].name}`
