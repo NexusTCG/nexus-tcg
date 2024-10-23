@@ -49,6 +49,10 @@ export default function ShareButtonDiscord({
           title: "Shared successfully",
           description: "Your card has been shared to Discord.",
         });
+
+        setTimeout(() => {
+          window.open(result.shareUrl, "_blank");
+        }, 1000);
       } else {
         throw new Error(result.error || "Failed to share to Discord");
       }
