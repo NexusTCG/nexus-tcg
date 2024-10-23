@@ -105,7 +105,7 @@ export default function ShareButtonDiscord({
           ? window.open(discordPostUrl, "_blank")
           : handleDiscordShare()
       }
-      className="flex justify-between items-center"
+      className="flex justify-between items-center w-full"
       disabled={isLoading}
     >
       <div className="flex flex-row gap-2">

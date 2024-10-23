@@ -64,7 +64,8 @@ export default function ShareButtons({
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result.success && result.shareUrl) {
+        window.open(result.shareUrl, "_blank");
         toast({
           title: "Shared successfully",
           description: `Your card has been shared to ${socialPlatforms[platform].name}.`,
@@ -95,6 +96,7 @@ export default function ShareButtons({
         flex-col 
         items-center
         justify-center
+        w-full
         gap-2
       "
     >
@@ -111,7 +113,7 @@ export default function ShareButtons({
           <Button
             key={platformKey}
             onClick={() => handleShare(platformKey)}
-            className="flex justify-between items-center"
+            className="flex justify-between items-center w-full"
             disabled={isLoading}
           >
             <div className="flex flex-row gap-2">

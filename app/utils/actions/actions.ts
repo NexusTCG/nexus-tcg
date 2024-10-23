@@ -82,7 +82,7 @@ export function getBaseUrl() {
 export async function shareToSocial(
   platform: SocialPlatform,
   data: SocialShareData,
-): Promise<{ success: boolean; postUrl?: string; error?: string }> {
+): Promise<{ success: boolean; shareUrl?: string; error?: string }> {
   const platformData = socialPlatforms[platform];
 
   if (!platformData) {
@@ -94,9 +94,7 @@ export async function shareToSocial(
 
   try {
     const shareUrl = await platformData.shareFunction(data);
-    window.open(shareUrl, "_blank");
-
-    return { success: true };
+    return { success: true, shareUrl };
   } catch (error) {
     console.error(`Error sharing to ${platform}:`, error);
     return {
