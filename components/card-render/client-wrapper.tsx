@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+// Utils
+import { createClient } from "@/app/utils/supabase/client";
 // Types
 import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
 // Custom components
@@ -17,14 +19,41 @@ type ClientWrapperProps = {
 
 export default function ClientWrapper({
   user,
-  card,
+  card: initialCard,
   activeMode,
   children,
 }: ClientWrapperProps) {
+  const [card, setCard] = useState(initialCard);
+
+  const supabase = createClient();
+
   const currentCardArtUrl =
     activeMode === "initial"
       ? card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0]
       : card.anomalyMode?.art_options?.[card.anomalyMode?.art_selected ?? 0];
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`public:nexus_cards:id=eq.${initialCard.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "nexus_cards",
+          filter: `id=eq.${initialCard.id}`,
+        },
+        (payload) => {
+          console.log("Change received!", payload);
+          setCard((prevCard) => ({ ...prevCard, ...payload.new }));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [initialCard.id]);
 
   return (
     <>
