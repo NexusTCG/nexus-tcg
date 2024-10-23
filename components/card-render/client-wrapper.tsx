@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-// Utils
-import { createClient } from "@/app/utils/supabase/client";
+import React from "react";
 // Types
 import { ProfileDTO, CardDTO } from "@/app/lib/types/dto";
 // Custom components
@@ -19,51 +17,14 @@ type ClientWrapperProps = {
 
 export default function ClientWrapper({
   user,
-  card: initialCard,
+  card,
   activeMode,
   children,
 }: ClientWrapperProps) {
-  const [card, setCard] = useState(initialCard);
-  const [error, setError] = useState<Error | null>(null);
-
-  const supabase = createClient();
-
   const currentCardArtUrl =
     activeMode === "initial"
       ? card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0]
       : card.anomalyMode?.art_options?.[card.anomalyMode?.art_selected ?? 0];
-
-  useEffect(() => {
-    const channel = supabase
-      .channel(`public:nexus_cards:id=eq.${initialCard.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "nexus_cards",
-          filter: `id=eq.${initialCard.id}`,
-        },
-        (payload) => {
-          console.log("Change received!", payload);
-          try {
-            setCard((prevCard) => ({ ...prevCard, ...payload.new }));
-          } catch (err) {
-            console.error("Error updating card state:", err);
-            setError(err instanceof Error ? err : new Error(String(err)));
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [initialCard.id]);
-
-  if (error) {
-    return <div>An error occurred: {error.message}</div>;
-  }
 
   return (
     <>

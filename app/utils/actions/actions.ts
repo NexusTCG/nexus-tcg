@@ -93,34 +93,10 @@ export async function shareToSocial(
   }
 
   try {
-    if (platform === "discord") {
-      const response = await fetch("/api/data/post-card-to-discord", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    const shareUrl = await platformData.shareFunction(data);
+    window.open(shareUrl, "_blank");
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to trigger Discord post");
-      }
-
-      const result = await response.json();
-
-      // Open the Discord channel in a new tab
-      window.open(
-        "https://discord.com/channels/1136652718929362985/1209430105940824074",
-        "_blank",
-      );
-
-      return { success: true, postUrl: result.discordPostUrl };
-    } else {
-      const shareUrl = await platformData.shareFunction(data);
-      window.open(shareUrl, "_blank");
-      return { success: true };
-    }
+    return { success: true };
   } catch (error) {
     console.error(`Error sharing to ${platform}:`, error);
     return {

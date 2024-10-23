@@ -9,6 +9,8 @@ import { SocialShareData, SocialPlatform } from "@/app/lib/types/components";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+// Custom components
+import ShareButtonDiscord from "@/components/card-render/share-button-discord";
 
 type ShareButtonsProps = {
   cardId: number;
@@ -67,9 +69,6 @@ export default function ShareButtons({
           title: "Shared successfully",
           description: `Your card has been shared to ${socialPlatforms[platform].name}.`,
         });
-        if (platform !== "discord" && result.postUrl) {
-          window.open(result.postUrl, "_blank");
-        }
       } else {
         throw new Error(
           result.error || `Failed to share to ${socialPlatforms[platform].name}`
@@ -89,29 +88,35 @@ export default function ShareButtons({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      id="share-buttons-container"
+      className="
+        flex 
+        flex-col 
+        items-center
+        justify-center
+        gap-2
+      "
+    >
+      <ShareButtonDiscord
+        cardId={cardId}
+        cardName={cardName}
+        cardCreator={cardCreator}
+        discordPost={discordPost}
+        discordPostUrl={discordPostUrl}
+      />
       {Object.entries(socialPlatforms).map(([key, platform]) => {
         const platformKey = key as SocialPlatform;
-        const isDiscord = platformKey === "discord";
-        const shouldOpenDiscordPost =
-          isDiscord && discordPost && discordPostUrl;
-
         return (
           <Button
             key={platformKey}
-            onClick={() =>
-              shouldOpenDiscordPost
-                ? window.open(discordPostUrl, "_blank")
-                : handleShare(platformKey)
-            }
+            onClick={() => handleShare(platformKey)}
             className="flex justify-between items-center"
             disabled={isLoading}
           >
             <div className="flex flex-row gap-2">
               <platform.icon className="w-[1.2rem] h-[1.2rem]" />
-              {shouldOpenDiscordPost
-                ? "View on Discord"
-                : isLoading && currentPlatform === platformKey
+              {isLoading && currentPlatform === platformKey
                 ? `Sharing on ${platform.name}...`
                 : `Share on ${platform.name}`}
             </div>

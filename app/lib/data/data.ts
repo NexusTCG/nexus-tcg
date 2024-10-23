@@ -318,15 +318,6 @@ export const metadataKeywords = [
 ];
 
 export const socialPlatforms = {
-  discord: {
-    name: "Discord",
-    icon: FaDiscord,
-    shareFunction: async (data: SocialShareData) => {
-      return ""; // Doesn't need to return a URL
-    },
-    color: "indigo",
-    description: "Posts to Nexus' server",
-  },
   reddit: {
     name: "Reddit",
     icon: FaReddit,

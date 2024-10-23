@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
     cardId,
     cardName,
     cardCreator,
-    shareUrl,
   } = await req.json();
 
   const cookieStore = cookies();
@@ -17,6 +16,7 @@ export async function POST(req: NextRequest) {
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     const serverId = process.env.DISCORD_SERVER_ID;
     const channelId = process.env.DISCORD_CHANNEL_ID;
+    const shareUrl = `https://play.nexus/cards/${cardId}`;
 
     console.log("webhookUrl: ", webhookUrl);
     console.log("serverId: ", serverId);
@@ -27,8 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const message = {
-      content:
-        `Check out this Nexus TCG card: ${cardName} by ${cardCreator}!\n${shareUrl}`,
+      content: `${cardName} by ${cardCreator}!\n${shareUrl}`,
     };
 
     console.log("Message to Discord:", message);
