@@ -45,11 +45,6 @@ export default function ShareButtonDiscord({
       const result = await response.json();
 
       if (result.success) {
-        toast({
-          title: "Shared successfully",
-          description: "Your card has been shared to Discord.",
-        });
-
         setTimeout(() => {
           window.open(result.discordPostUrl, "_blank");
         }, 1000);
