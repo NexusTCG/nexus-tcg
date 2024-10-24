@@ -57,7 +57,7 @@ export default function CardsGalleryHeader({
           totalResults={totalResults}
           initialSearch={search}
         />
-        <Link href="/create">
+        <Link href="/create" className="hidden md:block">
           <Button className="min-w-24">Create a card</Button>
         </Link>
       </div>

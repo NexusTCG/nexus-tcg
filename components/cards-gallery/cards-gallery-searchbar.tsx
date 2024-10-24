@@ -37,7 +37,7 @@ export default function CardsGallerySearchbar({
       onSubmit={handleSearch}
       className={cn(
         "flex flex-row justify-start items-center transition-all duration-500 ease-in-out",
-        isFocused ? "w-full" : "w-1/2"
+        isFocused ? "w-full lg:w-1/2" : "w-full sm:w-1/2 lg:w-1/3"
       )}
     >
       <Input
