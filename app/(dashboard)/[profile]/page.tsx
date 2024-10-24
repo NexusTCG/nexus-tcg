@@ -8,20 +8,18 @@ import { getUserProfileDTO } from "@/app/server/data/user-dto";
 import ProfileHeader from "@/components/profile/profile-header";
 import CardsGallery from "@/components/cards-gallery/cards-gallery";
 
-export default async function Profile(
-  props: {
-    params: Promise<{
-      profile: string;
-    }>;
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  }
-) {
+export default async function Profile(props: {
+  params: Promise<{
+    profile: string;
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const params = await props.params;
   // Destructure search parameters
-  let search = (await searchParams).search;
-  let sort = (await searchParams).sort;
-  let order = (await searchParams).order;
-  let filter = (await searchParams).filter;
+  let search = (await props.searchParams).search;
+  let sort = (await props.searchParams).sort;
+  let order = (await props.searchParams).order;
+  let filter = (await props.searchParams).filter;
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
