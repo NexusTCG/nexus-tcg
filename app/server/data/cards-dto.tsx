@@ -57,14 +57,19 @@ export const getCardsDTO = cache(
       // Determine sorting
       if (options.order && options.order !== "random") {
         const { column, direction } = options.order;
-        if (column === "name" || column === "type") {
-          query = query.order(`initial_mode_cards.${column}`, {
+        const validColumns = ["name", "type", "created_at", "updated_at"];
+
+        if (validColumns.includes(column)) {
+          const orderColumn =
+            column === "name" || column === "type"
+              ? `initial_mode_cards.${column}`
+              : column;
+
+          query = query.order(orderColumn, {
             ascending: direction === "asc",
           });
         } else {
-          query = query.order(column, {
-            ascending: direction === "asc",
-          });
+          console.error(`[Server] Invalid order column: ${column}`);
         }
       }
 

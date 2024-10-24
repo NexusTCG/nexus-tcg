@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 // Types
-import { CardsDTO } from "@/app/lib/types/dto";
+import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 // Components
 import CardsGalleryGrid from "@/components/cards-gallery/cards-gallery-grid";
 
@@ -45,7 +45,13 @@ export default function CardsGalleryGridWrapper({
       const newCards = await response.json();
 
       if (newCards && newCards.length > 0) {
-        setCards((prevCards) => [...prevCards, ...newCards]);
+        setCards((prevCards) => {
+          const existingCardIds = new Set(prevCards.map((card) => card.id));
+          const filteredNewCards = newCards.filter(
+            (card: CardDTO) => !existingCardIds.has(card.id)
+          );
+          return [...prevCards, ...filteredNewCards];
+        });
         setHasNextPage(newCards.length === limit);
       } else {
         setHasNextPage(false);

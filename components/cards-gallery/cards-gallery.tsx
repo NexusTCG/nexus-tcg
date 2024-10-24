@@ -22,11 +22,6 @@ export default async function CardsGallery({
   filter,
   userProfile,
 }: CardsGalleryProps) {
-  // This component is responsible for fetching cards based on the search parameters
-  // And filtering for a specific user's cards if a user's data is passed as props
-  // Then passing the search parameters and amount of cards to the gallery header
-  // And passing the cards to the gallery grid
-
   const limit = 20;
 
   // Define filters
@@ -48,8 +43,8 @@ export default async function CardsGallery({
     limit,
     filters,
     order: {
-      column: sort as string,
-      direction: order as "asc" | "desc",
+      column: sort || "created_at",
+      direction: order || "desc",
     },
   });
 

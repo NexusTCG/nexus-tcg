@@ -27,9 +27,6 @@ export default function CardsGalleryHeader({
   filter,
   totalResults,
 }: CardsGalleryHeaderProps) {
-  // This component is responsible for rendering the header of the cards gallery
-  // It renders the searchbar, the create card button, and the sort and filter options
-
   return (
     <div
       id="cards-gallery-header"
@@ -41,6 +38,8 @@ export default function CardsGalleryHeader({
         w-full
         p-4
         gap-4
+        border-b
+        border-zinc-700
       "
     >
       <div
@@ -55,7 +54,7 @@ export default function CardsGalleryHeader({
         "
       >
         <CardsGallerySearchbar initialSearch={search} />
-        <Link href="/cards/create">
+        <Link href="/create">
           <Button className="min-w-24">Create a card</Button>
         </Link>
       </div>

@@ -17,10 +17,6 @@ export default async function Profile({
   };
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // This component is responsible for fetching user data based on username
-  // Then cross-referencing it with the authenticated user's profile
-  // It also handles the search parameters for the cards gallery
-
   // Destructure search parameters
   let search = (await searchParams).search;
   let sort = (await searchParams).sort;
@@ -29,7 +25,7 @@ export default async function Profile({
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
-  sort = sort?.toString() ?? "";
+  sort = sort?.toString() ?? "created_at";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
 
@@ -44,12 +40,6 @@ export default async function Profile({
   let isCurrentUserProfile = false;
 
   try {
-    // Fetch user data based on username
-    const userProfileData = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("username", profile);
-
     // Fetch user profile
     currentUserProfile = await getUserProfileDTO(); // TODO: Update DTO to also be able to fetch by username?
 
@@ -57,6 +47,16 @@ export default async function Profile({
     if (currentUserProfile?.username === profile) {
       isCurrentUserProfile = true;
       userProfile = currentUserProfile;
+    } else {
+      // Fetch user data based on username
+      const userProfileData = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("username", profile);
+
+      if (userProfileData.data && userProfileData.data.length > 0) {
+        userProfile = userProfileData.data[0];
+      }
     }
   } catch (error) {
     console.error("Error fetching user data:", error);

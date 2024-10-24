@@ -21,10 +21,6 @@ export default function CardsGalleryGrid({
   loadMoreCards,
   hasNextPage,
 }: CardsGalleryGridProps) {
-  // This component is responsible for rendering the grid of cards in the cards gallery
-  // It uses the react-window library and AutoSizer to render the cards in a responsive grid
-  // It also uses the react-window-infinite-loader to load the cards in an infinite scroll
-
   const [thumbnailSize, setThumbnailSize] = useState<"sm" | "md">("md");
   const infiniteLoaderRef = useRef<InfiniteLoader>(null);
 
@@ -51,7 +47,16 @@ export default function CardsGalleryGrid({
   }
 
   return (
-    <div className="w-full h-[calc(100vh-200px)]">
+    <div
+      id="cards-gallery-grid-container"
+      className="
+        w-full
+        h-[calc(100vh-200px)]
+        bg-zinc-800
+        p-4
+        z-10
+      "
+    >
       <AutoSizer>
         {({ height, width }) => {
           const columnCount = Math.max(

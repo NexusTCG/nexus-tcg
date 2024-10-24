@@ -7,8 +7,6 @@ export default async function Cards({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // This component is responsible for passing the search parameters to the cards gallery
-
   // Destructure search parameters
   let search = (await searchParams).search;
   let sort = (await searchParams).sort;
@@ -17,7 +15,7 @@ export default async function Cards({
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
-  sort = sort?.toString() ?? "";
+  sort = sort?.toString() ?? "created_at";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
 
