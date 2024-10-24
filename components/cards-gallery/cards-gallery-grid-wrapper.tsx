@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+// Utils
+import dynamic from "next/dynamic";
 // Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 // Components
-import CardsGalleryGrid from "@/components/cards-gallery/cards-gallery-grid";
+const CardsGalleryGrid = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-grid"),
+  { ssr: false }
+);
 
 type CardsGalleryGridWrapperProps = {
   initialCards: CardsDTO;

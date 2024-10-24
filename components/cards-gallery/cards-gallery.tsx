@@ -1,11 +1,19 @@
 import React from "react";
+// Utils
+import dynamic from "next/dynamic";
 // Data
 import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Types
 import { ProfileDTO } from "@/app/lib/types/dto";
 // Custom components
-import CardsGalleryHeader from "@/components/cards-gallery/cards-gallery-header";
-import CardsGalleryGridWrapper from "@/components/cards-gallery/cards-gallery-grid-wrapper";
+const CardsGalleryHeader = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-header"),
+  { ssr: false }
+);
+const CardsGalleryGridWrapper = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-grid-wrapper"),
+  { ssr: false }
+);
 
 type CardsGalleryProps = {
   search: string;

@@ -53,35 +53,29 @@ export default function CardsGalleryHeader({
           gap-4
         "
       >
-        <CardsGallerySearchbar initialSearch={search} />
+        <CardsGallerySearchbar
+          totalResults={totalResults}
+          initialSearch={search}
+        />
         <Link href="/create">
           <Button className="min-w-24">Create a card</Button>
         </Link>
       </div>
       <div
-        id="cards-gallery-header-actions-container"
+        id="cards-gallery-results-sort-filter-container"
         className="
           flex
           flex-row
-          justify-between
+          justify-start
           items-center
           w-full
-          gap-8
+          gap-4
         "
       >
-        <div
-          id="cards-gallery-results-sort-filter-container"
-          className="
-            flex
-            flex-row
-            justify-start
-            items-center
-            gap-4
-          "
-        >
-          <small className="min-w-16">{totalResults} results</small>
-          <CardsGallerySortFilter sort={sort} order={order} filter={filter} />
-        </div>
+        <small className="text-xs whitespace-nowrap">
+          {totalResults} <span className="text-muted-foreground">results</span>
+        </small>
+        <CardsGallerySortFilter sort={sort} order={order} filter={filter} />
       </div>
     </div>
   );

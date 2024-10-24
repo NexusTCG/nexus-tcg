@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect, useRef } from "react";
 // Utils
+import dynamic from "next/dynamic";
 import { FixedSizeGrid as Grid } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 // Types
 import { CardsDTO } from "@/app/lib/types/dto";
 // Custom components
-import CardsGalleryCell from "@/components/cards-gallery/cards-gallery-cell";
+const CardsGalleryCell = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-cell"),
+  { ssr: false }
+);
 
 type CardsGalleryGridProps = {
   cards: CardsDTO;

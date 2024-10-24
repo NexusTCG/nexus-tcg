@@ -2,20 +2,26 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+// Utils
+import { cn } from "@/lib/utils";
+// Components
 import { Input } from "@/components/ui/input";
 
 type CardsGallerySearchbarProps = {
   initialSearch: string;
+  totalResults: number;
 };
 
 export default function CardsGallerySearchbar({
   initialSearch,
+  totalResults,
 }: CardsGallerySearchbarProps) {
   const [search, setSearch] = useState(initialSearch);
+  const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSearch = (e: React.FormEvent) => {
+  function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     if (search) {
@@ -24,16 +30,34 @@ export default function CardsGallerySearchbar({
       current.delete("search");
     }
     router.push(`/cards?${current.toString()}`);
-  };
+  }
 
   return (
-    <form onSubmit={handleSearch} className="w-full sm:w-auto">
+    <form
+      onSubmit={handleSearch}
+      className={cn(
+        "flex flex-row justify-start items-center transition-all duration-500 ease-in-out",
+        isFocused ? "w-full" : "w-1/2"
+      )}
+    >
       <Input
         type="search"
-        placeholder="Search cards..."
+        placeholder={
+          totalResults > 0
+            ? `Search ${totalResults} cards...`
+            : "Search cards..."
+        }
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full sm:max-w-[300px]"
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        className="
+          flex-grow
+          w-full
+          transition-all
+          duration-500
+          ease-in-out
+        "
       />
     </form>
   );
