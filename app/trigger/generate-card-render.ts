@@ -11,7 +11,7 @@ export const generateCardRender = task({
   }) => {
     const { cardId, mode } = payload;
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
 
     logger.info("Generating card render", { cardId, mode });

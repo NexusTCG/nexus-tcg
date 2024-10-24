@@ -15,7 +15,7 @@ import { generateCardRender } from "@/app/trigger/generate-card-render";
 export async function uploadGeneratedArt(
   imageUrls: string[],
 ) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {
@@ -65,7 +65,7 @@ export async function uploadGeneratedArt(
 // --- FETCH DATA --- //
 
 export async function fetchRandomKeyword() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {

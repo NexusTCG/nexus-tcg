@@ -42,13 +42,14 @@ function CardSkeleton() {
   );
 }
 
-export default async function CardSlug({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { mode?: "initial" | "anomaly" };
-}) {
+export default async function CardSlug(
+  props: {
+    params: Promise<{ slug: string }>;
+    searchParams: Promise<{ mode?: "initial" | "anomaly" }>;
+  }
+) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   // Redirect if mode is not specified
   if (!searchParams.mode) {
     redirect(`/cards/${params.slug}?mode=initial`);

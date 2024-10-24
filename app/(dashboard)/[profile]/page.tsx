@@ -8,15 +8,15 @@ import { getUserProfileDTO } from "@/app/server/data/user-dto";
 import ProfileHeader from "@/components/profile/profile-header";
 import CardsGallery from "@/components/cards-gallery/cards-gallery";
 
-export default async function Profile({
-  params,
-  searchParams,
-}: {
-  params: {
-    profile: string;
-  };
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Profile(
+  props: {
+    params: Promise<{
+      profile: string;
+    }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+) {
+  const params = await props.params;
   // Destructure search parameters
   let search = (await searchParams).search;
   let sort = (await searchParams).sort;
@@ -32,7 +32,7 @@ export default async function Profile({
   // Destructure params to get username
   const { profile } = params;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   let userProfile = null;

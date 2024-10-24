@@ -309,7 +309,7 @@ export default function CardForm({
   // }, [form, isValid]);
 
   return (
-    <FormProvider {...methods}>
+    (<FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onSubmit)}
         className="w-full h-full flex flex-col"
@@ -374,7 +374,7 @@ export default function CardForm({
                       )
                     ) : (
                       // The tooltip is not working
-                      <TooltipProvider>
+                      (<TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div
@@ -392,7 +392,7 @@ export default function CardForm({
                             <p>Edit {cardMode} mode</p>
                           </TooltipContent>
                         </Tooltip>
-                      </TooltipProvider>
+                      </TooltipProvider>)
                     )}
                   </motion.div>
                 ))}
@@ -402,6 +402,6 @@ export default function CardForm({
           <CardCreatorFooter />
         </div>
       </form>
-    </FormProvider>
+    </FormProvider>)
   );
 }

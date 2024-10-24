@@ -5,7 +5,7 @@ import { ProfileDTO } from "@/app/lib/types/dto";
 import { getCurrentUserId } from "@/app/server/auth";
 
 export const getUserProfileDTO = cache(async (): Promise<ProfileDTO | null> => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {

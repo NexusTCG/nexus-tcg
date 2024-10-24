@@ -17,7 +17,7 @@ export default function CardRenderStats({
   reach,
 }: CardRenderStatsProps) {
   return (
-    <div
+    (<div
       id="card-render-stats-container"
       className="
         flex
@@ -42,22 +42,22 @@ export default function CardRenderStats({
       >
         {reach ? (
           // Ranged
-          <FaBullseye
+          (<FaBullseye
             className="
               w-[20px]
               h-[20px]
               text-neutral-100
             "
-          />
+          />)
         ) : (
           // Melee
-          <MdOutlineNat
+          (<MdOutlineNat
             className="
               w-[20px]
               h-[20px]
               text-neutral-100
             "
-          />
+          />)
         )}
       </div>
       <div
@@ -79,6 +79,6 @@ export default function CardRenderStats({
           {defense}
         </p>
       </div>
-    </div>
-  )
+    </div>)
+  );
 }

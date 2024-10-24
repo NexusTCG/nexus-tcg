@@ -19,7 +19,7 @@ export default function NotificationRow({
 }: NotificationRowProps) {
 
   return (
-    <div
+    (<div
       className="
         flex
         flex-row
@@ -67,10 +67,10 @@ export default function NotificationRow({
         action === "vote"
       ) && (
         // TODO: Make link dynamic URL based on cardId
-        <Link href={`/cards/${cardName}`} className="flex-shrink-0">
+        (<Link href={`/cards/${cardName}`} className="flex-shrink-0">
           <Button variant="outline" size="sm">View</Button>
-        </Link>
+        </Link>)
       )}
-    </div>
+    </div>)
   );
 }

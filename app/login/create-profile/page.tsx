@@ -3,13 +3,14 @@ import React from "react";
 import CreateProfileForm from "@/components/login/create-profile-form";
 import ErrorAlertWrapper from "@/components/login/error-alert-wrapper";
 
-export default async function CreateProfile({
-  searchParams,
-}: {
-  searchParams: { 
-    [key: string]: string | string[] | undefined 
+export default async function CreateProfile(
+  props: {
+    searchParams: Promise<{ 
+      [key: string]: string | string[] | undefined 
+    }>
   }
-}) {
+) {
+  const searchParams = await props.searchParams;
   const error = searchParams.error as string | undefined;
   const fullName = searchParams.full_name as string | undefined;
   const avatarUrl = searchParams.avatar_url as string | undefined;

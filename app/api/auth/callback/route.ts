@@ -21,7 +21,7 @@ export async function GET(
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || url.origin;
 
   if (code) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     
     try {

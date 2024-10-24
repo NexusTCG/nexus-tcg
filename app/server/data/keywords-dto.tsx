@@ -6,7 +6,7 @@ import { KeywordsDTO } from "@/app/lib/types/dto";
 export const getKeywordsDTO = cache(
   async (): Promise<KeywordsDTO[] | null> => {
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   }
 
   const cardData = await req.json();
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {
