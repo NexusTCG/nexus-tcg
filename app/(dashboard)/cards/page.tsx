@@ -1,48 +1,25 @@
 import React from "react";
-// Data
-import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Custom components
-import CardsGalleryHeader from "@/components/cards-gallery/cards-gallery-header";
 import CardsGallery from "@/components/cards-gallery/cards-gallery";
-
-export const dynamic = "force-dynamic";
 
 export default async function Cards({
   searchParams,
 }: {
-  searchParams: {
-    search?: string;
-    sort?: string;
-    order?: string;
-    filter?: string;
-    page?: string;
-  };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const search =
-    typeof searchParams.search === "string" ? searchParams.search : "";
-  const sort =
-    typeof searchParams.sort === "string" ? searchParams.sort : "created_at";
-  const order =
-    typeof searchParams.order === "string" ? searchParams.order : "desc";
-  const filter =
-    typeof searchParams.filter === "string" ? searchParams.filter : "all";
-  const page =
-    typeof searchParams.page === "string" ? parseInt(searchParams.page) : 1;
-  const pageSize = 20;
+  // This component is responsible for passing the search parameters to the cards gallery
 
-  const filters: { type?: string; name?: string } =
-    filter !== "all" ? { type: filter } : {};
-  if (search) {
-    filters.name = search;
-  }
+  // Destructure search parameters
+  let search = (await searchParams).search;
+  let sort = (await searchParams).sort;
+  let order = (await searchParams).order;
+  let filter = (await searchParams).filter;
 
-  const cards = await getCardsDTO({
-    limit: pageSize,
-    filters,
-    order: { column: sort, direction: order as "asc" | "desc" },
-  });
-
-  const totalCards = cards?.length || 0;
+  // Convert search parameters to strings
+  search = search?.toString() ?? "";
+  sort = sort?.toString() ?? "";
+  order = order?.toString() ?? "asc";
+  filter = filter?.toString() ?? "all";
 
   return (
     <div
@@ -60,46 +37,12 @@ export default async function Cards({
         gap-8
       "
     >
-      <div
-        id="cards-page-content-container"
-        className="
-          flex 
-          flex-col 
-          justify-center 
-          items-start 
-          w-full 
-          sm:border 
-          border-zinc-700 
-          sm:rounded-sm 
-          overflow-hidden
-        "
-      >
-        <CardsGalleryHeader
-          search={search}
-          sort={sort}
-          order={order}
-          filter={filter}
-          totalResults={totalCards}
-          currentPage={page}
-          totalPages={Math.ceil(totalCards / pageSize)}
-        />
-        <div
-          id="cards-gallery-container"
-          className="
-            flex 
-            flex-col 
-            justify-center 
-            items-center 
-            w-full 
-            flex-grow
-            p-4
-            bg-zinc-800
-            relative
-          "
-        >
-          {cards && <CardsGallery cards={cards} />}
-        </div>
-      </div>
+      <CardsGallery
+        search={search}
+        sort={sort}
+        order={order as "asc" | "desc"}
+        filter={filter}
+      />
     </div>
   );
 }

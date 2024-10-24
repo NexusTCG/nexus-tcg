@@ -1,32 +1,32 @@
-import React from "react"
+import React from "react";
 // Utils
-import clsx from "clsx"
+import clsx from "clsx";
 // Actions
 import { calculateBgColor } from "@/app/utils/actions/actions";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
-import { EnergyCost } from "@/app/lib/types/components"
+import { EnergyCost } from "@/app/lib/types/components";
 // Custom components
-import CardRenderCost from "@/components/card-render/card-render-cost"
-import CardRenderSpeed from "@/components/card-render/card-render-speed"
+import CardRenderCost from "@/components/card-render/card-render-cost";
+import CardRenderSpeed from "@/components/card-render/card-render-speed";
 
 type CardRenderHeaderProps = {
   card: CardDTO;
-  activeMode: "initial" | "anomaly"
-}
+  activeMode: "initial" | "anomaly";
+};
 
 export default function CardRenderHeader({
   card,
-  activeMode
+  activeMode,
 }: CardRenderHeaderProps) {
   const cardEnergyCost: EnergyCost = card.initialMode.energy_cost as EnergyCost;
   const cardSpeed = card.initialMode.speed;
   const isUncommonAnomaly = card.anomalyMode.uncommon;
 
-  const bgColorClass50 = activeMode === "anomaly" 
-    ? null : calculateBgColor(cardEnergyCost, 50)[0];
-  const bgColorClass100 = activeMode === "anomaly" 
-    ? null : calculateBgColor(cardEnergyCost, 100)[0]; 
+  const bgColorClass50 =
+    activeMode === "anomaly" ? null : calculateBgColor(cardEnergyCost, 50)[0];
+  const bgColorClass100 =
+    activeMode === "anomaly" ? null : calculateBgColor(cardEnergyCost, 100)[0];
 
   return (
     <div
@@ -36,7 +36,7 @@ export default function CardRenderHeader({
         "flex flex-row justify-start items-start w-full",
         "gap-2 pl-0.5 pr-1 pt-0.5 pb-1 z-20 text-black font-medium",
         "border border-b-2 shadow shadow-black/50 relative",
-        bgColorClass50 || 'bg-neutral-50'
+        bgColorClass50 || "bg-neutral-50"
       )}
     >
       {activeMode === "initial" && (
@@ -73,29 +73,25 @@ export default function CardRenderHeader({
         "
       >
         <div className="text-md">
-          {
-            activeMode === "initial" 
-              ? card.initialMode.name 
-              : isUncommonAnomaly 
-                ? card.anomalyMode.name 
-                : "Common Anomaly"
-          }
+          {activeMode === "initial"
+            ? card.initialMode.name
+            : isUncommonAnomaly
+            ? card.anomalyMode.name
+            : "Common Anomaly"}
         </div>
         <div
           id="card-type-container"
           className={clsx(
             "flex flex-row justify-start items-center",
             "w-full text-sm rounded-sm p-0.5",
-            bgColorClass100 || 'bg-neutral-100'
+            bgColorClass100 || "bg-neutral-100"
           )}
         >
-          {
-            activeMode === "initial" 
-              ? card.initialMode.type.charAt(0).toUpperCase() + card.initialMode.type.slice(1)
-              : "Anomaly"
-          }
-          {
-            activeMode === "initial" && 
+          {activeMode === "initial"
+            ? card.initialMode.type.charAt(0).toUpperCase() +
+              card.initialMode.type.slice(1)
+            : "Anomaly"}
+          {activeMode === "initial" &&
             card.initialMode.type_sub &&
             Array.isArray(card.initialMode.type_sub) &&
             Array.isArray(card.initialMode.type_sub.length > 0) && (
@@ -103,10 +99,9 @@ export default function CardRenderHeader({
                 <span className="opacity-80 text-xs font-normal mx-1">•</span>
                 {card.initialMode.type_sub.join(", ")}
               </>
-            )
-          }
+            )}
         </div>
       </div>
     </div>
-  )
+  );
 }

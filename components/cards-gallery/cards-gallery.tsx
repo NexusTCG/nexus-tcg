@@ -1,101 +1,86 @@
-"use client";
-
-import React, { useState, useEffect, useRef } from "react";
-// Utils
-import { FixedSizeGrid as Grid } from "react-window";
-import dynamic from "next/dynamic";
+import React from "react";
+// Data
+import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Types
-import { CardsDTO } from "@/app/lib/types/dto";
+import { ProfileDTO } from "@/app/lib/types/dto";
 // Custom components
-const CardThumbnail = dynamic(
-  () => import("@/components/cards-gallery/card-thumbnail"),
-  {
-    loading: () => (
-      <div className="w-[240px] h-[336px] bg-gray-200 animate-pulse rounded-lg"></div>
-    ),
-  }
-);
+import CardsGalleryHeader from "@/components/cards-gallery/cards-gallery-header";
+import CardsGalleryGridWrapper from "@/components/cards-gallery/cards-gallery-grid-wrapper";
 
 type CardsGalleryProps = {
-  cards: CardsDTO;
+  search: string;
+  sort: string | "created_at";
+  order: "asc" | "desc";
+  filter: string | "all";
+  userProfile?: ProfileDTO | null;
 };
 
-type GridChildComponentProps = {
-  columnIndex: number;
-  rowIndex: number;
-  style: React.CSSProperties;
-};
+export default async function CardsGallery({
+  search,
+  sort,
+  order,
+  filter,
+  userProfile,
+}: CardsGalleryProps) {
+  // This component is responsible for fetching cards based on the search parameters
+  // And filtering for a specific user's cards if a user's data is passed as props
+  // Then passing the search parameters and amount of cards to the gallery header
+  // And passing the cards to the gallery grid
 
-export default function CardsGallery({ cards }: CardsGalleryProps) {
-  const [thumbnailSize, setThumbnailSize] = useState<"sm" | "md">("md");
-  const [dimensions, setDimensions] = useState({ width: 1000, height: 800 });
-  const containerRef = useRef<HTMLDivElement>(null);
+  const limit = 20;
 
-  const gap = 16;
-  const columnWidth = thumbnailSize === "sm" ? 200 : 240;
-  const rowHeight = thumbnailSize === "sm" ? 280 : 336;
+  // Define filters
+  const filters: { type?: string; name?: string; username?: string } = {};
+  if (userProfile?.username) {
+    filters.username = userProfile.username;
+  }
+  if (filter !== "all" && typeof filter === "string") {
+    filters.type = filter;
+  }
 
-  const columnCount = Math.max(
-    1,
-    Math.floor((dimensions.width + gap) / (columnWidth + gap))
-  );
-  const rowCount = Math.ceil(cards.length / columnCount);
-  const totalHeight = rowCount * (rowHeight + gap);
+  // Define search
+  if (search && typeof search === "string") {
+    filters.name = search;
+  }
 
-  const Cell = ({ columnIndex, rowIndex, style }: GridChildComponentProps) => {
-    const index = rowIndex * columnCount + columnIndex;
-    const card = cards[index];
-    if (!card) return null;
-    return (
-      <div
-        style={{
-          ...style,
-          left: `${parseInt(style.left as string) + gap / 2}px`,
-          top: `${parseInt(style.top as string) + gap / 2}px`,
-          width: `${columnWidth}px`,
-          height: `${rowHeight}px`,
-        }}
-      >
-        <CardThumbnail
-          cardRender={card.initialMode.render}
-          cardName={card.initialMode.name}
-          cardId={card.id}
-          width={thumbnailSize}
-        />
-      </div>
-    );
-  };
-
-  useEffect(() => {
-    function handleResize() {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth - gap;
-        setDimensions({
-          width: containerWidth,
-          height: window.innerHeight,
-        });
-      }
-      setThumbnailSize(window.innerWidth < 768 ? "sm" : "md");
-    }
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Fetch cards
+  const initialCards = await getCardsDTO({
+    limit,
+    filters,
+    order: {
+      column: sort as string,
+      direction: order as "asc" | "desc",
+    },
+  });
 
   return (
-    <div ref={containerRef} className="w-full">
-      <Grid
-        className="cards-gallery-container"
-        columnCount={columnCount}
-        columnWidth={columnWidth + gap}
-        height={Math.min(totalHeight, dimensions.height)}
-        rowCount={rowCount}
-        rowHeight={rowHeight + gap}
-        width={dimensions.width}
-      >
-        {Cell}
-      </Grid>
+    <div
+      id="cards-gallery-container"
+      className="
+        flex 
+        flex-col 
+        justify-center 
+        items-start 
+        w-full 
+        sm:border 
+        border-zinc-700 
+        sm:rounded-sm 
+        overflow-hidden
+      "
+    >
+      <CardsGalleryHeader
+        search={search}
+        sort={sort}
+        order={order}
+        filter={filter}
+        totalResults={initialCards?.length || 0}
+      />
+      <CardsGalleryGridWrapper
+        initialCards={initialCards || []}
+        filters={filters}
+        sort={sort}
+        order={order}
+      />
     </div>
   );
 }

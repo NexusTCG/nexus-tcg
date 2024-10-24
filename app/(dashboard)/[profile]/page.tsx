@@ -1,11 +1,12 @@
 import React from "react";
+// Utils
+import { cookies } from "next/headers";
+import { createClient } from "@/app/utils/supabase/server";
 // Server
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
-import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Custom components
 import ProfileHeader from "@/components/profile/profile-header";
 import CardsGallery from "@/components/cards-gallery/cards-gallery";
-import CardsGalleryHeader from "@/components/cards-gallery/cards-gallery-header";
 
 export default async function Profile({
   params,
@@ -14,66 +15,54 @@ export default async function Profile({
   params: {
     profile: string;
   };
-  searchParams: {
-    search?: string;
-    sort?: string;
-    order?: string;
-    filter?: string;
-    page?: string;
-  };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  // This component is responsible for fetching user data based on username
+  // Then cross-referencing it with the authenticated user's profile
+  // It also handles the search parameters for the cards gallery
+
+  // Destructure search parameters
+  let search = (await searchParams).search;
+  let sort = (await searchParams).sort;
+  let order = (await searchParams).order;
+  let filter = (await searchParams).filter;
+
+  // Convert search parameters to strings
+  search = search?.toString() ?? "";
+  sort = sort?.toString() ?? "";
+  order = order?.toString() ?? "asc";
+  filter = filter?.toString() ?? "all";
+
+  // Destructure params to get username
   const { profile } = params;
 
-  const search =
-    typeof searchParams.search === "string" ? searchParams.search : "";
-  const sort =
-    typeof searchParams.sort === "string" ? searchParams.sort : "created_at";
-  const order =
-    typeof searchParams.order === "string" ? searchParams.order : "desc";
-  const filter =
-    typeof searchParams.filter === "string" ? searchParams.filter : "all";
-  const page =
-    typeof searchParams.page === "string" ? parseInt(searchParams.page) : 1;
-  const pageSize = 20;
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
   let userProfile = null;
+  let currentUserProfile = null;
   let isCurrentUserProfile = false;
-  let userCards = null;
 
   try {
-    userProfile = await getUserProfileDTO();
+    // Fetch user data based on username
+    const userProfileData = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("username", profile);
 
-    if (userProfile?.username === profile) {
+    // Fetch user profile
+    currentUserProfile = await getUserProfileDTO(); // TODO: Update DTO to also be able to fetch by username?
+
+    // Check if profile is authenticated user's profile
+    if (currentUserProfile?.username === profile) {
       isCurrentUserProfile = true;
+      userProfile = currentUserProfile;
     }
-    const filters: {
-      type?: string;
-      name?: string;
-      user_id?: string;
-    } = {};
-    if (userProfile?.user_id) {
-      filters.user_id = userProfile.user_id;
-    }
-    if (filter !== "all") filters.type = filter;
-    if (search) filters.name = search;
-
-    userCards = await getCardsDTO({
-      limit: pageSize,
-      filters,
-      order: {
-        column: sort,
-        direction: order as "asc" | "desc",
-      },
-    });
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 
-  if (!userProfile) {
-    return <div>This profile does not exist.</div>;
-  }
-
-  const totalCards = userCards?.length || 0;
+  if (!userProfile) return null;
 
   return (
     <div
@@ -124,31 +113,13 @@ export default async function Profile({
           overflow-hidden
         "
       >
-        <CardsGalleryHeader
+        <CardsGallery
           search={search}
           sort={sort}
-          order={order}
+          order={order as "asc" | "desc"}
           filter={filter}
-          totalResults={totalCards}
-          currentPage={page}
-          totalPages={Math.ceil(totalCards / pageSize)}
+          userProfile={userProfile}
         />
-        <div
-          id={`${profile}-page-cards-gallery-container`}
-          className="
-            flex 
-            flex-col 
-            justify-center 
-            items-center 
-            w-full 
-            flex-grow
-            p-4
-            bg-zinc-800
-            relative
-          "
-        >
-          {userCards && <CardsGallery cards={userCards} />}
-        </div>
       </div>
     </div>
   );

@@ -11,9 +11,6 @@ const CardsGallerySearchbar = dynamic(
 const CardsGallerySortFilter = dynamic(
   () => import("@/components/cards-gallery/cards-gallery-sort-filter-options")
 );
-const CardsGalleryPagination = dynamic(
-  () => import("@/components/cards-gallery/cards-gallery-pagination")
-);
 
 type CardsGalleryHeaderProps = {
   search: string;
@@ -21,8 +18,6 @@ type CardsGalleryHeaderProps = {
   order: string;
   filter: string;
   totalResults: number;
-  currentPage: number;
-  totalPages: number;
 };
 
 export default function CardsGalleryHeader({
@@ -31,9 +26,10 @@ export default function CardsGalleryHeader({
   order,
   filter,
   totalResults,
-  currentPage,
-  totalPages,
 }: CardsGalleryHeaderProps) {
+  // This component is responsible for rendering the header of the cards gallery
+  // It renders the searchbar, the create card button, and the sort and filter options
+
   return (
     <div
       id="cards-gallery-header"
@@ -87,10 +83,6 @@ export default function CardsGalleryHeader({
           <small className="min-w-16">{totalResults} results</small>
           <CardsGallerySortFilter sort={sort} order={order} filter={filter} />
         </div>
-        <CardsGalleryPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-        />
       </div>
     </div>
   );

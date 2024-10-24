@@ -41,14 +41,31 @@ export const getCardsDTO = cache(
       // Add additional filters if provided
       if (options.filters) {
         Object.entries(options.filters).forEach(([column, value]) => {
-          query = query.eq(column, value);
+          if (column === "name") {
+            query = query.textSearch(
+              "initial_mode_cards.name",
+              value as string
+            );
+          } else if (column === "type") {
+            query = query.eq("initial_mode_cards.type", value);
+          } else {
+            query = query.eq(column, value);
+          }
         });
       }
 
+      // Determine sorting
       if (options.order && options.order !== "random") {
-        query = query.order(options.order.column, {
-          ascending: options.order.direction === "asc",
-        });
+        const { column, direction } = options.order;
+        if (column === "name" || column === "type") {
+          query = query.order(`initial_mode_cards.${column}`, {
+            ascending: direction === "asc",
+          });
+        } else {
+          query = query.order(column, {
+            ascending: direction === "asc",
+          });
+        }
       }
 
       const { data, error } = await query;

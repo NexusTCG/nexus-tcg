@@ -58,6 +58,7 @@ export default function CardsGallerySortFilter({
           <SelectItem value="created_at">Created</SelectItem>
           <SelectItem value="name">Name</SelectItem>
           <SelectItem value="type">Type</SelectItem>
+          <SelectItem value="grade">Grade</SelectItem>
         </SelectContent>
       </Select>
       <Select

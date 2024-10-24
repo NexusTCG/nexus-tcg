@@ -18,6 +18,8 @@ export async function GET(
     ? JSON.parse(searchParams.get("order")!)
     : undefined;
 
+  console.log("[Server] Fetching cards", { id, limit, filters, order });
+
   try {
     const cards = await getCardsDTO({
       id,

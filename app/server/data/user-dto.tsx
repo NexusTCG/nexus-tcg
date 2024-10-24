@@ -4,9 +4,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { ProfileDTO } from "@/app/lib/types/dto";
 import { getCurrentUserId } from "@/app/server/auth";
 
-export const getUserProfileDTO = cache(
-  async (): Promise<ProfileDTO | null> => {
-
+export const getUserProfileDTO = cache(async (): Promise<ProfileDTO | null> => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
