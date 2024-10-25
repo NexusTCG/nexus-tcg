@@ -2,15 +2,10 @@ import React from "react";
 // Utils
 import Link from "next/link";
 // Components
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 // Custom components
-import TopCardRow from "@/components/home/top-card-row"
+import TopCardRow from "@/components/home/top-card-row";
 
 export default function TopCards() {
   return (
@@ -27,12 +22,16 @@ export default function TopCards() {
           px-4
         "
       >
-        <CardTitle className="text-lg">
-          Top cards this week
-        </CardTitle>
+        <CardTitle className="text-lg">Top cards this week</CardTitle>
         <Link
           href="/cards"
-          className="text-sm opacity-50 hover:opacity-80"
+          className="
+            text-sm
+            text-muted-foreground
+            hover:text-foreground
+            transition-colors
+            duration-300
+          "
         >
           Vote on cards
         </Link>
@@ -79,5 +78,5 @@ export default function TopCards() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

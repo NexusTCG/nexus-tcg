@@ -2,15 +2,10 @@ import React from "react";
 // Utils
 import Link from "next/link";
 // Components
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 // Custom components
-import NotificationRow from "@/components/home/notification-row"
+import NotificationRow from "@/components/home/notification-row";
 
 export default function LatestNotifications() {
   return (
@@ -27,12 +22,16 @@ export default function LatestNotifications() {
           px-4
         "
       >
-        <CardTitle className="text-lg">
-          Latest notifications
-        </CardTitle>
+        <CardTitle className="text-lg">Latest notifications</CardTitle>
         <Link
           href="/notifications"
-          className="text-sm opacity-50 hover:opacity-80"
+          className="
+            text-sm
+            text-muted-foreground
+            hover:text-foreground
+            transition-colors
+            duration-300
+          "
         >
           More notifications
         </Link>
@@ -73,5 +72,5 @@ export default function LatestNotifications() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

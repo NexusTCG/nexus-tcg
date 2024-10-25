@@ -52,7 +52,8 @@ export default function LearnTerm({ name, description, type }: LearnTermProps) {
         </div>
         <div
           className="
-            flex
+            hidden
+            md:flex
             flex-row
             justify-center
             items-center

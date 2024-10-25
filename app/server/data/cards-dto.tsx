@@ -1,6 +1,9 @@
 import { cache } from "react";
+// Utils
 import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
+import { startOfWeek, endOfWeek } from "date-fns";
+// Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 import {
   NexusCardType,
@@ -18,6 +21,7 @@ type FetchCardsOptions = {
         direction: "asc" | "desc";
       }
     | "random";
+  currentWeekOnly?: boolean;
 };
 
 export const getCardsDTO = cache(
@@ -36,6 +40,17 @@ export const getCardsDTO = cache(
       // Add filter by specific card ID if provided
       if (options.id) {
         query = query.eq("id", options.id);
+      }
+
+      // Add filter for current week if specified in options
+      if (options.currentWeekOnly) {
+        const now = new Date();
+        const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
+        const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
+
+        query = query
+          .gte("created_at", weekStart.toISOString())
+          .lte("created_at", weekEnd.toISOString());
       }
 
       // Add additional filters if provided

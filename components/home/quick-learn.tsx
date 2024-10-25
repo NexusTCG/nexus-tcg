@@ -58,7 +58,13 @@ export default async function QuickLearn() {
                 href="https://nexusgamesinc.mintlify.app/"
                 rel="noreferrer"
                 target="_blank"
-                className="text-sm"
+                className="
+                  text-sm
+                  text-muted-foreground
+                  hover:text-foreground
+                  transition-colors
+                  duration-300
+                "
               >
                 Learn more
               </a>

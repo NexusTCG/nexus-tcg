@@ -1,8 +1,10 @@
-import React, { Suspense } from "react";
+import React from "react";
 // Utils
 import dynamic from "next/dynamic";
-// Custom Components
-import CardSkeleton from "@/components/card-skeleton";
+// Data
+import { getCardsDTO } from "@/app/server/data/cards-dto";
+// Types
+import { CardDTO } from "@/app/lib/types/dto";
 // import ReadyToPlay from "@/components/home/ready-to-play";
 // Dynamic custom components
 const LatestCards = dynamic(() => import("@/components/home/latest-cards"));
@@ -13,7 +15,25 @@ const TopCards = dynamic(() => import("@/components/home/top-cards"));
 const QuickLearn = dynamic(() => import("@/components/home/quick-learn"));
 const WeeklyTrends = dynamic(() => import("@/components/home/weekly-trends"));
 
-export default function Home() {
+export default async function Home() {
+  const currentWeekCards = await getCardsDTO({
+    order: { column: "created_at", direction: "desc" },
+    currentWeekOnly: true,
+  });
+
+  // Count the number of cards for each type
+  const cardTypeCounts =
+    currentWeekCards?.reduce((acc, card: CardDTO) => {
+      const type = card.initialMode.type;
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
+  // Filter out types with no cards
+  const cardTypes = Object.entries(cardTypeCounts)
+    .filter(([_, count]) => count > 0)
+    .map(([type]) => type);
+
   return (
     <div
       id="home-page-container"
@@ -61,10 +81,13 @@ export default function Home() {
         >
           {/* TODO: Implement matchmaking system with Cal.com */}
           {/* <ReadyToPlay /> */}
-          <Suspense fallback={<CardSkeleton height="half" />}>
-            <QuickLearn />
-          </Suspense>
-          <WeeklyTrends />
+          <QuickLearn />
+          {cardTypes.length > 0 && (
+            <WeeklyTrends
+              cardTypes={cardTypes}
+              cardTypeCounts={cardTypeCounts}
+            />
+          )}
         </div>
       </div>
     </div>

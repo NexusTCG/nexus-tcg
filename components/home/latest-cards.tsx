@@ -39,9 +39,11 @@ export default async function LatestCards() {
         <Link
           href="/cards"
           className="
-            text-sm 
-            opacity-50 
-            hover:opacity-80
+            text-sm
+            text-muted-foreground
+            hover:text-foreground
+            transition-colors
+            duration-300
           "
         >
           More cards

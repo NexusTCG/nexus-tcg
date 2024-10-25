@@ -54,7 +54,8 @@ export default async function LearnKeyword() {
         </div>
         <div
           className="
-            flex
+            hidden
+            md:flex
             flex-row
             justify-center
             items-center

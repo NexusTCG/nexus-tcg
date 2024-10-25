@@ -26,7 +26,14 @@ export type InitialCardType = {
   card_id?: number;
   render?: string;
   name: string;
-  type: "agent" | "anomaly" | "event" | "hardware" | "software";
+  type:
+    | "agent"
+    | "anomaly"
+    | "event"
+    | "hardware"
+    | "software"
+    | "software_agent"
+    | "hardware_agent";
   type_sub?: string;
   mythic: boolean;
   text?: string;
