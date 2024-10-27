@@ -17,6 +17,7 @@ export default async function LatestCards() {
     order: { column: "created_at", direction: "desc" },
     limit: 5,
   });
+
   return (
     <Card
       className="
@@ -80,10 +81,17 @@ export default async function LatestCards() {
           {latestCards?.map((card, index) => (
             <div
               key={card.id}
-              className={clsx("flex-shrink-0 transition-all duration-300", {
-                "-ml-24 hover:-ml-12": index !== 0,
-                "hover:ml-12": index === 0,
-              })}
+              className={clsx(
+                "flex-shrink-0 transition-all duration-500 ease-in-out",
+                {
+                  "md:hover:mr-4 sm:hover:mr-2 xl:-mr-8 lg:-mr-12 md:-mr-16 sm:-mr-20 -mr-24":
+                    index === 0,
+                  "md:hover:ml-4 sm:hover:ml-2 xl:-ml-8 lg:-ml-12 md:-ml-16 sm:-ml-20 -ml-24":
+                    index === latestCards.length - 1,
+                  "md:hover:mx-4 sm:hover:mx-2 xl:-mx-8 lg:-mx-12 md:-mx-16 sm:-mx-20 -mx-24 group":
+                    index > 0 && index < latestCards.length - 1,
+                }
+              )}
             >
               <CardThumbnail
                 cardRender={card.initialMode.render}
