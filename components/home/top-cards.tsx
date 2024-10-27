@@ -1,13 +1,19 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+// Types
+import { CardDTO } from "@/app/lib/types/dto";
 // Components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 // Custom components
 import TopCardRow from "@/components/home/top-card-row";
 
-export default function TopCards() {
+type TopCardsProps = {
+  topCards: CardDTO[];
+};
+
+export default function TopCards({ topCards }: TopCardsProps) {
   return (
     <Card className="w-full">
       <CardHeader
@@ -49,33 +55,21 @@ export default function TopCards() {
           rounded-b-md
         "
       >
-        {/* TODO: Fetch top cards and render each as a row */}
-        <TopCardRow
-          rank={1}
-          cardName="Blacker Lotus"
-          votes={99}
-          currentUserVoted={false}
-          creator="Username"
-          createdAt="99 days"
-        />
-        <Separator orientation="horizontal" />
-        <TopCardRow
-          rank={2}
-          cardName="Time Moonwalk"
-          votes={99}
-          currentUserVoted={true}
-          creator="Username"
-          createdAt="99 days"
-        />
-        <Separator orientation="horizontal" />
-        <TopCardRow
-          rank={3}
-          cardName="Spacetime Twister"
-          votes={99}
-          currentUserVoted={false}
-          creator="Username"
-          createdAt="99 days"
-        />
+        {topCards.map((card, index) => (
+          <React.Fragment key={card.id}>
+            <TopCardRow
+              rank={index + 1}
+              cardName={card.initialMode.name}
+              votes={card.votes || 0}
+              currentUserVoted={false} // TODO: Implement user voting status
+              creator={card.username || "Username"}
+              createdAt={card.created_at || ""}
+            />
+            {index < topCards.length - 1 && (
+              <Separator orientation="horizontal" />
+            )}
+          </React.Fragment>
+        ))}
       </CardContent>
     </Card>
   );

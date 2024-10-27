@@ -1,19 +1,22 @@
 import React from "react";
 // Utils
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import clsx from "clsx";
 // Data
 import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // Custom components
-import CardThumbnail from "@/components/cards-gallery/card-thumbnail";
+const CardThumbnail = dynamic(
+  () => import("@/components/cards-gallery/card-thumbnail")
+);
 
 export default async function LatestCards() {
-  const cards = await getCardsDTO({
-    limit: 4,
-    order: { column: "id", direction: "desc" },
+  const latestCards = await getCardsDTO({
+    order: { column: "created_at", direction: "desc" },
+    limit: 5,
   });
-
   return (
     <Card
       className="
@@ -21,6 +24,7 @@ export default async function LatestCards() {
         border 
         border-zinc-700 
         overflow-hidden
+        scrollbar-hide
       "
     >
       <CardHeader
@@ -71,17 +75,23 @@ export default async function LatestCards() {
             flex-row
             justify-start
             items-center
-            gap-2
           "
         >
-          {cards?.map((card) => (
-            <CardThumbnail
+          {latestCards?.map((card, index) => (
+            <div
               key={card.id}
-              cardRender={card.initialMode.render}
-              cardName={card.initialMode.name}
-              cardId={card.id}
-              width={"md"}
-            />
+              className={clsx("flex-shrink-0 transition-all duration-300", {
+                "-ml-24 hover:-ml-12": index !== 0,
+                "hover:ml-12": index === 0,
+              })}
+            >
+              <CardThumbnail
+                cardRender={card.initialMode.render}
+                cardName={card.initialMode.name}
+                cardId={card.id}
+                width={"md"}
+              />
+            </div>
           ))}
         </div>
       </CardContent>

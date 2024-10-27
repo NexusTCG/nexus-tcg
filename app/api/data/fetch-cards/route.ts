@@ -17,8 +17,15 @@ export async function GET(
   const order = searchParams.get("order")
     ? JSON.parse(searchParams.get("order")!)
     : undefined;
+  const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
 
-  console.log("[Server] Fetching cards", { id, limit, filters, order });
+  console.log("[Server] Fetching cards", {
+    id,
+    limit,
+    filters,
+    order,
+    currentWeekOnly,
+  });
 
   try {
     const cards = await getCardsDTO({
@@ -26,6 +33,7 @@ export async function GET(
       limit,
       filters,
       order,
+      currentWeekOnly,
     });
 
     if (!cards || (Array.isArray(cards) && cards.length === 0)) {
