@@ -75,16 +75,13 @@ export const getCardsDTO = cache(
           if (column === "name" || column === "type" || column === "grade") {
             query = query.order(`initial_mode_cards.${column}`, {
               ascending: direction === "asc",
-              nullsFirst: false,
             });
           } else {
-            query = query.order(column, {
-              ascending: direction === "asc",
-              nullsFirst: false,
-            });
+            query = query.order(column, { ascending: direction === "asc" });
           }
         } else {
           console.error(`[Server] Invalid order column: ${column}`);
+          query = query.order("created_at", { ascending: false });
         }
       }
 
