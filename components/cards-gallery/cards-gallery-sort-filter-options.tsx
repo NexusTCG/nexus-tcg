@@ -11,6 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const VALID_SORT_OPTIONS = ["created_at", "name", "type", "grade"] as const;
+type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
+
+const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
+type ValidOrderOption = (typeof VALID_ORDER_OPTIONS)[number];
+
 type CardsGallerySortFilterProps = {
   sort: string;
   order: string;
@@ -27,8 +33,28 @@ export default function CardsGallerySortFilter({
 
   const updateSearchParams = (key: string, value: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+    // Validate sort and order combinations
+    if (
+      key === "sort" &&
+      !VALID_SORT_OPTIONS.includes(value as ValidSortOption)
+    ) {
+      value = "created_at"; // Default to created_at
+    }
+    if (
+      key === "order" &&
+      !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
+    ) {
+      value = "desc"; // Default to desc
+    }
+
     if (value) {
       current.set(key, value);
+
+      // Ensure order is set if sort is set
+      if (key === "sort" && !current.has("order")) {
+        current.set("order", "desc");
+      }
     } else {
       current.delete(key);
     }
@@ -62,7 +88,11 @@ export default function CardsGallerySortFilter({
           Sort
         </small>
         <Select
-          value={sort}
+          value={
+            VALID_SORT_OPTIONS.includes(sort as ValidSortOption)
+              ? sort
+              : "created_at"
+          }
           onValueChange={(value: string) => updateSearchParams("sort", value)}
         >
           <SelectTrigger
@@ -81,7 +111,11 @@ export default function CardsGallerySortFilter({
           </SelectContent>
         </Select>
         <Select
-          value={order}
+          value={
+            VALID_ORDER_OPTIONS.includes(order as ValidOrderOption)
+              ? order
+              : "desc"
+          }
           onValueChange={(value: string) => updateSearchParams("order", value)}
         >
           <SelectTrigger>
