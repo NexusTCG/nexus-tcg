@@ -95,9 +95,6 @@ importers:
       html-to-image:
         specifier: ^1.11.11
         version: 1.11.11
-      lodash.debounce:
-        specifier: ^4.0.8
-        version: 4.0.8
       lucide-react:
         specifier: ^0.412.0
         version: 0.412.0(react@18.2.0)
@@ -164,9 +161,6 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
-      use-debounce:
-        specifier: ^10.0.4
-        version: 10.0.4(react@18.2.0)
       vaul:
         specifier: ^0.9.9
         version: 0.9.9(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -1962,9 +1956,6 @@ packages:
   lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
 
-  lodash.debounce@4.0.8:
-    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
-
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
@@ -2674,12 +2665,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  use-debounce@10.0.4:
-    resolution: {integrity: sha512-6Cf7Yr7Wk7Kdv77nnJMf6de4HuDE4dTxKij+RqE9rufDsI6zsbjyAxcH5y2ueJCQAnfgKbzXbZHYlkFwmBlWkw==}
-    engines: {node: '>= 16.0.0'}
-    peerDependencies:
-      react: '*'
 
   use-sidecar@1.1.2:
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
@@ -4628,8 +4613,6 @@ snapshots:
 
   lodash.camelcase@4.3.0: {}
 
-  lodash.debounce@4.0.8: {}
-
   lodash.merge@4.6.2: {}
 
   lodash@4.17.21: {}
@@ -5392,10 +5375,6 @@ snapshots:
       tslib: 2.8.0
     optionalDependencies:
       '@types/react': 18.2.48
-
-  use-debounce@10.0.4(react@18.2.0):
-    dependencies:
-      react: 18.2.0
 
   use-sidecar@1.1.2(@types/react@18.2.48)(react@18.2.0):
     dependencies:
