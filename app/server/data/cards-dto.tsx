@@ -72,22 +72,15 @@ export const getCardsDTO = cache(
         const validColumns = ["created_at", "name", "type", "grade"];
 
         if (validColumns.includes(column)) {
-          if (column === "name" || column === "type") {
-            query = supabase
-              .from("nexus_cards")
-              .select(
-                `
-              *,
-              initial_mode_cards!inner(*)
-            `
-              )
-              .order(`initial_mode_cards.${column}`, {
-                ascending: direction === "asc",
-                nullsFirst: false,
-              });
+          if (column === "name" || column === "type" || column === "grade") {
+            query = query.order(`initial_mode_cards.${column}`, {
+              ascending: direction === "asc",
+              nullsFirst: false,
+            });
           } else {
             query = query.order(column, {
               ascending: direction === "asc",
+              nullsFirst: false,
             });
           }
         } else {
