@@ -13,14 +13,20 @@ export async function GET(
     const limit = searchParams.get("limit")
       ? parseInt(searchParams.get("limit")!)
       : undefined;
-    const filters = searchParams.get("filters")
-      ? JSON.parse(searchParams.get("filters")!)
-      : undefined;
-    const order = searchParams.get("order")
-      ? JSON.parse(searchParams.get("order")!)
-      : undefined;
+
+    const filters: Record<string, any> = {};
+    const search = searchParams.get("search");
+    const filter = searchParams.get("filter");
 
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
+
+    const sort = searchParams.get("sort") || "created_at";
+    const order = searchParams.get("order") || "desc";
+
+    const orderConfig = {
+      column: sort,
+      direction: order as "asc" | "desc",
+    };
 
     console.log("[Server] Fetching cards", {
       id,
@@ -34,7 +40,7 @@ export async function GET(
       id,
       limit,
       filters,
-      order,
+      order: orderConfig,
       currentWeekOnly,
     });
 

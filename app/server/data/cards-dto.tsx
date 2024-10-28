@@ -57,10 +57,7 @@ export const getCardsDTO = cache(
       if (options.filters) {
         Object.entries(options.filters).forEach(([column, value]) => {
           if (column === "name") {
-            query = query.textSearch(
-              "initial_mode_cards.name",
-              value as string
-            );
+            query = query.ilike("initial_mode_cards.name", `%${value}%`);
           } else if (column === "type") {
             query = query.eq("initial_mode_cards.type", value);
           } else {
@@ -72,17 +69,27 @@ export const getCardsDTO = cache(
       // Determine sorting
       if (options.order && options.order !== "random") {
         const { column, direction } = options.order;
-        const validColumns = ["name", "type", "created_at", "updated_at"];
+        const validColumns = ["created_at", "name", "type", "grade"];
 
         if (validColumns.includes(column)) {
-          const orderColumn =
-            column === "name" || column === "type"
-              ? `initial_mode_cards.${column}`
-              : column;
-
-          query = query.order(orderColumn, {
-            ascending: direction === "asc",
-          });
+          if (column === "name" || column === "type") {
+            query = supabase
+              .from("nexus_cards")
+              .select(
+                `
+              *,
+              initial_mode_cards!inner(*)
+            `
+              )
+              .order(`initial_mode_cards.${column}`, {
+                ascending: direction === "asc",
+                nullsFirst: false,
+              });
+          } else {
+            query = query.order(column, {
+              ascending: direction === "asc",
+            });
+          }
         } else {
           console.error(`[Server] Invalid order column: ${column}`);
         }

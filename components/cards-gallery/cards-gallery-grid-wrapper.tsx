@@ -13,14 +13,14 @@ const CardsGalleryGrid = dynamic(
 
 type CardsGalleryGridWrapperProps = {
   initialCards: CardsDTO;
-  filters: { type?: string; name?: string; username?: string };
+  filter: string;
   sort: string;
   order: "asc" | "desc";
 };
 
 export default function CardsGalleryGridWrapper({
   initialCards,
-  filters,
+  filter,
   sort,
   order,
 }: CardsGalleryGridWrapperProps) {
@@ -33,15 +33,19 @@ export default function CardsGalleryGridWrapper({
     setIsLoading(true);
 
     const limit = stopIndex - startIndex + 1;
+    const queryParams = new URLSearchParams({
+      limit: limit.toString(),
+      sort: sort,
+      order: order,
+    });
+
+    // Only add filter if it's not "all"
+    if (filter && filter !== "all") {
+      queryParams.set("filter", filter);
+    }
 
     try {
-      const response = await fetch(
-        `/api/data/fetch-cards?${new URLSearchParams({
-          limit: limit.toString(),
-          filters: JSON.stringify(filters),
-          order: JSON.stringify({ column: sort, direction: order }),
-        })}`
-      );
+      const response = await fetch(`/api/data/fetch-cards?${queryParams}`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch more cards");

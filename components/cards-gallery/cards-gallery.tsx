@@ -1,8 +1,6 @@
 import React from "react";
 // Utils
 import dynamic from "next/dynamic";
-// Data
-import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Types
 import { ProfileDTO } from "@/app/lib/types/dto";
 // Custom components
@@ -32,50 +30,28 @@ export default async function CardsGallery({
 }: CardsGalleryProps) {
   const limit = 20;
 
-  // Define filters
-  const filters: {
-    type?: string;
-    name?: string;
-    username?: string;
-  } = {};
+  // Construct query parameters
+  const queryParams = new URLSearchParams();
+  queryParams.set("limit", limit.toString());
+
+  if (search) queryParams.set("search", search);
+
+  if (filter && filter !== "all") queryParams.set("filter", filter);
+
+  // Add sort and order
+  queryParams.set("sort", sort || "created_at");
+  queryParams.set("order", order || "desc");
 
   if (userProfile?.username) {
-    filters.username = userProfile.username;
+    queryParams.set("username", userProfile.username);
   }
-  if (filter !== "all" && typeof filter === "string") {
-    filters.type = filter;
-  }
-
-  // Define search
-  if (search && typeof search === "string") {
-    filters.name = search;
-  }
-
-  // Construct query parameters
-  const queryParams = new URLSearchParams({
-    limit: limit.toString(),
-    filters: JSON.stringify(filters),
-    order: JSON.stringify({
-      column: sort || "created_at",
-      direction: order || "desc",
-    }),
-  });
 
   const data = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?${queryParams}`
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?${queryParams}`,
+    { cache: "no-store" }
   );
 
   const cardsData = (await data.json()) || [];
-
-  // Fetch cards
-  // const initialCards = await getCardsDTO({
-  //   limit,
-  //   filters,
-  //   order: {
-  //     column: sort || "created_at",
-  //     direction: order || "desc",
-  //   },
-  // });
 
   return (
     <div
@@ -101,7 +77,7 @@ export default async function CardsGallery({
       />
       <CardsGalleryGridWrapper
         initialCards={cardsData}
-        filters={filters}
+        filter={filter}
         sort={sort}
         order={order}
       />
