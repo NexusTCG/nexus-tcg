@@ -107,7 +107,7 @@ export const getCardsDTO = cache(
         return null;
       }
 
-      let mappedData = data.map((card): CardDTO => {
+      let mappedData = data.map((card: any): CardDTO => {
         const nexusCard = card as NexusCardType;
         const initialCard = card.initial_mode_cards[0] as InitialCardType;
         const anomalyCard = card.anomaly_mode_cards[0] as AnomalyCardType;

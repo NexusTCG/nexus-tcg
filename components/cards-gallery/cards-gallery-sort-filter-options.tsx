@@ -63,7 +63,7 @@ export default function CardsGallerySortFilter({
         </small>
         <Select
           value={sort}
-          onValueChange={(value) => updateSearchParams("sort", value)}
+          onValueChange={(value: string) => updateSearchParams("sort", value)}
         >
           <SelectTrigger
             className="
@@ -82,7 +82,7 @@ export default function CardsGallerySortFilter({
         </Select>
         <Select
           value={order}
-          onValueChange={(value) => updateSearchParams("order", value)}
+          onValueChange={(value: string) => updateSearchParams("order", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Order" />
@@ -109,7 +109,7 @@ export default function CardsGallerySortFilter({
         </small>
         <Select
           value={filter}
-          onValueChange={(value) => updateSearchParams("filter", value)}
+          onValueChange={(value: string) => updateSearchParams("filter", value)}
         >
           <SelectTrigger
             className="
