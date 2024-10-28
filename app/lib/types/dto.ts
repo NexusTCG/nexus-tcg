@@ -20,6 +20,14 @@ export type KeywordsDTO = {
   tip: string | null;
 };
 
+export type TermsDTO = {
+  id?: number | null;
+  created_at?: string | null;
+  name: string | null;
+  description: string | null;
+  type: string | null;
+};
+
 export type CardDTO = {
   id: number | null;
   user_id: string | null;

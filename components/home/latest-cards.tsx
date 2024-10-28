@@ -18,6 +18,8 @@ export default async function LatestCards() {
     limit: 5,
   });
 
+  if (!latestCards || latestCards.length === 0) return null;
+
   return (
     <Card
       className="

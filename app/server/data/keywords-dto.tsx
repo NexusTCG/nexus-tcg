@@ -3,16 +3,14 @@ import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
 import { KeywordsDTO } from "@/app/lib/types/dto";
 
-export const getKeywordsDTO = cache(
-  async (): Promise<KeywordsDTO[] | null> => {
-
+export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO[] | null> => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   try {
     const { data, error } = await supabase
       .from("keywords")
-      .select("name, type, reminder, tip")
+      .select("name, type, reminder, tip");
 
     if (error) {
       console.error(`[Server] Supabase error: ${error.message}`);
@@ -24,18 +22,18 @@ export const getKeywordsDTO = cache(
       throw new Error("No keywords found in the database");
     }
 
-    const mappedData = data
-      .map((keyword): KeywordsDTO => ({
-      name: keyword.name,
-      reminder: keyword.reminder,
-      type: keyword.type,
-      tip: keyword.tip
-    }));
+    const mappedData = data.map(
+      (keyword): KeywordsDTO => ({
+        name: keyword.name,
+        reminder: keyword.reminder,
+        type: keyword.type,
+        tip: keyword.tip,
+      })
+    );
 
     console.log(`[Server] Mapped ${mappedData.length} keywords`);
-    return mappedData
-
+    return mappedData;
   } catch (error) {
     throw new Error("Failed to process keywords data");
   }
-})
+});

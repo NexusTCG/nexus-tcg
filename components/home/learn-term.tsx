@@ -1,29 +1,30 @@
 import React from "react";
-// Validation
-import { GlossaryTermType } from "@/app/lib/types/database";
+// Data
+import { getTermsDTO } from "@/app/server/data/terms-dto";
 // Icons
 import { MdOpenInNew } from "react-icons/md";
 
-type LearnTermProps = Omit<GlossaryTermType, "id" | "created_at" | "tip">;
+export default async function LearnTerm() {
+  const terms = await getTermsDTO();
+  if (!terms || terms.length === 0) return null;
 
-export default function LearnTerm({ name, description, type }: LearnTermProps) {
-  // Get dynamic Keyword data from supabase as props
-  // Wrap this in suspense
+  const randomTerm = terms[Math.floor(Math.random() * terms.length)];
+  if (!randomTerm) return null;
 
   return (
     <div
       className="
-        flex 
-        flex-col 
-        justify-start 
-        items-start 
-        w-full 
+        flex
+        flex-col
+        justify-start
+        items-start
+        w-full
         gap-2
         border
-        border-zinc-500 
-        p-4 
+        p-4
         rounded-md
         bg-zinc-900
+        border-zinc-500
       "
     >
       <div
@@ -45,10 +46,12 @@ export default function LearnTerm({ name, description, type }: LearnTermProps) {
             gap-2
           "
         >
-          <h3 className="font-semibold">{name}</h3>
-          <small className="text-xs font-medium opacity-80">
-            {type.toUpperCase()}
-          </small>
+          <h3 className="font-semibold">{randomTerm.name}</h3>
+          {randomTerm.type && (
+            <small className="text-xs font-medium opacity-80">
+              {randomTerm.type.toUpperCase()}
+            </small>
+          )}
         </div>
         <div
           className="
@@ -77,7 +80,7 @@ export default function LearnTerm({ name, description, type }: LearnTermProps) {
           <MdOpenInNew className="w-[1rem] h-[1rem]" />
         </div>
       </div>
-      <p className="text-sm font-light opacity-60">{description}</p>
+      <p className="text-sm font-light opacity-60">{randomTerm.description}</p>
     </div>
   );
 }

@@ -1,15 +1,14 @@
 import React from "react";
 // Utils
 import clsx from "clsx";
-// Validation
-import { KeywordsType } from "@/app/lib/types/database";
+// Data
 import { getKeywordsDTO } from "@/app/server/data/keywords-dto";
 // Icons
 import { MdOpenInNew } from "react-icons/md";
 
 export default async function LearnKeyword() {
   const keywords = await getKeywordsDTO();
-  if (!keywords) return null;
+  if (!keywords || keywords.length === 0) return null;
 
   const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
   if (!randomKeyword) return null;
