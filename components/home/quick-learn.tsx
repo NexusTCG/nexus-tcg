@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 // Components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -8,6 +8,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 // Custom components
 import LearnKeyword from "@/components/home/learn-keyword";
 import LearnTerm from "@/components/home/learn-term";
@@ -113,12 +114,9 @@ export default async function QuickLearn() {
             p-4
           "
         >
-          {/* TODO: Replace dummy data with fetched data */}
-          <LearnTerm
-            name="Draw"
-            type="action"
-            description="Place the top card of your deck in your hand."
-          />
+          <Suspense fallback={<Skeleton className="w-full h-[10rem]" />}>
+            <LearnTerm />
+          </Suspense>
         </div>
       </CardContent>
     </Card>
