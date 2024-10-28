@@ -33,7 +33,12 @@ export default async function CardsGallery({
   const limit = 20;
 
   // Define filters
-  const filters: { type?: string; name?: string; username?: string } = {};
+  const filters: {
+    type?: string;
+    name?: string;
+    username?: string;
+  } = {};
+
   if (userProfile?.username) {
     filters.username = userProfile.username;
   }
@@ -46,15 +51,31 @@ export default async function CardsGallery({
     filters.name = search;
   }
 
-  // Fetch cards
-  const initialCards = await getCardsDTO({
-    limit,
-    filters,
-    order: {
+  // Construct query parameters
+  const queryParams = new URLSearchParams({
+    limit: limit.toString(),
+    filters: JSON.stringify(filters),
+    order: JSON.stringify({
       column: sort || "created_at",
       direction: order || "desc",
-    },
+    }),
   });
+
+  const data = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?${queryParams}`
+  );
+
+  const cardsData = (await data.json()) || [];
+
+  // Fetch cards
+  // const initialCards = await getCardsDTO({
+  //   limit,
+  //   filters,
+  //   order: {
+  //     column: sort || "created_at",
+  //     direction: order || "desc",
+  //   },
+  // });
 
   return (
     <div
@@ -76,10 +97,10 @@ export default async function CardsGallery({
         sort={sort}
         order={order}
         filter={filter}
-        totalResults={initialCards?.length || 0}
+        totalResults={cardsData?.length || 0}
       />
       <CardsGalleryGridWrapper
-        initialCards={initialCards || []}
+        initialCards={cardsData}
         filters={filters}
         sort={sort}
         order={order}
