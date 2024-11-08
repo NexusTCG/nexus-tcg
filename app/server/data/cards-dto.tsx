@@ -88,6 +88,8 @@ export const getCardsDTO = cache(
         query = query.eq("id", options.id);
       }
 
+      // TODO: Add search by card name
+
       // Filter for specific card type if specified
       if (options.filter && options.filter !== "all") {
         query = query.eq("initial_mode_cards.type", options.filter);

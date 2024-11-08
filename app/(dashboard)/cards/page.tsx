@@ -19,7 +19,7 @@ export default async function Cards({
   sort = sort?.toString() ?? "id";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
-  from = from?.toString() ?? "week";
+  from = from?.toString() ?? "all";
 
   return (
     <div
@@ -38,7 +38,7 @@ export default async function Cards({
       "
     >
       <CardsGallery
-        key={`${sort}-${order}-${filter}-${search}`}
+        key={`${sort}-${order}-${filter}-${search}-${from}`}
         search={search}
         sort={sort}
         order={order as "asc" | "desc"}

@@ -222,7 +222,7 @@ export default function CardsGallerySortFilter({
         </small>
         <Select
           value={
-            VALID_FROM_OPTIONS.includes(from as ValidFromOption) ? from : "week"
+            VALID_FROM_OPTIONS.includes(from as ValidFromOption) ? from : "all"
           }
           onValueChange={(value: string) => updateSearchParams("from", value)}
         >

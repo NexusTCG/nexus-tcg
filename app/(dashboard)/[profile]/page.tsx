@@ -27,7 +27,7 @@ export default async function Profile(props: {
   sort = sort?.toString() ?? "created_at";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
-  from = from?.toString() ?? "week";
+  from = from?.toString() ?? "all";
 
   // Destructure params to get username
   const { profile } = params;
