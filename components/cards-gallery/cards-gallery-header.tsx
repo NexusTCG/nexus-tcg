@@ -44,7 +44,11 @@ export default function CardsGalleryHeader({
         border-zinc-700
       "
     >
-      <div
+      <CardsGallerySearchbar
+        totalResults={totalResults}
+        initialSearch={search}
+      />
+      {/* <div
         id="cards-gallery-header-search-create-container"
         className="
           flex
@@ -63,7 +67,7 @@ export default function CardsGalleryHeader({
         <Link href="/create" className="hidden md:block">
           <Button className="min-w-24">Create a card</Button>
         </Link>
-      </div>
+      </div> */}
       <div
         id="cards-gallery-results-sort-filter-container"
         className="

@@ -69,7 +69,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
             src={
               card?.card_render && typeof card.card_render === "string"
                 ? card.card_render
-                : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/images/card-placeholder.png`
+                : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/images/nexus-tcg-card-back.png`
             }
             alt={`${
               card?.initialMode?.name || "Nexus TCG Card"
