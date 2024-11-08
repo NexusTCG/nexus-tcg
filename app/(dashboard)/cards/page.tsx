@@ -36,6 +36,7 @@ export default async function Cards({
       "
     >
       <CardsGallery
+        key={`${sort}-${order}-${filter}-${search}`}
         search={search}
         sort={sort}
         order={order as "asc" | "desc"}
