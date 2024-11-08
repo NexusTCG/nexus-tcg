@@ -4,6 +4,16 @@ import { getCardsDTO } from "@/app/server/data/cards-dto";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const VALID_FILTERS = [
+  "all",
+  "agent",
+  "event",
+  "software",
+  "software_agent",
+  "hardware",
+  "hardware_agent",
+];
+
 export async function GET(
   request: NextRequest,
 ) {
@@ -21,7 +31,8 @@ export async function GET(
 
     // const filters: Record<string, any> = {};
     // const search = searchParams.get("search");
-    const filter = searchParams.get("filter") || "all";
+    const rawFilter = searchParams.get("filter");
+    const filter = VALID_FILTERS.includes(rawFilter || "") ? rawFilter : "all";
 
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
 
@@ -45,7 +56,7 @@ export async function GET(
     const cards = await getCardsDTO({
       // id,
       limit,
-      filter,
+      filter: filter || undefined,
       order: orderConfig,
       currentWeekOnly,
     });

@@ -42,7 +42,7 @@ export const getCardsDTO = cache(
           card_render,
           discord_post,
           discord_post_url,
-          initial_mode_cards!card_id (
+          initial_mode_cards!inner (
             id,
             card_id,
             render,
@@ -64,7 +64,7 @@ export const getCardsDTO = cache(
             keywords,
             art_options
           ),
-          anomaly_mode_cards!card_id (
+          anomaly_mode_cards!inner (
             id,
             card_id,
             render,
@@ -139,6 +139,9 @@ export const getCardsDTO = cache(
       //     query = query.order("created_at", { ascending: false });
       //   }
       // }
+
+      // Log query for debugging
+      console.log("[Server] Query:", query);
 
       const { data, error } = await query;
 
