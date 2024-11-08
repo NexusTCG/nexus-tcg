@@ -108,7 +108,7 @@ export const getCardsDTO = cache(
       }
 
       // Add filter for from if specified
-      if (options.from && options.from !== "all") {
+      if (options.from && options.from !== "all" && !options.currentWeekOnly) {
         const now = new Date();
         let fromDate: Date;
 

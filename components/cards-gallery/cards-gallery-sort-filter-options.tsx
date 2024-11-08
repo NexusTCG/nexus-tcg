@@ -220,7 +220,12 @@ export default function CardsGallerySortFilter({
         <small className="text-muted-foreground text-xs whitespace-nowrap">
           From
         </small>
-        <Select>
+        <Select
+          value={
+            VALID_FROM_OPTIONS.includes(from as ValidFromOption) ? from : "week"
+          }
+          onValueChange={(value: string) => updateSearchParams("from", value)}
+        >
           <SelectTrigger
             className="
               w-full
