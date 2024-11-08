@@ -12,9 +12,9 @@ export async function GET(
     // const id = searchParams.get("id")
     //   ? parseInt(searchParams.get("id")!, 10)
     //   : undefined;
-    // const limit = searchParams.get("limit")
-    //   ? parseInt(searchParams.get("limit")!)
-    //   : undefined;
+    const limit = searchParams.get("limit")
+      ? parseInt(searchParams.get("limit")!)
+      : undefined;
 
     // const filters: Record<string, any> = {};
     // const search = searchParams.get("search");
@@ -41,7 +41,7 @@ export async function GET(
 
     const cards = await getCardsDTO({
       // id,
-      // limit,
+      limit,
       // filters,
       order: orderConfig,
       currentWeekOnly,

@@ -12,6 +12,9 @@ import {
 } from "@/app/lib/types/database";
 
 type FetchCardsOptions = {
+  // id?: number;
+  limit?: number;
+  // filters?: Record<string, any>;
   order?:
     | {
         column: string;
@@ -20,19 +23,6 @@ type FetchCardsOptions = {
     | "random";
   currentWeekOnly?: boolean;
 };
-
-// type FetchCardsOptions = {
-//   id?: number;
-//   limit?: number;
-//   filters?: Record<string, any>;
-//   order?:
-//     | {
-//         column: string;
-//         direction: "asc" | "desc";
-//       }
-//     | "random";
-//   currentWeekOnly?: boolean;
-// };
 
 export const getCardsDTO = cache(
   async (options: FetchCardsOptions = {}): Promise<CardsDTO | null> => {
