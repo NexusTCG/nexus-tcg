@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const VALID_SORT_OPTIONS = ["created_at", "name", "type", "grade"] as const;
+const VALID_SORT_OPTIONS = ["id", "name", "type", "grade"] as const;
 type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
 
 const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
@@ -39,7 +39,7 @@ export default function CardsGallerySortFilter({
       key === "sort" &&
       !VALID_SORT_OPTIONS.includes(value as ValidSortOption)
     ) {
-      value = "created_at"; // Default to created_at
+      value = "id"; // Default to id
     }
 
     // Validate order
@@ -91,9 +91,7 @@ export default function CardsGallerySortFilter({
         </small>
         <Select
           value={
-            VALID_SORT_OPTIONS.includes(sort as ValidSortOption)
-              ? sort
-              : "created_at"
+            VALID_SORT_OPTIONS.includes(sort as ValidSortOption) ? sort : "id"
           }
           onValueChange={(value: string) => updateSearchParams("sort", value)}
         >
@@ -106,7 +104,7 @@ export default function CardsGallerySortFilter({
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="created_at">Created</SelectItem>
+            <SelectItem value="id">Created</SelectItem>
             {/* <SelectItem value="name">Name</SelectItem>
             <SelectItem value="type">Type</SelectItem> */}
             <SelectItem value="grade">Grade</SelectItem>

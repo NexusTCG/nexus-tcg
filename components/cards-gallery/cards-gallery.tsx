@@ -41,7 +41,7 @@ CardsGalleryProps) {
   if (filter && filter !== "all") queryParams.set("filter", filter);
 
   // Add sort and order
-  queryParams.set("sort", sort || "created_at");
+  queryParams.set("sort", sort || "id");
   queryParams.set("order", order || "desc");
 
   // Why do we need username?

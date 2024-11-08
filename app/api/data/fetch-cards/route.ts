@@ -22,7 +22,7 @@ export async function GET(
 
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
 
-    const sort = searchParams.get("sort") || "created_at";
+    const sort = searchParams.get("sort") || "id";
     const order = searchParams.get("order") || "asc";
 
     // Construct order config

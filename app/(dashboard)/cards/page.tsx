@@ -15,7 +15,7 @@ export default async function Cards({
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
-  sort = sort?.toString() ?? "created_at";
+  sort = sort?.toString() ?? "id";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
 
