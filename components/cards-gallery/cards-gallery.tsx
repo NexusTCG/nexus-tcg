@@ -30,8 +30,6 @@ export default async function CardsGallery({
 CardsGalleryProps) {
   const limit = 20;
 
-  // Why are we passing userProfile as props?
-
   // Construct query parameters
   const queryParams = new URLSearchParams();
   queryParams.set("limit", limit.toString());

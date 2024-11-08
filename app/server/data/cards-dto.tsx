@@ -108,9 +108,10 @@ export const getCardsDTO = cache(
       //     }
       //   });
       // }
+
       if (options.order && options.order !== "random") {
         const { column, direction } = options.order;
-        const validColumns = ["id", "created_at", "grade"];
+        const validColumns = ["id", "name", "type", "grade"];
 
         if (validColumns.includes(column)) {
           query = query.order(column, { ascending: direction === "asc" });

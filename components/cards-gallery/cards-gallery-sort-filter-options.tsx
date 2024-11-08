@@ -111,8 +111,8 @@ export default function CardsGallerySortFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="id">Created</SelectItem>
-            {/* <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="type">Type</SelectItem> */}
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="type">Type</SelectItem>
             <SelectItem value="grade">Grade</SelectItem>
           </SelectContent>
         </Select>

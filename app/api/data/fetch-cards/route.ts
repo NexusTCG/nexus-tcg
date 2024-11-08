@@ -34,13 +34,13 @@ export async function GET(
       direction: order as "asc" | "desc",
     };
 
-    // console.log("[Server] Fetching cards", {
-    //   id,
-    //   limit,
-    //   filters,
-    //   order,
-    //   currentWeekOnly,
-    // });
+    console.log("[Server] Fetching cards", {
+      // id,
+      limit,
+      // filters,
+      order,
+      currentWeekOnly,
+    });
 
     const cards = await getCardsDTO({
       // id,
