@@ -12,7 +12,7 @@ import {
 } from "@/app/lib/types/database";
 
 type FetchCardsOptions = {
-  // id?: number;
+  id?: number;
   limit?: number;
   // filters?: Record<string, any>;
   order?:
@@ -81,9 +81,9 @@ export const getCardsDTO = cache(
         `);
 
       // Add filter by specific card ID if provided
-      // if (options.id) {
-      //   query = query.eq("id", options.id);
-      // }
+      if (options.id) {
+        query = query.eq("id", options.id);
+      }
 
       // Add filter for current week if specified in options
       if (options.currentWeekOnly) {
