@@ -39,7 +39,9 @@ export default async function SectionFeaturedCards() {
             })}
           >
             <CardThumbnail
-              cardRender={card.initialMode.render}
+              cardRender={
+                card.initialMode.render ?? "/images/card-placeholder.png"
+              } // TODO: Remove placeholder
               cardName={card.initialMode.name}
               cardId={card.id}
               width={"md"}

@@ -58,7 +58,7 @@ export default function CardsGallerySortFilter({
       key === "order" &&
       !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
     ) {
-      value = "asc";
+      value = "desc";
     }
 
     // Validate filter
@@ -73,7 +73,7 @@ export default function CardsGallerySortFilter({
       params.set(key, value);
       // Ensure order is set if sort is set
       if (key === "sort" && !params.has("order")) {
-        params.set("order", "asc");
+        params.set("order", "desc");
       }
     } else {
       params.delete(key);

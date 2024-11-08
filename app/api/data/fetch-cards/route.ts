@@ -34,7 +34,7 @@ export async function GET(
     const filter = VALID_FILTERS.includes(rawFilter || "") ? rawFilter : "all";
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
     const sort = searchParams.get("sort") || "id";
-    const order = searchParams.get("order") || "asc";
+    const order = searchParams.get("order") || "desc";
 
     // Construct order config
     const orderConfig = {

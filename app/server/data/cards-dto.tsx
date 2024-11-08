@@ -113,7 +113,7 @@ export const getCardsDTO = cache(
         const validColumns = ["id", "name", "type", "grade"];
 
         if (validColumns.includes(column)) {
-          query = query.order(column, { ascending: direction === "asc" });
+          query = query.order(column, { ascending: direction === "desc" });
         }
       }
 
