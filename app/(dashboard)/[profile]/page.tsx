@@ -106,10 +106,7 @@ export default async function Profile(props: {
           flex-col 
           justify-center 
           items-start 
-          w-full 
-          sm:border 
-          border-zinc-700 
-          sm:rounded-sm 
+          w-full
           overflow-hidden
         "
       >

@@ -138,9 +138,6 @@ export const getCardsDTO = cache(
           .lte("created_at", weekEnd.toISOString());
       }
 
-      // Log query for debugging
-      console.log("[Server] Query:", query);
-
       // Execute the query
       const { data, error } = await query;
 
