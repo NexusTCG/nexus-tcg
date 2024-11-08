@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // Utils
 import dynamic from "next/dynamic";
 // Types
@@ -72,6 +72,12 @@ export default function CardsGalleryGridWrapper({
       setIsLoading(false);
     }
   }
+
+  // Reset cards and hasNextPage when sort, order, or filter changes
+  useEffect(() => {
+    setCards(initialCards);
+    setHasNextPage(true);
+  }, [initialCards, sort, order, filter]);
 
   return (
     <CardsGalleryGrid

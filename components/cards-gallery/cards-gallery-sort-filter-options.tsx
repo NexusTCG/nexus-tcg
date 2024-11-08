@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 // Components
 import {
@@ -31,15 +31,15 @@ export default function CardsGallerySortFilter({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function updateSearchParams(key: string, value: string) {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
+  function createQueryString(key: string, value: string) {
+    const params = new URLSearchParams(searchParams);
 
     // Validate sort
     if (
       key === "sort" &&
       !VALID_SORT_OPTIONS.includes(value as ValidSortOption)
     ) {
-      value = "id"; // Default to id
+      value = "id";
     }
 
     // Validate order
@@ -47,20 +47,26 @@ export default function CardsGallerySortFilter({
       key === "order" &&
       !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
     ) {
-      value = "asc"; // Default to asc
+      value = "asc";
     }
 
     if (value) {
-      current.set(key, value);
-
+      params.set(key, value);
       // Ensure order is set if sort is set
-      if (key === "sort" && !current.has("order")) {
-        current.set("order", "asc");
+      if (key === "sort" && !params.has("order")) {
+        params.set("order", "asc");
       }
     } else {
-      current.delete(key);
+      params.delete(key);
     }
-    router.push(`/cards?${current.toString()}`); // Push new search params
+
+    return params.toString();
+  }
+
+  function updateSearchParams(key: string, value: string) {
+    router.replace(`/cards?${createQueryString(key, value)}`, {
+      scroll: false,
+    });
   }
 
   return (
