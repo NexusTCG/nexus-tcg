@@ -116,7 +116,7 @@ export default async function Profile(props: {
           sort={sort}
           order={order as "asc" | "desc"}
           filter={filter}
-          userProfile={userProfile}
+          // userProfile={userProfile}
         />
       </div>
     </div>
