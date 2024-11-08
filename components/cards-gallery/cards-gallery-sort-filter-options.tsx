@@ -28,16 +28,21 @@ const VALID_FILTER_OPTIONS = [
 ] as const;
 type ValidFilterOption = (typeof VALID_FILTER_OPTIONS)[number];
 
+const VALID_FROM_OPTIONS = ["week", "month", "year", "all"] as const;
+type ValidFromOption = (typeof VALID_FROM_OPTIONS)[number];
+
 type CardsGallerySortFilterProps = {
   sort: string;
   order: string;
   filter: string;
+  from: string;
 };
 
 export default function CardsGallerySortFilter({
   sort,
   order,
   filter,
+  from,
 }: CardsGallerySortFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -67,6 +72,14 @@ export default function CardsGallerySortFilter({
       !VALID_FILTER_OPTIONS.includes(value as ValidFilterOption)
     ) {
       value = "all";
+    }
+
+    // Validate from
+    if (
+      key === "from" &&
+      !VALID_FROM_OPTIONS.includes(value as ValidFromOption)
+    ) {
+      value = "week";
     }
 
     if (value) {
@@ -193,7 +206,7 @@ export default function CardsGallerySortFilter({
           </SelectContent>
         </Select>
       </div>
-      {/* <div
+      <div
         id="from-container"
         className="
           flex
@@ -214,16 +227,16 @@ export default function CardsGallerySortFilter({
               truncate
             "
           >
-            <SelectValue placeholder="This week" />
+            <SelectValue placeholder="All time" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="30">This week</SelectItem>
-            <SelectItem value="90">This month</SelectItem>
-            <SelectItem value="365">This year</SelectItem>
+            <SelectItem value="week">This week</SelectItem>
+            <SelectItem value="month">This month</SelectItem>
+            <SelectItem value="year">This year</SelectItem>
             <SelectItem value="all">All time</SelectItem>
           </SelectContent>
         </Select>
-      </div> */}
+      </div>
     </div>
   );
 }

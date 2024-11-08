@@ -2,7 +2,7 @@ import { cache } from "react";
 // Utils
 import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
-import { startOfWeek, endOfWeek } from "date-fns";
+import { startOfWeek, endOfWeek, addDays } from "date-fns";
 // Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 import {
@@ -21,6 +21,7 @@ type FetchCardsOptions = {
         direction: "asc" | "desc";
       }
     | "random";
+  from?: string;
   currentWeekOnly?: boolean;
   approvedOnly?: boolean;
 };
@@ -86,17 +87,6 @@ export const getCardsDTO = cache(
         query = query.eq("id", options.id);
       }
 
-      // Add filter for current week if specified
-      if (options.currentWeekOnly) {
-        const now = new Date();
-        const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
-        const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
-
-        query = query
-          .gte("created_at", weekStart.toISOString())
-          .lte("created_at", weekEnd.toISOString());
-      }
-
       // Filter for specific card type if specified
       if (options.filter && options.filter !== "all") {
         query = query.eq("initial_mode_cards.type", options.filter);
@@ -115,6 +105,34 @@ export const getCardsDTO = cache(
         if (validColumns.includes(column)) {
           query = query.order(column, { ascending: direction === "desc" });
         }
+      }
+
+      // Add filter for from if specified
+      if (options.from && options.from !== "all") {
+        const now = new Date();
+        let fromDate: Date;
+
+        if (options.from === "year") {
+          fromDate = addDays(now, -365);
+        } else if (options.from === "month") {
+          fromDate = addDays(now, -30);
+        } else {
+          // Default to past 7 days
+          fromDate = addDays(now, -7);
+        }
+
+        query = query.gte("created_at", fromDate.toISOString());
+      }
+
+      // Add filter for current week if specified
+      if (options.currentWeekOnly) {
+        const now = new Date();
+        const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
+        const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
+
+        query = query
+          .gte("created_at", weekStart.toISOString())
+          .lte("created_at", weekEnd.toISOString());
       }
 
       // Log query for debugging

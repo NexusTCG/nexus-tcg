@@ -35,6 +35,7 @@ export async function GET(
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
     const sort = searchParams.get("sort") || "id";
     const order = searchParams.get("order") || "desc";
+    const from = searchParams.get("from") || "week";
 
     // Construct order config
     const orderConfig = {
@@ -48,6 +49,7 @@ export async function GET(
       filter,
       order,
       currentWeekOnly,
+      from,
     });
 
     const cards = await getCardsDTO({
@@ -56,6 +58,7 @@ export async function GET(
       filter: filter || undefined,
       order: orderConfig,
       currentWeekOnly,
+      from,
     });
 
     if (!cards || (Array.isArray(cards) && cards.length === 0)) {

@@ -17,6 +17,7 @@ type CardsGalleryHeaderProps = {
   sort: string;
   order: string;
   filter: string;
+  from: string;
   totalResults: number;
 };
 
@@ -25,6 +26,7 @@ export default function CardsGalleryHeader({
   sort,
   order,
   filter,
+  from,
   totalResults,
 }: CardsGalleryHeaderProps) {
   return (
@@ -76,7 +78,12 @@ export default function CardsGalleryHeader({
         <small className="text-xs whitespace-nowrap">
           {totalResults} <span className="text-muted-foreground">results</span>
         </small>
-        <CardsGallerySortFilter sort={sort} order={order} filter={filter} />
+        <CardsGallerySortFilter
+          sort={sort}
+          order={order}
+          filter={filter}
+          from={from}
+        />
       </div>
     </div>
   );

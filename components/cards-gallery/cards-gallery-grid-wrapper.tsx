@@ -16,6 +16,7 @@ type CardsGalleryGridWrapperProps = {
   filter: string;
   sort: string;
   order: "asc" | "desc";
+  from: string;
 };
 
 export default function CardsGalleryGridWrapper({
@@ -23,6 +24,7 @@ export default function CardsGalleryGridWrapper({
   filter,
   sort,
   order,
+  from,
 }: CardsGalleryGridWrapperProps) {
   const [cards, setCards] = useState(initialCards);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +39,7 @@ export default function CardsGalleryGridWrapper({
       limit: limit.toString(),
       sort: sort,
       order: order,
+      from: from,
     });
 
     // Only add filter if it's not "all"

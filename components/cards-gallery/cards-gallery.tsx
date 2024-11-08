@@ -18,6 +18,7 @@ type CardsGalleryProps = {
   sort: string | "created_at";
   order: "asc" | "desc";
   filter: string | "all";
+  from: string | "week";
   // userProfile?: ProfileDTO | null;
 };
 
@@ -26,21 +27,29 @@ export default async function CardsGallery({
   sort,
   order,
   filter,
+  from,
 }: // userProfile,
 CardsGalleryProps) {
   const limit = 20;
 
   // Construct query parameters
   const queryParams = new URLSearchParams();
+
+  // Add limit to query param
   queryParams.set("limit", limit.toString());
 
+  // Add search to query param
   if (search) queryParams.set("search", search);
 
+  // Add filter to query param
   if (filter && filter !== "all") queryParams.set("filter", filter);
 
-  // Add sort and order
+  // Add sort and order to query param
   queryParams.set("sort", sort || "id");
   queryParams.set("order", order || "desc");
+
+  // Add from to query param
+  if (from && from !== "all") queryParams.set("from", from);
 
   // Why do we need username?
   // if (userProfile?.username) {
@@ -80,6 +89,7 @@ CardsGalleryProps) {
         sort={sort}
         order={order}
         filter={filter}
+        from={from}
         totalResults={cardsData?.length || 0}
       />
       <CardsGalleryGridWrapper
@@ -87,6 +97,7 @@ CardsGalleryProps) {
         filter={filter}
         sort={sort}
         order={order}
+        from={from}
       />
     </div>
   );

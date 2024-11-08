@@ -12,12 +12,14 @@ export default async function Cards({
   let sort = (await searchParams).sort;
   let order = (await searchParams).order;
   let filter = (await searchParams).filter;
+  let from = (await searchParams).from;
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
   sort = sort?.toString() ?? "id";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
+  from = from?.toString() ?? "week";
 
   return (
     <div
@@ -41,6 +43,7 @@ export default async function Cards({
         sort={sort}
         order={order as "asc" | "desc"}
         filter={filter}
+        from={from}
       />
     </div>
   );
