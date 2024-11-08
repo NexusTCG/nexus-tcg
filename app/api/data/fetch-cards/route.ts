@@ -29,7 +29,7 @@ export async function GET(
       ? parseInt(searchParams.get("limit")!)
       : undefined;
 
-    // const search = searchParams.get("search");
+    const search = searchParams.get("search") || "";
     const rawFilter = searchParams.get("filter");
     const filter = VALID_FILTERS.includes(rawFilter || "") ? rawFilter : "all";
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
@@ -45,6 +45,7 @@ export async function GET(
 
     console.log("[Server] Fetching cards", {
       // id,
+      search,
       limit,
       filter,
       order,
@@ -54,6 +55,7 @@ export async function GET(
 
     const cards = await getCardsDTO({
       // id,
+      search,
       limit,
       filter: filter || undefined,
       order: orderConfig,

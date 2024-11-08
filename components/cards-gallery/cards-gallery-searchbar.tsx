@@ -38,7 +38,7 @@ export default function CardsGallerySearchbar({
         current.delete("search");
       }
 
-      router.push(`/cards?${current.toString()}`);
+      router.replace(`/cards?${current.toString()}`);
     } catch (error) {
       console.error("Error searching cards:", error);
     } finally {
@@ -71,7 +71,7 @@ export default function CardsGallerySearchbar({
         onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        disabled={isSearching}
+        disabled={isSearching ?? true} // Temporarily disabled
         className="
           flex-grow
           w-full
@@ -80,9 +80,11 @@ export default function CardsGallerySearchbar({
           ease-in-out
         "
       />
-      <Button type="submit" disabled={isSearching}>
+      {/* Temporarily disabled */}
+      <Button type="submit" disabled={isSearching ?? true}>
         {isSearching ? "Searching..." : "Search"}
       </Button>
+      {/* TODO: Add select search type */}
     </form>
   );
 }

@@ -13,6 +13,7 @@ import {
 
 type FetchCardsOptions = {
   id?: number;
+  search?: string;
   limit?: number;
   filter?: string;
   order?:

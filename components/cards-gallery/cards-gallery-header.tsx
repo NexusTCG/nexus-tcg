@@ -5,9 +5,9 @@ import dynamic from "next/dynamic";
 // Components
 import { Button } from "@/components/ui/button";
 // Custom components
-// const CardsGallerySearchbar = dynamic(
-//   () => import("@/components/cards-gallery/cards-gallery-searchbar")
-// );
+const CardsGallerySearchbar = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-searchbar")
+);
 const CardsGallerySortFilter = dynamic(
   () => import("@/components/cards-gallery/cards-gallery-sort-filter-options")
 );
@@ -22,7 +22,7 @@ type CardsGalleryHeaderProps = {
 };
 
 export default function CardsGalleryHeader({
-  // search,
+  search,
   sort,
   order,
   filter,
@@ -56,10 +56,10 @@ export default function CardsGalleryHeader({
           gap-4
         "
       >
-        {/* <CardsGallerySearchbar
+        <CardsGallerySearchbar
           totalResults={totalResults}
           initialSearch={search}
-        /> */}
+        />
         <Link href="/create" className="hidden md:block">
           <Button className="min-w-24">Create a card</Button>
         </Link>
