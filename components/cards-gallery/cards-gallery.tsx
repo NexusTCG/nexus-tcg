@@ -18,7 +18,7 @@ type CardsGalleryProps = {
   sort: string | "created_at";
   order: "asc" | "desc";
   filter: string | "all";
-  userProfile?: ProfileDTO | null;
+  // userProfile?: ProfileDTO | null;
 };
 
 export default async function CardsGallery({
@@ -26,9 +26,11 @@ export default async function CardsGallery({
   sort,
   order,
   filter,
-  userProfile,
-}: CardsGalleryProps) {
+}: // userProfile,
+CardsGalleryProps) {
   const limit = 20;
+
+  // Why are we passing userProfile as props?
 
   // Construct query parameters
   const queryParams = new URLSearchParams();
@@ -42,10 +44,12 @@ export default async function CardsGallery({
   queryParams.set("sort", sort || "created_at");
   queryParams.set("order", order || "desc");
 
-  if (userProfile?.username) {
-    queryParams.set("username", userProfile.username);
-  }
+  // Why do we need username?
+  // if (userProfile?.username) {
+  //   queryParams.set("username", userProfile.username);
+  // }
 
+  // Fetch cards by query parameters
   const data = await fetch(
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?${queryParams}`,
     { cache: "no-store" }

@@ -3,6 +3,13 @@ import React from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import Image from "next/image";
+// Components
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 type CardThumbnailProps = {
   cardRender: string | undefined | null;
@@ -25,6 +32,9 @@ export default function CardThumbnail({
         width === "md" && "w-[240px]"
       )}
     >
+      {/* <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger> */}
       <Link
         href={`/cards/${cardId}`}
         className={clsx(
@@ -40,6 +50,10 @@ export default function CardThumbnail({
           className="object-cover"
         />
       </Link>
+      {/* </TooltipTrigger>
+          <TooltipContent>{cardName}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider> */}
     </div>
   );
 }

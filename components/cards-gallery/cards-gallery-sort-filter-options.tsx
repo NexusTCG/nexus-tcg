@@ -31,16 +31,18 @@ export default function CardsGallerySortFilter({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const updateSearchParams = (key: string, value: string) => {
+  function updateSearchParams(key: string, value: string) {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-    // Validate sort and order combinations
+    // Validate sort
     if (
       key === "sort" &&
       !VALID_SORT_OPTIONS.includes(value as ValidSortOption)
     ) {
       value = "created_at"; // Default to created_at
     }
+
+    // Validate order
     if (
       key === "order" &&
       !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
@@ -58,8 +60,8 @@ export default function CardsGallerySortFilter({
     } else {
       current.delete(key);
     }
-    router.push(`/cards?${current.toString()}`);
-  };
+    router.push(`/cards?${current.toString()}`); // Push new search params
+  }
 
   return (
     <div
@@ -105,8 +107,8 @@ export default function CardsGallerySortFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="created_at">Created</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="type">Type</SelectItem>
+            {/* <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="type">Type</SelectItem> */}
             <SelectItem value="grade">Grade</SelectItem>
           </SelectContent>
         </Select>
@@ -127,7 +129,7 @@ export default function CardsGallerySortFilter({
           </SelectContent>
         </Select>
       </div>
-      <div
+      {/* <div
         id="filter-container"
         className="
           flex
@@ -163,8 +165,8 @@ export default function CardsGallerySortFilter({
             <SelectItem value="hardware_agent">Hardware Agent</SelectItem>
           </SelectContent>
         </Select>
-      </div>
-      <div
+      </div> */}
+      {/* <div
         id="from-container"
         className="
           flex
@@ -194,7 +196,7 @@ export default function CardsGallerySortFilter({
             <SelectItem value="all">All time</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
     </div>
   );
 }

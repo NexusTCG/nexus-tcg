@@ -18,6 +18,9 @@ export const revalidate = 3600;
 
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
+
+  // TODO: Replace slug === id with slug === initialMode.name
+
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
 
   console.log("[Server] Fetching from URL:", fetchUrl);
@@ -42,12 +45,10 @@ function CardSkeleton() {
   );
 }
 
-export default async function CardSlug(
-  props: {
-    params: Promise<{ slug: string }>;
-    searchParams: Promise<{ mode?: "initial" | "anomaly" }>;
-  }
-) {
+export default async function CardSlug(props: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ mode?: "initial" | "anomaly" }>;
+}) {
   const searchParams = await props.searchParams;
   const params = await props.params;
   // Redirect if mode is not specified
