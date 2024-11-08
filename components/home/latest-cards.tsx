@@ -13,6 +13,7 @@ const CardThumbnail = dynamic(
 );
 
 export default async function LatestCards() {
+  // Replace with fetch call to API route
   const latestCards = await getCardsDTO({
     order: { column: "created_at", direction: "desc" },
     limit: 5,

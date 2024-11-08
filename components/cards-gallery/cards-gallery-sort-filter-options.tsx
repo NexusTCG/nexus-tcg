@@ -47,7 +47,7 @@ export default function CardsGallerySortFilter({
       key === "order" &&
       !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
     ) {
-      value = "desc"; // Default to desc
+      value = "asc"; // Default to asc
     }
 
     if (value) {
@@ -55,7 +55,7 @@ export default function CardsGallerySortFilter({
 
       // Ensure order is set if sort is set
       if (key === "sort" && !current.has("order")) {
-        current.set("order", "desc");
+        current.set("order", "asc");
       }
     } else {
       current.delete(key);
