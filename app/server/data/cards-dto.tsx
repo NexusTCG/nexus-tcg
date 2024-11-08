@@ -2,7 +2,7 @@ import { cache } from "react";
 // Utils
 import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
-// import { startOfWeek, endOfWeek } from "date-fns";
+import { startOfWeek, endOfWeek } from "date-fns";
 // Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 import {
@@ -18,6 +18,7 @@ type FetchCardsOptions = {
         direction: "asc" | "desc";
       }
     | "random";
+  currentWeekOnly?: boolean;
 };
 
 // type FetchCardsOptions = {
@@ -95,15 +96,15 @@ export const getCardsDTO = cache(
       // }
 
       // Add filter for current week if specified in options
-      // if (options.currentWeekOnly) {
-      //   const now = new Date();
-      //   const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
-      //   const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
+      if (options.currentWeekOnly) {
+        const now = new Date();
+        const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
+        const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
 
-      //   query = query
-      //     .gte("created_at", weekStart.toISOString())
-      //     .lte("created_at", weekEnd.toISOString());
-      // }
+        query = query
+          .gte("created_at", weekStart.toISOString())
+          .lte("created_at", weekEnd.toISOString());
+      }
 
       // Add additional filters if provided
       // if (options.filters) {

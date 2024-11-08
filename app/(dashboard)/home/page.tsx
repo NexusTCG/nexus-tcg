@@ -15,7 +15,7 @@ const LatestNotifications = dynamic(
 );
 const TopCards = dynamic(() => import("@/components/home/top-cards"));
 const QuickLearn = dynamic(() => import("@/components/home/quick-learn"));
-// const WeeklyTrends = dynamic(() => import("@/components/home/weekly-trends"));
+const WeeklyTrends = dynamic(() => import("@/components/home/weekly-trends"));
 const PlaceholderCard = dynamic(
   () => import("@/components/home/placeholder-card")
 );
@@ -101,9 +101,9 @@ export default async function Home() {
           {/* TODO: Implement matchmaking system with Cal.com */}
           {/* <ReadyToPlay /> */}
           <QuickLearn />
-          {/* <Suspense fallback={<PlaceholderCard card="weekly-trends" />}>
+          <Suspense fallback={<PlaceholderCard card="weekly-trends" />}>
             <WeeklyTrends />
-          </Suspense> */}
+          </Suspense>
         </div>
       </div>
     </div>

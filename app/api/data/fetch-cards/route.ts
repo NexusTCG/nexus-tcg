@@ -20,7 +20,7 @@ export async function GET(
     // const search = searchParams.get("search");
     // const filter = searchParams.get("filter");
 
-    // const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
+    const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
 
     const sort = searchParams.get("sort") || "created_at";
     const order = searchParams.get("order") || "desc";
@@ -44,7 +44,7 @@ export async function GET(
       // limit,
       // filters,
       order: orderConfig,
-      // currentWeekOnly,
+      currentWeekOnly,
     });
 
     if (!cards || (Array.isArray(cards) && cards.length === 0)) {
