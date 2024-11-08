@@ -20,12 +20,14 @@ export default async function Profile(props: {
   let sort = (await props.searchParams).sort;
   let order = (await props.searchParams).order;
   let filter = (await props.searchParams).filter;
+  let from = (await props.searchParams).from;
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
   sort = sort?.toString() ?? "created_at";
   order = order?.toString() ?? "asc";
   filter = filter?.toString() ?? "all";
+  from = from?.toString() ?? "week";
 
   // Destructure params to get username
   const { profile } = params;
@@ -116,6 +118,7 @@ export default async function Profile(props: {
           sort={sort}
           order={order as "asc" | "desc"}
           filter={filter}
+          from={from}
           // userProfile={userProfile}
         />
       </div>
