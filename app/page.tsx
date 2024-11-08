@@ -8,9 +8,9 @@ import SectionHero from "@/components/marketing/section-hero";
 const SectionIntroVideo = dynamic(
   () => import("@/components/marketing/section-intro-video")
 );
-// const SectionFeaturedCards = dynamic(
-//   () => import("@/components/marketing/section-featured-cards")
-// );
+const SectionFeaturedCards = dynamic(
+  () => import("@/components/marketing/section-featured-cards")
+);
 const SectionSocialProof = dynamic(
   () => import("@/components/marketing/section-social-proof")
 );
@@ -43,7 +43,7 @@ export default function Marketing() {
       <NavBar />
       <SectionHero />
       <SectionIntroVideo />
-      {/* <SectionFeaturedCards /> */}
+      <SectionFeaturedCards />
       <SectionSocialProof />
       <SectionSteam />
       <SectionAppUI />

@@ -22,6 +22,7 @@ type FetchCardsOptions = {
       }
     | "random";
   currentWeekOnly?: boolean;
+  approvedOnly?: boolean;
 };
 
 export const getCardsDTO = cache(
@@ -80,12 +81,12 @@ export const getCardsDTO = cache(
           )
         `);
 
-      // Add filter by specific card ID if provided
+      // Add filter by specific card ID if specified
       if (options.id) {
         query = query.eq("id", options.id);
       }
 
-      // Add filter for current week if specified in options
+      // Add filter for current week if specified
       if (options.currentWeekOnly) {
         const now = new Date();
         const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Starts on Monday
@@ -96,22 +97,17 @@ export const getCardsDTO = cache(
           .lte("created_at", weekEnd.toISOString());
       }
 
-      // Add additional filters if provided
-      // if (options.filters) {
-      //   Object.entries(options.filters).forEach(([column, value]) => {
-      //     if (column === "name") {
-      //       query = query.ilike("initial_mode_cards.name", `%${value}%`);
-      //     } else if (column === "type") {
-      //       query = query.eq("initial_mode_cards.type", value);
-      //     } else {
-      //       query = query.eq(column, value);
-      //     }
-      //   });
-      // }
+      // Filter for specific card type if specified
       if (options.filter && options.filter !== "all") {
         query = query.eq("initial_mode_cards.type", options.filter);
       }
 
+      // Filter for approved cards only if specified
+      if (options.approvedOnly) {
+        query = query.eq("approved", true);
+      }
+
+      // Order the cards if specified
       if (options.order && options.order !== "random") {
         const { column, direction } = options.order;
         const validColumns = ["id", "name", "type", "grade"];
@@ -121,28 +117,10 @@ export const getCardsDTO = cache(
         }
       }
 
-      // Determine sorting
-      // if (options.order && options.order !== "random") {
-      //   const { column, direction } = options.order;
-      //   const validColumns = ["created_at", "name", "type", "grade"];
-
-      //   if (validColumns.includes(column)) {
-      //     if (column === "name" || column === "type" || column === "grade") {
-      //       query = query.order(`initial_mode_cards.${column}`, {
-      //         ascending: direction === "asc",
-      //       });
-      //     } else {
-      //       query = query.order(column, { ascending: direction === "asc" });
-      //     }
-      //   } else {
-      //     console.error(`[Server] Invalid order column: ${column}`);
-      //     query = query.order("created_at", { ascending: false });
-      //   }
-      // }
-
       // Log query for debugging
       console.log("[Server] Query:", query);
 
+      // Execute the query
       const { data, error } = await query;
 
       if (error) {
@@ -177,13 +155,15 @@ export const getCardsDTO = cache(
         };
       });
 
-      // if (options.order === "random") {
-      //   mappedData = mappedData.sort(() => Math.random() - 0.5);
-      // }
+      // Randomize order if specified
+      if (options.order === "random") {
+        mappedData = mappedData.sort(() => Math.random() - 0.5);
+      }
 
-      // if (options.limit) {
-      //   mappedData = mappedData.slice(0, options.limit);
-      // }
+      // Limit the number of cards if specified
+      if (options.limit) {
+        mappedData = mappedData.slice(0, options.limit);
+      }
 
       console.log(`[Server] Mapped ${mappedData.length} cards`);
 

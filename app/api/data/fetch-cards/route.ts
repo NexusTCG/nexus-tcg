@@ -29,13 +29,10 @@ export async function GET(
       ? parseInt(searchParams.get("limit")!)
       : undefined;
 
-    // const filters: Record<string, any> = {};
     // const search = searchParams.get("search");
     const rawFilter = searchParams.get("filter");
     const filter = VALID_FILTERS.includes(rawFilter || "") ? rawFilter : "all";
-
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
-
     const sort = searchParams.get("sort") || "id";
     const order = searchParams.get("order") || "asc";
 
