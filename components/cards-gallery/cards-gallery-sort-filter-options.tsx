@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 // Components
 import {
@@ -16,6 +16,17 @@ type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
 
 const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
 type ValidOrderOption = (typeof VALID_ORDER_OPTIONS)[number];
+
+const VALID_FILTER_OPTIONS = [
+  "all",
+  "agent",
+  "event",
+  "software",
+  "software_agent",
+  "hardware",
+  "hardware_agent",
+] as const;
+type ValidFilterOption = (typeof VALID_FILTER_OPTIONS)[number];
 
 type CardsGallerySortFilterProps = {
   sort: string;
@@ -48,6 +59,14 @@ export default function CardsGallerySortFilter({
       !VALID_ORDER_OPTIONS.includes(value as ValidOrderOption)
     ) {
       value = "asc";
+    }
+
+    // Validate filter
+    if (
+      key === "filter" &&
+      !VALID_FILTER_OPTIONS.includes(value as ValidFilterOption)
+    ) {
+      value = "all";
     }
 
     if (value) {
@@ -133,7 +152,7 @@ export default function CardsGallerySortFilter({
           </SelectContent>
         </Select>
       </div>
-      {/* <div
+      <div
         id="filter-container"
         className="
           flex
@@ -148,7 +167,11 @@ export default function CardsGallerySortFilter({
           Filter
         </small>
         <Select
-          value={filter}
+          value={
+            VALID_FILTER_OPTIONS.includes(filter as ValidFilterOption)
+              ? filter
+              : "all"
+          }
           onValueChange={(value: string) => updateSearchParams("filter", value)}
         >
           <SelectTrigger
@@ -169,7 +192,7 @@ export default function CardsGallerySortFilter({
             <SelectItem value="hardware_agent">Hardware Agent</SelectItem>
           </SelectContent>
         </Select>
-      </div> */}
+      </div>
       {/* <div
         id="from-container"
         className="

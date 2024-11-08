@@ -14,7 +14,7 @@ import {
 type FetchCardsOptions = {
   id?: number;
   limit?: number;
-  // filters?: Record<string, any>;
+  filter?: string;
   order?:
     | {
         column: string;
@@ -108,6 +108,9 @@ export const getCardsDTO = cache(
       //     }
       //   });
       // }
+      if (options.filter && options.filter !== "all") {
+        query = query.eq("initial_mode_cards.type", options.filter);
+      }
 
       if (options.order && options.order !== "random") {
         const { column, direction } = options.order;

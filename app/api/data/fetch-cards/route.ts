@@ -21,7 +21,7 @@ export async function GET(
 
     // const filters: Record<string, any> = {};
     // const search = searchParams.get("search");
-    // const filter = searchParams.get("filter");
+    const filter = searchParams.get("filter") || "all";
 
     const currentWeekOnly = searchParams.get("currentWeekOnly") === "true";
 
@@ -37,7 +37,7 @@ export async function GET(
     console.log("[Server] Fetching cards", {
       // id,
       limit,
-      // filters,
+      filter,
       order,
       currentWeekOnly,
     });
@@ -45,7 +45,7 @@ export async function GET(
     const cards = await getCardsDTO({
       // id,
       limit,
-      // filters,
+      filter,
       order: orderConfig,
       currentWeekOnly,
     });
