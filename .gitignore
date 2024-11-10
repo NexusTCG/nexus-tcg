@@ -167,4 +167,8 @@ dist
 .pnp.*
 node_modules
 
+# Supabase
 .trigger
+supabase/.branches
+supabase/.temp
+supabase/functions/**/.env*

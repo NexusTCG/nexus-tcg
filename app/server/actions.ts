@@ -3,8 +3,6 @@ import "server-only";
 // Utils
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
-// Tasks
-import { generateCardRender } from "@/app/trigger/generate-card-render";
 
 // TODO: Add action to delete a card
 // TODO: Add action to update a card
@@ -98,6 +96,20 @@ export async function triggerCardRender(
   cardId: string,
   mode: "initial" | "anomaly",
 ) {
-  const result = await generateCardRender.trigger({ cardId, mode });
-  return result;
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/generate-card-render`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cardId, mode }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to trigger card render");
+  }
+
+  return await response.json();
 }

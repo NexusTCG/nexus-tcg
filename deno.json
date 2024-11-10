@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env --allow-read index.ts"
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.168.0/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+    "puppeteer": "https://deno.land/x/puppeteer@16.2.0/mod.ts"
+  }
+}

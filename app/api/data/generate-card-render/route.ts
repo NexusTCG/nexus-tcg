@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-// Actions
-import { triggerCardRender } from "@/app/server/actions";
 
 export async function POST(
   req: NextRequest,
@@ -8,11 +6,25 @@ export async function POST(
   const { cardId, mode } = await req.json();
 
   try {
-    const result = await triggerCardRender(cardId, mode);
-    return NextResponse.json({
-      success: true,
-      taskId: result.id,
-    });
+    // Call the Supabase edge function to generate the card render
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/generate-card-render`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ record: { id: cardId, mode } }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to generate card render");
+    }
+
+    const result = await response.json();
+    return NextResponse.json({ success: true, ...result });
   } catch (error) {
     console.error("[Server] Error triggering card render generation:", error);
     return NextResponse.json({

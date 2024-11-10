@@ -49,21 +49,13 @@ export async function POST(req: NextRequest) {
     console.log("[Server] Card submitted successfully:", data);
 
     // Trigger card render generation for initial mode
-    const initialRenderHandle = await triggerCardRender(data.id, "initial");
-
-    console.log(
-      "[Server] Task is running with handle:",
-      initialRenderHandle.id,
-    );
+    const initialRenderResult = await triggerCardRender(data.id, "initial");
+    console.log("[Server] Initial render triggered:", initialRenderResult);
 
     // Trigger card render generation for anomaly mode if anomaly is uncommon
     if (parsedCardData.anomalyMode.uncommon) {
-      const anomalyRenderHandle = await triggerCardRender(data.id, "anomaly");
-
-      console.log(
-        "[Server] Task is running with handle:",
-        anomalyRenderHandle.id,
-      );
+      const anomalyRenderResult = await triggerCardRender(data.id, "anomaly");
+      console.log("[Server] Anomaly render triggered:", anomalyRenderResult);
     }
 
     return new Response(JSON.stringify({ success: true, data }), {
