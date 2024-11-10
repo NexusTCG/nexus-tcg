@@ -1,6 +1,11 @@
+// Setup type definitions for built-in Supabase Runtime APIs
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+// Import the Trigger.dev SDK - replace "<your-sdk-version>" with the version of the SDK you are using, e.g. "3.0.0". You can find this in your package.json file.
+import { tasks } from "npm:@trigger.dev/sdk@3.0.0/v3";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.46.1";
 import puppeteer from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
+import type { helloWorldTask } from "../../../trigger/example.ts";
 
 serve(async (req) => {
   const supabase = createClient(
@@ -13,6 +18,17 @@ serve(async (req) => {
   // Get the payload from the request
   const { record } = await req.json();
   const cardId = record.id;
+
+  // Testing trigger.dev task
+  Deno.serve(async () => {
+    await tasks.trigger<typeof helloWorldTask>(
+      // Your task id
+      "hello-world",
+      // Your task payload
+      "Hello from a Supabase Edge Function!",
+    );
+    return new Response("OK");
+  });
 
   try {
     // Launch browser and take screenshot
