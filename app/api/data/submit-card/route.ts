@@ -2,7 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 // Trigger
-import { triggerCardRender } from "@/app/server/actions";
+// import { triggerCardRender } from "@/app/server/actions";
 // Types
 import { CardFormSchema } from "@/app/lib/schemas/database";
 
@@ -49,14 +49,14 @@ export async function POST(req: NextRequest) {
     console.log("[Server] Card submitted successfully:", data);
 
     // Trigger card render generation for initial mode
-    const initialRenderResult = await triggerCardRender(data.id, "initial");
-    console.log("[Server] Initial render triggered:", initialRenderResult);
+    // const initialRenderResult = await triggerCardRender(data.id, "initial");
+    // console.log("[Server] Initial render triggered:", initialRenderResult);
 
     // Trigger card render generation for anomaly mode if anomaly is uncommon
-    if (parsedCardData.anomalyMode.uncommon) {
-      const anomalyRenderResult = await triggerCardRender(data.id, "anomaly");
-      console.log("[Server] Anomaly render triggered:", anomalyRenderResult);
-    }
+    // if (parsedCardData.anomalyMode.uncommon) {
+    //   const anomalyRenderResult = await triggerCardRender(data.id, "anomaly");
+    //   console.log("[Server] Anomaly render triggered:", anomalyRenderResult);
+    // }
 
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
