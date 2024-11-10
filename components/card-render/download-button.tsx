@@ -4,8 +4,6 @@ import React, { useState } from "react";
 // Utils
 import { toPng } from "html-to-image";
 import { createClient } from "@/app/utils/supabase/client";
-// Server
-import { triggerCardRender } from "@/app/server/actions";
 // Components
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -68,10 +66,16 @@ export function DownloadButton({
         await downloadImage(renderUrl, `card-${cardId}-${mode}.png`);
         toast("Your card has been downloaded.");
       } else {
-        // Use the server action to trigger render generation
-        const result = await triggerCardRender(cardId.toString(), mode);
+        // Call API route to trigger Supabase Edge Function to generate card render
+        const response = await fetch("/api/data/generate-card-render", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cardId: cardId.toString(), mode }),
+        });
 
-        if (!result) {
+        if (!response.ok) {
           throw new Error("Failed to trigger render generation");
         }
 
