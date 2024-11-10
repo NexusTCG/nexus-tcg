@@ -22,13 +22,12 @@ export async function GET(
     const searchParams = request.nextUrl.searchParams;
 
     // Parse search parameters
-    // const id = searchParams.get("id")
-    //   ? parseInt(searchParams.get("id")!, 10)
-    //   : undefined;
-    const limit = searchParams.get("limit")
-      ? parseInt(searchParams.get("limit")!)
+    const id = searchParams.get("id")
+      ? parseInt(searchParams.get("id")!, 10)
       : undefined;
-
+    const limit = searchParams.get("limit")
+      ? parseInt(searchParams.get("limit")!, 10)
+      : undefined;
     const search = searchParams.get("search") || "";
     const rawFilter = searchParams.get("filter");
     const filter = VALID_FILTERS.includes(rawFilter || "") ? rawFilter : "all";
@@ -44,7 +43,7 @@ export async function GET(
     };
 
     console.log("[Server] Fetching cards", {
-      // id,
+      id,
       search,
       limit,
       filter,
@@ -54,7 +53,7 @@ export async function GET(
     });
 
     const cards = await getCardsDTO({
-      // id,
+      id,
       search,
       limit,
       filter: filter || undefined,
