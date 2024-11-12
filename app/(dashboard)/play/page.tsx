@@ -25,10 +25,6 @@ export default function Play() {
         items-start
         w-full
         h-[calc(100vh-60px)]
-        px-4
-        md:px-8
-        py-4
-        gap-8
       "
     >
       <Cal
