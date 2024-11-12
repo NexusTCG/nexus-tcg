@@ -26,7 +26,11 @@ export const takeAndUploadScreenshotTask = task({
       const page = await browser.newPage();
 
       // Set viewport size
-      await page.setViewport({ width: 1200, height: 1200 });
+      await page.setViewport({
+        width: 2400,
+        height: 2400,
+        deviceScaleFactor: 4, // Increased from 2 to match html-to-image quality
+      });
 
       // Navigate to the card page
       await page.goto(
@@ -69,7 +73,7 @@ export const takeAndUploadScreenshotTask = task({
       const { error: uploadError } = await supabase
         .storage
         .from("card-renders")
-        .upload(`${cardId}-initial.png`, screenshot, {
+        .upload(`card-${cardId}-initial.png`, screenshot, {
           contentType: "image/png",
           upsert: true,
         });
