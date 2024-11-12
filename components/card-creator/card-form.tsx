@@ -318,7 +318,11 @@ export default function CardForm({
   // Check for saved draft on mount
   useEffect(() => {
     const savedForm = getCardFormFromStorage();
-    if (savedForm) {
+    if (
+      savedForm &&
+      !hasToastedDraftAlert &&
+      savedForm.formData !== defaultFormValues
+    ) {
       const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
       setHasToastedDraftAlert(true);
 
