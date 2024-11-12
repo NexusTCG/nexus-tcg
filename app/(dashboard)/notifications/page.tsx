@@ -1,8 +1,13 @@
 import React from "react";
+// Utils
+import { notFound } from "next/navigation";
 // Custom Components
 import { NotificationsTable } from "@/components/notifications/notifications-table";
 
 export default function Notifications() {
+  // TEMPORARY: Remove this once notifications are implemented
+  notFound();
+
   return (
     <div
       id="notifications-page-container"

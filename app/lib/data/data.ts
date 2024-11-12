@@ -15,11 +15,11 @@ import {
 import {
   MdDesignServices,
   MdHome,
-  MdNotifications,
   MdOutlineBook,
-  MdOutlineDifference,
   MdOutlineLayers,
   MdOutlinePeople,
+  // MdNotifications,
+  // MdOutlineDifference,
 } from "react-icons/md";
 
 export const navItems = [
@@ -44,13 +44,14 @@ export const navItems = [
     requiresUser: false,
     internalUrl: true,
   },
-  {
-    href: "/notifications",
-    icon: MdNotifications,
-    label: "Notifications",
-    requiresUser: true,
-    internalUrl: true,
-  },
+  // TEMPORARILY REMOVED
+  // {
+  //   href: "/notifications",
+  //   icon: MdNotifications,
+  //   label: "Notifications",
+  //   requiresUser: true,
+  //   internalUrl: true,
+  // },
 ];
 
 export const secondaryNavItems = [
@@ -68,12 +69,6 @@ export const secondaryNavItems = [
     requiresUser: true,
     internalUrl: true,
   },
-  // {
-  //   href: "/changelog",
-  //   icon: MdOutlineDifference,
-  //   label: "Changelog",
-  //   internalUrl: true,
-  // },
 ];
 
 export const socialChannels = {
