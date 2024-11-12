@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import React, { useState, useCallback, useEffect, useRef } from "react"
-import { useFormContext } from 'react-hook-form';
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useFormContext } from "react-hook-form";
 import { useOverlay } from "@/app/utils/context/OverlayContext";
 import { useMode } from "@/app/utils/context/CardModeContext";
 // Utils
-import Image from 'next/image';
-import clsx from 'clsx';
-import posthog from 'posthog-js';
+import Image from "next/image";
+import clsx from "clsx";
+import posthog from "posthog-js";
 // Data
 import { artPromptOptions } from "@/app/lib/data/components";
 // Validation
@@ -20,17 +20,17 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 // Icons
 import { X, Loader2 } from "lucide-react";
 
@@ -38,7 +38,9 @@ const MAX_PROMPT_LENGTH = 100;
 const MAX_ART_GENERATIONS = 5;
 
 export default function CardArtSheet() {
-  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: number | null }>({});  
+  const [selectedOptions, setSelectedOptions] = useState<{
+    [key: string]: number | null;
+  }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [tooltipContent, setTooltipContent] = useState<string | null>(null);
@@ -49,36 +51,37 @@ export default function CardArtSheet() {
   const { watch, control, setValue } = useFormContext();
   const { mode } = useMode();
 
-  const form = watch()
+  const form = watch();
   const artOptions = form[`${mode}Mode`].art_options;
   const selectedArt = form[`${mode}Mode`].art_selected;
-  const characterCount = form.initialMode.prompt_art 
-    ? form.initialMode.prompt_art.length 
+  const anomalyIsUncommon = form.anomalyMode.uncommon;
+  const characterCount = form.initialMode.prompt_art
+    ? form.initialMode.prompt_art.length
     : 0;
 
   function getSelectedOptionName(
-    sectionKey: string, 
+    sectionKey: string,
     optionId: number | null
   ): string | null {
     if (optionId === null) return null;
     const section = artPromptOptions[sectionKey];
-    const option = section.options.find(opt => opt.id === optionId);
+    const option = section.options.find((opt) => opt.id === optionId);
     return option ? option.option : null;
   }
 
-  const handleOptionClick = useCallback((
-    section: string, 
-    optionId: number
-  ) => {
-    setSelectedOptions(prev => ({
+  const handleOptionClick = useCallback((section: string, optionId: number) => {
+    setSelectedOptions((prev) => ({
       ...prev,
-      [section]: prev[section] === optionId ? null : optionId
+      [section]: prev[section] === optionId ? null : optionId,
     }));
   }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (tooltipRef.current && !tooltipRef.current.contains(event.target as Node)) {
+      if (
+        tooltipRef.current &&
+        !tooltipRef.current.contains(event.target as Node)
+      ) {
         setTooltipContent(null);
       }
     }
@@ -94,16 +97,14 @@ export default function CardArtSheet() {
       .filter(([_, value]) => value !== null)
       .map(([key, value]) => ({
         section: key,
-        option: value as ArtPromptOptionType["id"]
+        option: value as ArtPromptOptionType["id"],
       }));
 
     setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
   }, [selectedOptions, setValue, mode]);
 
-  function handleBadgeClick(
-    sectionKey: string
-  ) {
-    setSelectedOptions(prev => {
+  function handleBadgeClick(sectionKey: string) {
+    setSelectedOptions((prev) => {
       const newOptions = { ...prev };
       delete newOptions[sectionKey];
 
@@ -111,7 +112,7 @@ export default function CardArtSheet() {
         .filter(([_, value]) => value !== null)
         .map(([key, value]) => ({
           section: key,
-          option: value as ArtPromptOptionType["id"]
+          option: value as ArtPromptOptionType["id"],
         }));
 
       setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
@@ -125,45 +126,48 @@ export default function CardArtSheet() {
       toast.error(
         `You've reached the maximum of ${MAX_ART_GENERATIONS} art generations for ${
           mode === "initial" ? "initial mode" : "anomaly mode"
-        }.`)
+        }.`
+      );
       return;
     }
 
     setIsGenerating(true);
-    toast("Generating art...")
+    toast("Generating art...");
 
     const prompt = form[`${mode}Mode`].prompt_art;
-    const artDirections = Object.values(selectedOptions).filter(Boolean).join(", ");
+    const artDirections = Object.values(selectedOptions)
+      .filter(Boolean)
+      .join(", ");
     const fullPrompt = `${prompt}. Art style: ${artDirections}`;
 
     try {
-      const response = await fetch('/api/data/generate-art', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/data/generate-art", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: fullPrompt }),
       });
 
       if (!response.ok) {
-        toast.error('Art generation API call failed!')
-        throw new Error('Art generation API call failed')
-      };
+        toast.error("Art generation API call failed!");
+        throw new Error("Art generation API call failed");
+      }
 
       const { imageUrl } = await response.json();
 
-      posthog.capture('art_generated', {
+      posthog.capture("art_generated", {
         imageUrl,
         artOptions,
         prompt,
         artDirections,
         fullPrompt,
-      })
-      toast.success('Art generated!')
+      });
+      toast.success("Art generated!");
 
       setValue(`${mode}Mode.art_options`, [...artOptions, imageUrl]);
       setValue(`${mode}Mode.art_selected`, artOptions.length);
     } catch (error) {
-      console.error('Error generating art:', error);
-      toast.error('Art generation failed!')
+      console.error("Error generating art:", error);
+      toast.error("Art generation failed!");
     } finally {
       setIsGenerating(false);
       setIsSheetOpen(false);
@@ -172,21 +176,21 @@ export default function CardArtSheet() {
   }
 
   return (
-    <Sheet 
-      open={isSheetOpen} 
+    <Sheet
+      open={isSheetOpen}
       onOpenChange={(open) => {
         if (!isGenerating) {
           setIsSheetOpen(open);
-          open 
-            ? showOverlay() 
-            : hideOverlay();
+          open ? showOverlay() : hideOverlay();
         }
       }}
     >
-      <SheetTrigger disabled={isGenerating}>
+      <SheetTrigger
+        disabled={isGenerating || (mode === "anomaly" && anomalyIsUncommon)}
+      >
         <div
           id="card-art-container"
-          style={{ 
+          style={{
             borderRadius: "0 0 20px 20px",
             position: "relative",
             overflow: "hidden",
@@ -205,9 +209,9 @@ export default function CardArtSheet() {
           "
         >
           <div
-            style={{ 
+            style={{
               borderRadius: "0 0 20px 20px",
-              backdropFilter: "blur(1px)" 
+              backdropFilter: "blur(1px)",
             }}
             className="
               absolute 
@@ -225,18 +229,21 @@ export default function CardArtSheet() {
             "
           >
             <p className="text-white text-xl">
-            {form.initialMode.art_options.length > 0 ? "Update art" : "Generate art"}
+              {form.initialMode.art_options.length > 0
+                ? "Update art"
+                : "Generate art"}
             </p>
           </div>
           <div className="w-full h-full overflow-hidden">
             <Image
               src={
-                artOptions[selectedArt] || 
-                "/images/default-art.jpg"
+                anomalyIsUncommon && mode === "anomaly"
+                  ? "/images/default-art.jpg"
+                  : artOptions[selectedArt] || "/images/default-art.jpg"
               }
               alt={`${form[`${mode}Mode`].name} by ${form.username}`}
               fill
-              style={{ 
+              style={{
                 objectFit: "cover",
               }}
             />
@@ -279,8 +286,14 @@ export default function CardArtSheet() {
           >
             <FormField
               control={control}
-              name={mode === "initial" ? "initialMode.prompt_art" : "anomalyMode.prompt_art"}
-              disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
+              name={
+                mode === "initial"
+                  ? "initialMode.prompt_art"
+                  : "anomalyMode.prompt_art"
+              }
+              disabled={
+                isGenerating || artOptions.length >= MAX_ART_GENERATIONS
+              }
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormControl>
@@ -288,7 +301,7 @@ export default function CardArtSheet() {
                       <Textarea
                         placeholder="Write a prompt describing your card's art"
                         className={clsx("w-full h-[100px] pr-16 resize-none", {
-                          "opacity-50": isGenerating
+                          "opacity-50": isGenerating,
                         })}
                         maxLength={MAX_PROMPT_LENGTH}
                         {...field}
@@ -303,12 +316,14 @@ export default function CardArtSheet() {
               )}
             />
             <div className="flex flex-col gap-2 w-full">
-            <Button
+              <Button
                 type="button"
                 onClick={handleGenerateArt}
                 size="sm"
                 className="w-full font-semibold"
-                disabled={isGenerating || artOptions.length >= MAX_ART_GENERATIONS}
+                disabled={
+                  isGenerating || artOptions.length >= MAX_ART_GENERATIONS
+                }
               >
                 {isGenerating ? (
                   <div className="flex items-center justify-center">
@@ -320,54 +335,57 @@ export default function CardArtSheet() {
                 )}
               </Button>
               <small className="flex items-center space-x-0.5 font-medium">
-                <span className={clsx(
-                    "font-bold",
-                  {
+                <span
+                  className={clsx("font-bold", {
                     "text-red-600": artOptions.length >= MAX_ART_GENERATIONS,
-                    "text-red-500": artOptions.length >= MAX_ART_GENERATIONS * 0.8,
-                    "text-red-400": artOptions.length >= MAX_ART_GENERATIONS * 0.6,
-                  }
-                )}
+                    "text-red-500":
+                      artOptions.length >= MAX_ART_GENERATIONS * 0.8,
+                    "text-red-400":
+                      artOptions.length >= MAX_ART_GENERATIONS * 0.6,
+                  })}
                 >
                   {artOptions.length}
                 </span>
                 <span className="opacity-40">/</span>
-                <span className="font-semibold">{MAX_ART_GENERATIONS}{" "}</span>
+                <span className="font-semibold">{MAX_ART_GENERATIONS} </span>
                 <span className="opacity-80 font-normal">
-                  art generations used for {
-                    mode === "initial" 
-                    ? "initial mode" 
-                    : "anomaly mode"
-                  }
+                  art generations used for{" "}
+                  {mode === "initial" ? "initial mode" : "anomaly mode"}
                 </span>
               </small>
             </div>
             {Object.keys(selectedOptions).length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {Object.entries(selectedOptions).map(([sectionKey, optionId]) => {
-                  const optionName = getSelectedOptionName(sectionKey, optionId);
-                  if (optionName) {
-                    return (
-                    <Badge
-                      key={sectionKey}
-                      variant="secondary"
-                      onClick={() => handleBadgeClick(sectionKey)}
-                      className="
+                {Object.entries(selectedOptions).map(
+                  ([sectionKey, optionId]) => {
+                    const optionName = getSelectedOptionName(
+                      sectionKey,
+                      optionId
+                    );
+                    if (optionName) {
+                      return (
+                        <Badge
+                          key={sectionKey}
+                          variant="secondary"
+                          onClick={() => handleBadgeClick(sectionKey)}
+                          className="
                         hover:opacity-80
                         text-xs 
                         font-normal 
                         pr-1.5
                         cursor-pointer
                       "
-                    >
-                      {optionName}
-                      <X className="inline-block ml-1 h-3 w-3" />
-                    </Badge>
-                  );
-                }
-                return null;
-              })}
-            </div>)}
+                        >
+                          {optionName}
+                          <X className="inline-block ml-1 h-3 w-3" />
+                        </Badge>
+                      );
+                    }
+                    return null;
+                  }
+                )}
+              </div>
+            )}
           </div>
         </SheetHeader>
         <Separator />
@@ -384,73 +402,76 @@ export default function CardArtSheet() {
             h-full
           "
         >
-          {Object.entries(artPromptOptions).map((
-            [sectionKey, section], index, array
-          ) => {
-            if (
-              sectionKey === "framing" && (
-                !selectedOptions["subject"] || 
-                selectedOptions["subject"] === 1
-              )) {
-              return null;
-            }
+          {Object.entries(artPromptOptions).map(
+            ([sectionKey, section], index, array) => {
+              if (
+                sectionKey === "framing" &&
+                (!selectedOptions["subject"] ||
+                  selectedOptions["subject"] === 1)
+              ) {
+                return null;
+              }
 
-            return (
-              <div
-                key={sectionKey}
-                className={clsx(
-                  "flex flex-col gap-2 w-full p-4",
-                  {
+              return (
+                <div
+                  key={sectionKey}
+                  className={clsx("flex flex-col gap-2 w-full p-4", {
                     "border-b border-zinc-700": index !== array.length - 1,
-                  }
-                )}
-              >
-                <h4>{section.title}</h4>
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {section.options.map((option: ArtPromptOptionType) => {
-                    const BadgeComponent = (
-                      <Badge
-                        key={option.id}
-                        variant={selectedOptions[sectionKey] === option.id ? "default" : "outline"}
-                        className={clsx(
-                          "font-normal cursor-pointer transition-colors duration-200",
-                          selectedOptions[sectionKey] === option.id
-                            ? "bg-primary text-primary-foreground" 
-                            : "bg-background",
-                          "hover:bg-primary/90 hover:text-primary-foreground"
-                        )}
-                        onClick={() => handleOptionClick(sectionKey, option.id)}
-                        onMouseEnter={(e) => {
-                          if (option.image) {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setTooltipContent(option.image);
-                            setTooltipPosition({ 
-                              x: rect.left - 210, // 200px width + 10px gap
-                              y: rect.top
-                            });
-                          }
-                        }}
-                        onMouseLeave={() => setTooltipContent(null)}
-                      >
-                        {option.option}
-                      </Badge>
-                    );
-
-                    return BadgeComponent;
                   })}
-                </div>
+                >
+                  <h4>{section.title}</h4>
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {section.options.map((option: ArtPromptOptionType) => {
+                      const BadgeComponent = (
+                        <Badge
+                          key={option.id}
+                          variant={
+                            selectedOptions[sectionKey] === option.id
+                              ? "default"
+                              : "outline"
+                          }
+                          className={clsx(
+                            "font-normal cursor-pointer transition-colors duration-200",
+                            selectedOptions[sectionKey] === option.id
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-background",
+                            "hover:bg-primary/90 hover:text-primary-foreground"
+                          )}
+                          onClick={() =>
+                            handleOptionClick(sectionKey, option.id)
+                          }
+                          onMouseEnter={(e) => {
+                            if (option.image) {
+                              const rect =
+                                e.currentTarget.getBoundingClientRect();
+                              setTooltipContent(option.image);
+                              setTooltipPosition({
+                                x: rect.left - 210, // 200px width + 10px gap
+                                y: rect.top,
+                              });
+                            }
+                          }}
+                          onMouseLeave={() => setTooltipContent(null)}
+                        >
+                          {option.option}
+                        </Badge>
+                      );
 
-                {/* Custom Tooltip cause shadcn/ui tooltip doesn't work inside SheetContent */}
-                {tooltipContent && (
-                  <div
-                    ref={tooltipRef}
-                    style={{
-                      position: 'fixed',
-                      top: `${tooltipPosition.y}px`,
-                      left: `${tooltipPosition.x}px`,
-                      zIndex: 9999,
-                    }}
-                    className="
+                      return BadgeComponent;
+                    })}
+                  </div>
+
+                  {/* Custom Tooltip cause shadcn/ui tooltip doesn't work inside SheetContent */}
+                  {tooltipContent && (
+                    <div
+                      ref={tooltipRef}
+                      style={{
+                        position: "fixed",
+                        top: `${tooltipPosition.y}px`,
+                        left: `${tooltipPosition.x}px`,
+                        zIndex: 9999,
+                      }}
+                      className="
                       w-[200px]
                       h-[150px]
                       overflow-hidden 
@@ -460,20 +481,21 @@ export default function CardArtSheet() {
                       shadow-black/60
                       rounded-md
                     "
-                  >
-                    <Image
-                      src={tooltipContent}
-                      alt="Option preview"
-                      fill
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                    >
+                      <Image
+                        src={tooltipContent}
+                        alt="Option preview"
+                        fill
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            }
+          )}
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
