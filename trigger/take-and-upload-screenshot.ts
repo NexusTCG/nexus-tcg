@@ -14,7 +14,9 @@ export const takeAndUploadScreenshotTask = task({
       process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
     );
 
-    const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
+    // TODO: Update to custom URL
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ??
+      "https://nexus-tcg.vercel.app/";
 
     try {
       // Launch browser and take screenshot
