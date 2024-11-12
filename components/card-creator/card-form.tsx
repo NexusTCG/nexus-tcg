@@ -1,7 +1,7 @@
 "use client";
 
 // Hooks
-import React, { useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useMode } from "@/app/utils/context/CardModeContext";
@@ -9,6 +9,12 @@ import { useMode } from "@/app/utils/context/CardModeContext";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import PostHogClient from "@/app/utils/posthog/posthog";
+import {
+  calculateTimeAgo,
+  getCardFormFromStorage,
+  saveCardFormToStorage,
+  clearCardFormStorage,
+} from "@/app/utils/actions/actions";
 // Validation
 import { ZodError } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,9 +57,12 @@ export default function CardForm({
 
   const { mode, setMode } = useMode();
 
+  // Load saved form data on initial render
+  const savedForm = getCardFormFromStorage();
+
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
-    defaultValues: {
+    defaultValues: savedForm?.formData || {
       nexus_card_data: {
         user_id: currentUserId || null,
         created_at: null,
@@ -266,6 +275,8 @@ export default function CardForm({
 
         toast("Card saved successfully!");
         toast("Redirecting...");
+
+        clearCardFormStorage();
         router.push(`/cards/${insertData.data.id}?mode=initial`);
       } else {
         toast("Failed to save card!");
@@ -291,6 +302,50 @@ export default function CardForm({
       }
     }
   }
+
+  // Save form data to local storage on change
+  useEffect(() => {
+    const subscription = methods.watch((formData) => {
+      saveCardFormToStorage(formData);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [methods.watch]);
+
+  // Alert user if they have a saved draft
+  useEffect(() => {
+    const savedForm = getCardFormFromStorage();
+    if (savedForm) {
+      const lastUpdated = new Date(savedForm.lastUpdated);
+      const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
+
+      toast.info("Found a saved draft from " + timeAgo, {
+        action: {
+          label: "Discard",
+          onClick: () => {
+            clearCardFormStorage();
+            methods.reset();
+          },
+        },
+      });
+    }
+  }, []);
+
+  // Warn user if they try to leave the page without saving
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const formData = methods.getValues();
+      const savedForm = getCardFormFromStorage();
+
+      if (JSON.stringify(formData) !== JSON.stringify(savedForm?.formData)) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [methods]);
 
   // Debugging
   // useEffect(() => {

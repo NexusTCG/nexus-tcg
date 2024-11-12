@@ -6,6 +6,7 @@ import {
   SocialPlatform,
   SocialShareData,
 } from "@/app/lib/types/components";
+import { StoredCardForm } from "@/app/lib/types/forms";
 // Data
 import {
   energyOrder,
@@ -102,4 +103,32 @@ export async function shareToSocial(
       error: error instanceof Error ? error.message : String(error),
     };
   }
+}
+
+// --> CARD CREATION <-- //
+
+export function saveCardFormToStorage(formData: any) {
+  try {
+    const storedForm: StoredCardForm = {
+      lastUpdated: new Date().toISOString(),
+      formData,
+    };
+    localStorage.setItem("nexus-card-form-draft", JSON.stringify(storedForm));
+  } catch (error) {
+    console.error("Error saving card form to storage:", error);
+  }
+}
+
+export function getCardFormFromStorage(): StoredCardForm | null {
+  try {
+    const stored = localStorage.getItem("nexus-card-form-draft");
+    return stored ? JSON.parse(stored) : null;
+  } catch (error) {
+    console.error("Error retrieving card form from storage:", error);
+    return null;
+  }
+}
+
+export function clearCardFormStorage() {
+  localStorage.removeItem("nexus-card-form-draft");
 }

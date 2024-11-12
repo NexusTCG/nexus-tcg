@@ -24,3 +24,9 @@ export type CardCommentFormType = {
   created_at: string;
   updated_at: string;
 };
+
+// Type for local storage of form state
+export type StoredCardForm = {
+  lastUpdated: string;
+  formData: any;
+};
