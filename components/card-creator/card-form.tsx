@@ -306,10 +306,28 @@ export default function CardForm({
     }
   }
 
+  // Check if form data matches default values
+  function isFormDataDefault(formData: any) {
+    // Deep cmpare form data with default values
+    const formDataCopy = JSON.parse(JSON.stringify(formData));
+    const defaultValuesCopy = JSON.parse(JSON.stringify(defaultFormValues));
+
+    // Preserve user-specific fields from comparison
+    formDataCopy.nexus_card_data.user_id =
+      defaultValuesCopy.nexus_card_data.user_id;
+    formDataCopy.nexus_card_data.username =
+      defaultValuesCopy.nexus_card_data.username;
+
+    // Compare the two objects
+    return JSON.stringify(formDataCopy) === JSON.stringify(defaultValuesCopy);
+  }
+
   // Save form data to local storage on change
   useEffect(() => {
     const subscription = watch((formData) => {
-      saveCardFormToStorage(formData);
+      if (!isFormDataDefault(formData)) {
+        saveCardFormToStorage(formData);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -321,7 +339,7 @@ export default function CardForm({
     if (
       savedForm &&
       !hasToastedDraftAlert &&
-      savedForm.formData !== defaultFormValues
+      !isFormDataDefault(savedForm.formData)
     ) {
       const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
       setHasToastedDraftAlert(true);
@@ -338,7 +356,7 @@ export default function CardForm({
         duration: 10000,
       });
     }
-  }, [reset, hasToastedDraftAlert, defaultFormValues]);
+  }, [reset, hasToastedDraftAlert]);
 
   // Debugging
   // useEffect(() => {
