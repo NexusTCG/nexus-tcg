@@ -10,7 +10,7 @@ export default function Play() {
       cal("ui", {
         styles: { branding: { brandColor: "#000000" } },
         hideEventTypeDetails: false,
-        layout: "week_view",
+        layout: "month_view",
       });
     })();
   }, []);
