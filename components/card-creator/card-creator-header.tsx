@@ -2,22 +2,19 @@
 
 // Hooks
 import React from "react";
-import { useFormContext } from 'react-hook-form';
+import { useFormContext } from "react-hook-form";
 import { useMode } from "@/app/utils/context/CardModeContext";
 // Components
 import { Button } from "@/components/ui/button";
 
 export default function CardCreatorHeader() {
   const { mode } = useMode();
-  const { 
+  const {
     watch,
-    formState: { 
-      isSubmitting,
-      isValid
-    } 
+    formState: { isSubmitting, isValid },
   } = useFormContext();
   const cardName = watch("initialMode.name");
-  
+
   return (
     <div
       id="card-creator-header"
@@ -56,5 +53,5 @@ export default function CardCreatorHeader() {
         Finish
       </Button>
     </div>
-  )
+  );
 }

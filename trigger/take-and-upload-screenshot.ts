@@ -2,13 +2,9 @@ import { logger, task } from "@trigger.dev/sdk/v3";
 import puppeteer from "puppeteer";
 import { createClient } from "@supabase/supabase-js";
 
-type TaskPayload = {
-  cardId: string;
-};
-
 export const takeAndUploadScreenshotTask = task({
   id: "take-and-upload-screenshot",
-  run: async ({ payload }: { payload: TaskPayload }) => {
+  run: async (payload: { cardId: string }) => {
     const { cardId } = payload;
     logger.info("Starting screenshot task for card", { cardId });
 

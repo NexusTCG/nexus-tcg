@@ -148,7 +148,13 @@ export default function CardForm({
 
       toast("Uploading card art...");
       // Upload initial mode art
-      if (data.initialMode.art_options.length > 0) {
+
+      // TEMPORARILY DISABLED
+      // Remove data.initialMode.art_options check
+      if (
+        data.initialMode.art_options &&
+        data.initialMode.art_options.length > 0
+      ) {
         const response = await fetch("/api/data/upload-generated-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
