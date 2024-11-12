@@ -57,63 +57,65 @@ export default function CardForm({
 
   const { mode, setMode } = useMode();
 
+  const defaultFormValues = {
+    nexus_card_data: {
+      user_id: currentUserId || null,
+      created_at: null,
+      updated_at: null,
+      username: userProfile?.username || "Username",
+      approved: false,
+      grade: "core",
+    },
+    initialMode: {
+      render: null,
+      name: "",
+      type: "agent",
+      type_sub: [],
+      mythic: false,
+      text: "",
+      keywords: [],
+      lore: "",
+      prompt_art: "",
+      art_options: [],
+      art_direction_options: [],
+      art_selected: 0,
+      energy_value: 0,
+      energy_cost: {
+        light: 0,
+        storm: 0,
+        dark: 0,
+        chaos: 0,
+        growth: 0,
+        void: 0,
+      },
+      speed: 1,
+      attack: 0,
+      defense: 0,
+      reach: false,
+    },
+    anomalyMode: {
+      render: null,
+      name: "",
+      mythic: false,
+      uncommon: false,
+      text: "",
+      lore: "",
+      prompt_art: "",
+      art_options: [],
+      art_direction_options: [],
+      art_selected: 0,
+    },
+  };
+
   // Load saved form data on initial render
   const savedForm = getCardFormFromStorage();
 
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
-    defaultValues: savedForm?.formData || {
-      nexus_card_data: {
-        user_id: currentUserId || null,
-        created_at: null,
-        updated_at: null,
-        username: userProfile?.username || "Username",
-        approved: false,
-        grade: "core",
-      },
-      initialMode: {
-        render: null,
-        name: "",
-        type: "agent",
-        type_sub: [],
-        mythic: false,
-        text: "",
-        keywords: [],
-        lore: "",
-        prompt_art: "",
-        art_options: [],
-        art_direction_options: [],
-        art_selected: 0,
-        energy_value: 0,
-        energy_cost: {
-          light: 0,
-          storm: 0,
-          dark: 0,
-          chaos: 0,
-          growth: 0,
-          void: 0,
-        },
-        speed: 1,
-        attack: 0,
-        defense: 0,
-        reach: false,
-      },
-      anomalyMode: {
-        render: null,
-        name: "",
-        mythic: false,
-        uncommon: false,
-        text: "",
-        lore: "",
-        prompt_art: "",
-        art_options: [],
-        art_direction_options: [],
-        art_selected: 0,
-      },
-    },
+    defaultValues: savedForm?.formData || defaultFormValues,
   });
 
-  const { setValue } = methods;
+  const { setValue, reset, watch } = methods;
 
   const cardVariants = {
     active: {
@@ -305,18 +307,17 @@ export default function CardForm({
 
   // Save form data to local storage on change
   useEffect(() => {
-    const subscription = methods.watch((formData) => {
+    const subscription = watch((formData) => {
       saveCardFormToStorage(formData);
     });
 
     return () => subscription.unsubscribe();
-  }, [methods.watch]);
+  }, [watch]);
 
-  // Alert user if they have a saved draft
+  // Check for saved draft on mount
   useEffect(() => {
     const savedForm = getCardFormFromStorage();
     if (savedForm) {
-      const lastUpdated = new Date(savedForm.lastUpdated);
       const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
 
       toast.info("Found a saved draft from " + timeAgo, {
@@ -324,28 +325,14 @@ export default function CardForm({
           label: "Discard",
           onClick: () => {
             clearCardFormStorage();
-            methods.reset();
+            reset(defaultFormValues);
+            toast.success("Draft discarded");
           },
         },
+        duration: 10000,
       });
     }
-  }, []);
-
-  // Warn user if they try to leave the page without saving
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const formData = methods.getValues();
-      const savedForm = getCardFormFromStorage();
-
-      if (JSON.stringify(formData) !== JSON.stringify(savedForm?.formData)) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [methods]);
+  }, [reset, defaultFormValues]);
 
   // Debugging
   // useEffect(() => {
