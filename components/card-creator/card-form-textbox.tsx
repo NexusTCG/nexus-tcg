@@ -36,7 +36,7 @@ export default function CardFormTextBox({ activeMode }: CardFormTextBoxProps) {
         bgColorClass50 || "bg-neutral-50"
       )}
     >
-      {activeMode === "initial" && cardGrade && cardType === "agent" && (
+      {activeMode === "initial" && cardGrade && cardType.includes("agent") && (
         <div className="flex-shrink-0">
           <KeywordSelect
             cardGrade={cardGrade ? cardGrade.toLowerCase() : "core"}
