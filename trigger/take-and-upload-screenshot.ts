@@ -25,16 +25,44 @@ export const takeAndUploadScreenshotTask = task({
       });
       const page = await browser.newPage();
 
+      // Set viewport size
+      await page.setViewport({ width: 1200, height: 1200 });
+
+      // Navigate to the card page
       await page.goto(
         `${siteUrl}/cards/${cardId}?mode=initial`,
         { waitUntil: "networkidle0" },
       );
+
+      // Wait for card element and hide unwanted elements
+      await page.evaluate(() => {
+        // Hide cookie banner
+        const cookieBanner = document.querySelector(
+          '[aria-label="Cookie Banner"]',
+        );
+        if (cookieBanner) {
+          (cookieBanner as HTMLElement).style.display = "none";
+        }
+
+        // Hide any navigation or header elements
+        const header = document.querySelector("header");
+        if (header) {
+          (header as HTMLElement).style.display = "none";
+        }
+      });
 
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {
         throw new Error("Card element not found");
       }
 
+      // Get the element's dimensions
+      const box = await element.boundingBox();
+      if (!box) {
+        throw new Error("Could not get element dimensions");
+      }
+
+      // Take screenshot of the element
       const screenshot = await element.screenshot({ type: "png" });
 
       // Upload to Supabase Storage
