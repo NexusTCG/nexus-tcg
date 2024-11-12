@@ -1,7 +1,7 @@
 "use client";
 
 // Hooks
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useMode } from "@/app/utils/context/CardModeContext";
@@ -53,8 +53,9 @@ export default function CardForm({
   userProfile,
 }: CardFormProps) {
   const posthog = PostHogClient();
-  const router = useRouter();
 
+  const [hasToastedDraftAlert, setHasToastedDraftAlert] = useState(false);
+  const router = useRouter();
   const { mode, setMode } = useMode();
 
   const defaultFormValues = {
@@ -319,6 +320,7 @@ export default function CardForm({
     const savedForm = getCardFormFromStorage();
     if (savedForm) {
       const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
+      setHasToastedDraftAlert(true);
 
       toast.info("Found a saved draft from " + timeAgo, {
         action: {
@@ -332,7 +334,7 @@ export default function CardForm({
         duration: 10000,
       });
     }
-  }, [reset, defaultFormValues]);
+  }, [reset, hasToastedDraftAlert, defaultFormValues]);
 
   // Debugging
   // useEffect(() => {
