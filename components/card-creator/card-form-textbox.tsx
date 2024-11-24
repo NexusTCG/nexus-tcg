@@ -37,7 +37,7 @@ export default function CardFormTextBox({ activeMode }: CardFormTextBoxProps) {
       )}
     >
       {activeMode === "initial" && cardGrade && cardType.includes("agent") && (
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 w-full">
           <KeywordSelect
             cardGrade={cardGrade ? cardGrade.toLowerCase() : "core"}
             truncateKeywords={

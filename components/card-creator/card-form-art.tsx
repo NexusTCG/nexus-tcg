@@ -186,7 +186,7 @@ export default function CardArtSheet() {
       }}
     >
       <SheetTrigger
-        disabled={isGenerating || (mode === "anomaly" && anomalyIsUncommon)}
+        disabled={isGenerating || (mode === "anomaly" && !anomalyIsUncommon)}
       >
         <div
           id="card-art-container"
@@ -237,7 +237,7 @@ export default function CardArtSheet() {
           <div className="w-full h-full overflow-hidden">
             <Image
               src={
-                anomalyIsUncommon && mode === "anomaly"
+                !anomalyIsUncommon && mode === "anomaly"
                   ? "/images/default-art.jpg"
                   : artOptions[selectedArt] || "/images/default-art.jpg"
               }
