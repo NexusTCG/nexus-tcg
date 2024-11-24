@@ -1,8 +1,17 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/app/utils/supabase/middleware";
 
 // Define public routes
-const publicRoutes = ["/", "/login", "/login/create-profile", "/cards", "/create", "/learn", "/play", "/profile/[slug]"];
+const publicRoutes = [
+  "/",
+  "/login",
+  "/login/create-profile",
+  "/cards",
+  // "/create",
+  "/learn",
+  // "/play",
+  "/profile/[slug]",
+];
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request);
@@ -10,7 +19,7 @@ export async function middleware(request: NextRequest) {
   const path = url.pathname;
 
   // Check if the current path is public
-  const isPublicRoute = publicRoutes.some(route => 
+  const isPublicRoute = publicRoutes.some((route) =>
     path === route || (route === "/cards" && path.startsWith("/cards/"))
   );
 
@@ -29,15 +38,17 @@ export async function middleware(request: NextRequest) {
   // If user is authenticated and tries to access login or home page, redirect to dashboard
   if (user && (path === "/" || path.includes("/login"))) {
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
       .single();
 
     if (profile?.username) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/home", request.url));
     } else if (path !== "/login/create-profile") {
-      return NextResponse.redirect(new URL("/login/create-profile", request.url));
+      return NextResponse.redirect(
+        new URL("/login/create-profile", request.url),
+      );
     }
   }
 
