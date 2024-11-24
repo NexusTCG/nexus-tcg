@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 // Hooks
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import React from "react";
+import { useFormContext } from "react-hook-form";
 import { useMode } from "@/app/utils/context/CardModeContext";
 // Types
-import { EnergyCost } from "@/app/lib/types/components"
+import { EnergyCost } from "@/app/lib/types/components";
 // Custom components
 import CardFormFooter from "@/components/card-creator/card-form-footer";
 import GradeCycler from "@/components/card-creator/grade-cycler";
@@ -14,19 +14,21 @@ type CardContainerProps = {
   children: React.ReactNode;
 };
 
-export default function CardContainer({
-  children 
-}: CardContainerProps) {
+export default function CardContainer({ children }: CardContainerProps) {
   const { mode } = useMode();
   const { watch } = useFormContext();
 
-  const username = watch("nexus_card_data.username")
-  const isUncommon: boolean = watch("anomalyMode.uncommon")
-  const energyCost: EnergyCost = watch('initialMode.energy_cost');
+  const username = watch("nexus_card_data.username");
+  const isUncommon: boolean = watch("anomalyMode.uncommon");
+  const energyCost: EnergyCost = watch("initialMode.energy_cost");
+  const cardType = watch("initialMode.type");
 
   function getCardFrameImage() {
+    const isSoftware = cardType.includes("software");
+    const isHardware = cardType.includes("hardware");
+
     if (mode === "anomaly") {
-      return "anomaly.jpg"
+      return "anomaly.jpg";
     }
 
     const activeTypes = Object.entries(energyCost)
@@ -34,33 +36,60 @@ export default function CardContainer({
       .map(([type]) => type);
 
     if (activeTypes.length === 0) {
-      return 'default.jpg';
+      if (isSoftware) {
+        return "default-software.jpg";
+      }
+      if (isHardware) {
+        return "default-hardware.jpg";
+      }
+      return "default.jpg";
     }
 
-    const nonVoidTypes = activeTypes
-      .filter(type => type !== 'void');
+    const nonVoidTypes = activeTypes.filter((type) => type !== "void");
 
     if (nonVoidTypes.length === 0) {
-      return 'void.jpg';
+      if (isSoftware) {
+        return "void-software.jpg";
+      }
+      if (isHardware) {
+        return "void-hardware.jpg";
+      }
+      return "void.jpg";
     }
 
     if (nonVoidTypes.length === 1) {
+      if (isSoftware) {
+        return `${nonVoidTypes[0]}-software.jpg`;
+      }
+      if (isHardware) {
+        return `${nonVoidTypes[0]}-hardware.jpg`;
+      }
       return `${nonVoidTypes[0]}.jpg`;
     }
 
     if (nonVoidTypes.length === 2) {
-      return `${nonVoidTypes.sort().join('-')}.jpg`;
+      if (isSoftware) {
+        return `${nonVoidTypes.sort().join("-")}-software.jpg`;
+      }
+      if (isHardware) {
+        return `${nonVoidTypes.sort().join("-")}-hardware.jpg`;
+      }
+      return `${nonVoidTypes.sort().join("-")}.jpg`;
     }
 
-    if (nonVoidTypes.length >= 3 || 
-      (
-        nonVoidTypes.length === 2 && 
-        activeTypes.includes('void')
-      )
+    if (
+      nonVoidTypes.length >= 3 ||
+      (nonVoidTypes.length === 2 && activeTypes.includes("void"))
     ) {
-      return 'multi.jpg';
+      if (isSoftware) {
+        return "multi-software.jpg";
+      }
+      if (isHardware) {
+        return "multi-hardware.jpg";
+      }
+      return "multi.jpg";
     }
-    return 'default.jpg';
+    return "default.jpg";
   }
 
   const cardFrame = getCardFrameImage();
@@ -98,16 +127,14 @@ export default function CardContainer({
         "
         style={{
           backgroundImage: `url(${cardFrameUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         {children}
       </div>
       <div className="w-full z-10">
-        {mode === "anomaly" && isUncommon === false ? (
-          null
-        ) : (
+        {mode === "anomaly" && isUncommon === false ? null : (
           <div className="absolute bottom-0 right-0 z-50 p-2 rounded-tl-2xl bg-black mb-1 mr-1 pl-">
             <GradeCycler />
           </div>
@@ -115,5 +142,5 @@ export default function CardContainer({
         <CardFormFooter username={username} />
       </div>
     </div>
-  )
+  );
 }
