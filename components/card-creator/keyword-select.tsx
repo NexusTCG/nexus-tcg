@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import clsx from "clsx";
 // Validation
 import { KeywordsDTO } from "@/app/lib/types/dto";
+import { RenderedKeywordType } from "@/app/lib/types/components";
 // Components
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -63,7 +64,7 @@ export default function KeywordSelect({
   }[cardGrade];
   function handleKeywordInputChange(keywordName: string, value: string) {
     const index = selectedKeywords.findIndex(
-      (kw: KeywordsDTO) => kw.name === keywordName
+      (kw: { name: string; input?: string }) => kw.name === keywordName
     );
     if (index > -1) {
       const updatedKeywords = [...selectedKeywords];
@@ -80,7 +81,7 @@ export default function KeywordSelect({
     // const index = selectedKeywords.findIndex((kw: { id: string }) => kw.id === keyword);
 
     const index = selectedKeywords.findIndex(
-      (kw: KeywordsDTO) => kw.name === keyword.name
+      (kw: RenderedKeywordType) => kw.name === keyword.name
     );
 
     if (index > -1) {
@@ -98,7 +99,7 @@ export default function KeywordSelect({
     }
   }
 
-  function renderKeyword(keyword: { name: string; input?: string }) {
+  function renderKeyword(keyword: RenderedKeywordType) {
     const keywordData = keywords?.find(
       (kw: KeywordsDTO) => kw.name === keyword.name
     );
@@ -116,30 +117,61 @@ export default function KeywordSelect({
   }
 
   function renderKeywords() {
+    if (!selectedKeywords.length) return null;
+
+    // Filter out keywords that have text input
+    const textInputKeywords = selectedKeywords.filter(
+      (keyword: RenderedKeywordType) => {
+        const keywordData = keywords?.find((kw) => kw.name === keyword.name);
+        return keywordData?.reminder?.includes("[");
+      }
+    );
+
+    // Filter out keywords that don't have text input
+    const standardKeywords = selectedKeywords.filter(
+      (keyword: RenderedKeywordType) => {
+        const keywordData = keywords?.find((kw) => kw.name === keyword.name);
+        return !keywordData?.reminder?.includes("[");
+      }
+    );
+
     if (truncateKeywords) {
-      return selectedKeywords.map(
-        (
-          keyword: {
-            name: string;
-            input?: string;
-          },
-          index: number
-        ) => (
-          <React.Fragment key={keyword.name}>
-            {renderKeyword(keyword)}
-            {index < selectedKeywords.length - 1 && (
-              <span className="mr-1">,</span>
-            )}
-          </React.Fragment>
-        )
+      return (
+        <div className="w-full flex flex-col gap-1">
+          {/* Render non-input keywords on the same line */}
+          {standardKeywords.length > 0 && (
+            <div className="flex flex-row flex-wrap">
+              {standardKeywords.map(
+                (keyword: RenderedKeywordType, index: number) => (
+                  <React.Fragment key={keyword.name}>
+                    {renderKeyword(keyword)}
+                    {index < standardKeywords.length - 1 && (
+                      <span className="mr-1">,</span>
+                    )}
+                  </React.Fragment>
+                )
+              )}
+            </div>
+          )}
+
+          {/* Render input keywords on separate lines */}
+          {textInputKeywords.map((keyword: RenderedKeywordType) => (
+            <div key={keyword.name} className="w-full">
+              {renderKeyword(keyword)}
+            </div>
+          ))}
+        </div>
       );
     } else {
-      return selectedKeywords.map(
-        (keyword: { name: string; input?: string }) => (
-          <div key={keyword.name} className="w-full">
-            {renderKeyword(keyword)}
-          </div>
-        )
+      // Render all keywords on separate lines when not truncated
+      return (
+        <div className="w-full flex flex-col gap-1">
+          {selectedKeywords.map((keyword: RenderedKeywordType) => (
+            <div key={keyword.name} className="w-full">
+              {renderKeyword(keyword)}
+            </div>
+          ))}
+        </div>
       );
     }
   }

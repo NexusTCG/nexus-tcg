@@ -65,3 +65,10 @@ export type SocialPlatform = keyof typeof socialPlatforms;
 export type SocialPlatforms = {
   [key in SocialPlatform]: SocialPlatformData;
 };
+
+// --> KEYWORDS <-- //
+
+export type RenderedKeywordType = {
+  name: string;
+  input?: string;
+};

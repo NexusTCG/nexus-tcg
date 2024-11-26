@@ -176,20 +176,29 @@ export default function Keyword({
         <TooltipTrigger asChild>
           <div className="w-full inline-flex flex-wrap items-baseline space-y-0">
             {renderKeywordContent()}
-            <span className="font-normal text-black italic opacity-80">(</span>
-            {reminderWords.map((word, index) => (
-              <span
-                key={index}
-                className={`font-normal text-black italic opacity-80 ${
-                  index < reminderWords.length - 1 ? "mr-1" : ""
-                }`}
-              >
-                {word === "N" || word.startsWith("[")
-                  ? inputValue || word
-                  : word}
-              </span>
-            ))}
-            <span className="font-normal text-black italic opacity-80">).</span>
+            {/* Only show reminder text if not a text input keyword or if truncated */}
+            {(!hasInput || inputType === "number") && (
+              <>
+                <span className="font-normal text-black italic opacity-80">
+                  (
+                </span>
+                {reminderWords.map((word, index) => (
+                  <span
+                    key={index}
+                    className={`font-normal text-black italic opacity-80 ${
+                      index < reminderWords.length - 1 ? "mr-1" : ""
+                    }`}
+                  >
+                    {word === "N" || word.startsWith("[")
+                      ? inputValue || word
+                      : word}
+                  </span>
+                ))}
+                <span className="font-normal text-black italic opacity-80">
+                  ).
+                </span>
+              </>
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="top">Click to change keywords</TooltipContent>
