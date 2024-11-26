@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDebounce } from "use-debounce";
 // Utils
 import clsx from "clsx";
+// Validation
+import { KeywordsDTO } from "@/app/lib/types/dto";
 // Components
 import { Input } from "@/components/ui/input";
 import {
@@ -14,17 +16,22 @@ import {
 } from "@/components/ui/tooltip";
 
 type KeywordProps = {
-  keyword: string;
-  reminder: string | null;
+  keyword: {
+    name: string;
+    input?: string;
+  };
+  keywordData: KeywordsDTO;
   truncate: boolean;
   type: "persistent" | "reactive" | "active" | null;
+  onInputChange?: (name: string, value: string) => void;
 };
 
 export default function Keyword({
   keyword,
-  reminder,
+  keywordData,
   truncate,
   type,
+  onInputChange,
 }: KeywordProps) {
   const [inputValue, setInputValue] = useState("");
   const [debouncedInputValue] = useDebounce(inputValue, 300);
@@ -32,8 +39,9 @@ export default function Keyword({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const hasInput =
-    reminder && (reminder.includes("[") || /\bN\b/.test(reminder));
-  const inputType = reminder?.includes("[") ? "text" : "number";
+    keywordData.reminder &&
+    (keywordData.reminder.includes("[") || /\bN\b/.test(keywordData.reminder));
+  const inputType = keywordData.reminder?.includes("[") ? "text" : "number";
 
   const [inputWidth, setInputWidth] = useState(0);
   const measureRef = useRef<HTMLSpanElement>(null);
@@ -54,9 +62,11 @@ export default function Keyword({
     if (inputType === "number") {
       if (value === "" || /^\d+$/.test(value)) {
         setInputValue(value);
+        onInputChange?.(keyword.name, value);
       }
     } else {
       setInputValue(value);
+      onInputChange?.(keyword.name, value);
     }
   }
 
@@ -71,7 +81,7 @@ export default function Keyword({
             "text-yellow-700": type === "active",
           })}
         >
-          {keyword}
+          {keyword.name}
           {hasInput && <span className="text-black">:</span>}
         </span>
         {hasInput && (
@@ -111,9 +121,17 @@ export default function Keyword({
     );
   }
 
+  // Initialize inputValue from keyword.input
   useEffect(() => {
-    if (reminder) {
-      const words = reminder.split(" ");
+    if (keyword.input !== undefined) {
+      setInputValue(keyword.input);
+    }
+  }, [keyword.input]);
+
+  // Update reminderWords based on debouncedInputValue
+  useEffect(() => {
+    if (keywordData.reminder) {
+      const words = keywordData.reminder.split(" ");
       const updatedWords = words.map((word) => {
         if (word === "N" || word.startsWith("[")) {
           return debouncedInputValue || word;
@@ -122,8 +140,9 @@ export default function Keyword({
       });
       setReminderWords(updatedWords);
     }
-  }, [reminder, debouncedInputValue]);
+  }, [keywordData.reminder, debouncedInputValue]);
 
+  // Adjust input width
   useEffect(() => {
     adjustInputWidth();
   }, [inputValue, inputType]);
@@ -146,7 +165,7 @@ export default function Keyword({
               "text-yellow-500": type === "active",
             })}
           >
-            {reminder}
+            {keywordData.reminder}
           </i>
         </TooltipContent>
       </Tooltip>

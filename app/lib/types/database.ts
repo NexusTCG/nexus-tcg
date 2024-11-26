@@ -2,8 +2,9 @@ export type KeywordsType = {
   id?: number;
   created_at?: string;
   name: string;
-  reminder: string;
-  type: "persistent" | "reactive" | "active";
+  input?: string;
+  reminder?: string;
+  type?: "persistent" | "reactive" | "active";
   tip?: "string";
 };
 

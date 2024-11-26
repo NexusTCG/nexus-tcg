@@ -47,7 +47,7 @@ export default function KeywordSelect({
   const [open, setOpen] = useState(false);
   const [keywords, setKeywords] = useState<KeywordsDTO[] | null>(null);
 
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const { append, remove } = useFieldArray({
     control,
     name: "initialMode.keywords",
@@ -61,53 +61,86 @@ export default function KeywordSelect({
     rare: 4,
     prime: 4,
   }[cardGrade];
+  function handleKeywordInputChange(keywordName: string, value: string) {
+    const index = selectedKeywords.findIndex(
+      (kw: KeywordsDTO) => kw.name === keywordName
+    );
+    if (index > -1) {
+      const updatedKeywords = [...selectedKeywords];
+      updatedKeywords[index] = {
+        ...updatedKeywords[index],
+        input: value,
+      };
+      setValue("initialMode.keywords", updatedKeywords);
+    }
+  }
 
-  function handleKeywordToggle(keyword: string) {
+  function handleKeywordToggle(keyword: KeywordsDTO) {
     // TODO: Change to object
     // const index = selectedKeywords.findIndex((kw: { id: string }) => kw.id === keyword);
 
-    const index = selectedKeywords.findIndex((kw: string) => kw === keyword);
+    const index = selectedKeywords.findIndex(
+      (kw: KeywordsDTO) => kw.name === keyword.name
+    );
 
     if (index > -1) {
       remove(index);
     } else if (selectedKeywords.length < maxKeywords) {
-      // append({ id: keyword });
-      append(keyword);
+      // append(keyword);
+      append({
+        name: keyword.name,
+        input:
+          keyword.reminder?.includes("[") ||
+          /\bN\b/.test(keyword.reminder || "")
+            ? ""
+            : undefined,
+      });
     }
   }
 
-  function renderKeyword(keywordName: string) {
+  function renderKeyword(keyword: { name: string; input?: string }) {
     const keywordData = keywords?.find(
-      (kw: KeywordsDTO) => kw.name === keywordName
+      (kw: KeywordsDTO) => kw.name === keyword.name
     );
-    if (!keywordData) return keywordName;
+    if (!keywordData) return keyword.name;
 
     return (
       <Keyword
-        keyword={keywordData.name || ""}
-        reminder={keywordData.reminder}
+        keyword={keyword}
+        keywordData={keywordData}
         truncate={truncateKeywords}
         type={keywordData.type}
+        onInputChange={handleKeywordInputChange}
       />
     );
   }
 
   function renderKeywords() {
     if (truncateKeywords) {
-      return selectedKeywords.map((keyword: string, index: number) => (
-        <React.Fragment key={keyword}>
-          {renderKeyword(keyword)}
-          {index < selectedKeywords.length - 1 && (
-            <span className="mr-1">,</span>
-          )}
-        </React.Fragment>
-      ));
+      return selectedKeywords.map(
+        (
+          keyword: {
+            name: string;
+            input?: string;
+          },
+          index: number
+        ) => (
+          <React.Fragment key={keyword.name}>
+            {renderKeyword(keyword)}
+            {index < selectedKeywords.length - 1 && (
+              <span className="mr-1">,</span>
+            )}
+          </React.Fragment>
+        )
+      );
     } else {
-      return selectedKeywords.map((keyword: string) => (
-        <div key={keyword} className="w-full">
-          {renderKeyword(keyword)}
-        </div>
-      ));
+      return selectedKeywords.map(
+        (keyword: { name: string; input?: string }) => (
+          <div key={keyword.name} className="w-full">
+            {renderKeyword(keyword)}
+          </div>
+        )
+      );
     }
   }
 
@@ -206,9 +239,7 @@ export default function KeywordSelect({
                         <CommandItem
                           key={keyword.id}
                           value={keyword.name || ""}
-                          onSelect={() =>
-                            handleKeywordToggle(keyword.name || "")
-                          }
+                          onSelect={() => handleKeywordToggle(keyword)}
                           disabled={
                             !isSelected &&
                             selectedKeywords.length >= maxKeywords
