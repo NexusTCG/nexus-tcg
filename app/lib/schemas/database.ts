@@ -69,7 +69,7 @@ export const CardFormSchema = z.object({
     keywords: z.array(z.object({
       name: z.string(),
       input: z.string().optional(),
-    })),
+    })).default([]),
     lore: z.string().nullable().optional(),
     prompt_art: z.string().optional(),
     art_options: z.array(z.string()).optional(),

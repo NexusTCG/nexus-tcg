@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 // import { triggerCardRender } from "@/app/server/actions";
 // Types
 import { CardFormSchema } from "@/app/lib/schemas/database";
+import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   if (req.method !== "POST") {
@@ -64,7 +65,13 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("[Server] Error submitting card:", error);
-    return new Response(JSON.stringify({ error: "Error submitting card" }), {
+    let errorMessage = "Error submitting card";
+    if (error instanceof ZodError) {
+      errorMessage = error.errors.map((e) =>
+        `${e.path.join(".")}: ${e.message}`
+      ).join(", ");
+    }
+    return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
