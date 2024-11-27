@@ -72,3 +72,5 @@ export type RenderedKeywordType = {
   name: string;
   input?: string;
 };
+
+export type RenderedKeywordsType = RenderedKeywordType[] | null | undefined;

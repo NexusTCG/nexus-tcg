@@ -55,7 +55,7 @@ export type InitialCardType = {
   reach?: boolean;
   art_selected: number;
   art_direction_options?: ArtDirectionOption[];
-  keywords?: string;
+  keywords?: { name: string; input: string }[];
   art_options?: string;
 };
 
