@@ -344,45 +344,17 @@ export default function CardForm({
       const timeAgo = calculateTimeAgo(savedForm.lastUpdated);
       setHasToastedDraftAlert(true);
 
-      const duration = 10;
-      let timeLeft = duration;
-
-      const toastId = toast.info(
-        `Found a saved draft from ${timeAgo} (${timeLeft}s)`,
-        {
-          action: {
-            label: "Discard draft",
-            onClick: () => {
-              clearCardFormStorage();
-              reset(defaultFormValues);
-              toast.success("Draft discarded");
-            },
+      toast.info("Found a saved draft from " + timeAgo, {
+        action: {
+          label: "Discard draft",
+          onClick: () => {
+            clearCardFormStorage();
+            reset(defaultFormValues);
+            toast.success("Draft discarded");
           },
-          duration: duration * 1000,
-        }
-      );
-
-      const interval = setInterval(() => {
-        timeLeft -= 1;
-        if (timeLeft > 0) {
-          toast.info(`Found a saved draft from ${timeAgo} (${timeLeft}s)`, {
-            id: toastId,
-            action: {
-              label: "Discard draft",
-              onClick: () => {
-                clearCardFormStorage();
-                reset(defaultFormValues);
-                toast.success("Draft discarded");
-              },
-            },
-            duration: timeLeft * 1000,
-          });
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
+        },
+        duration: 10000,
+      });
     }
   }, [reset, hasToastedDraftAlert]);
 
