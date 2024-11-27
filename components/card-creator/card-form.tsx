@@ -153,6 +153,8 @@ export default function CardForm({
   }, [mode, setMode, setValue]);
 
   async function onSubmit(data: CardFormDataType) {
+    console.log("Submitting card data:", data);
+
     toast("Saving card...");
     try {
       let initialModeArtUrls: string[] = [];
