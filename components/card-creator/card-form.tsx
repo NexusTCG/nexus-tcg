@@ -365,8 +365,17 @@ export default function CardForm({
       const interval = setInterval(() => {
         timeLeft -= 1;
         if (timeLeft > 0) {
-          toast.message(`Found a saved draft from ${timeAgo} (${timeLeft}s)`, {
+          toast.info(`Found a saved draft from ${timeAgo} (${timeLeft}s)`, {
             id: toastId,
+            action: {
+              label: "Discard draft",
+              onClick: () => {
+                clearCardFormStorage();
+                reset(defaultFormValues);
+                toast.success("Draft discarded");
+              },
+            },
+            duration: timeLeft * 1000,
           });
         } else {
           clearInterval(interval);
