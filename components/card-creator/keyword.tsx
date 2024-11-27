@@ -72,7 +72,7 @@ export default function Keyword({
 
   function renderKeywordContent() {
     return (
-      <>
+      <div className="flex items-baseline">
         <span
           className={clsx("font-bold", {
             "mr-1": !hasInput,
@@ -117,7 +117,7 @@ export default function Keyword({
             />
           </>
         )}
-      </>
+      </div>
     );
   }
 
