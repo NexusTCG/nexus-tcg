@@ -74,7 +74,7 @@ export default function CardForm({
       type_sub: [],
       mythic: false,
       text: "",
-      keywords: [],
+      keywords: [{ name: "", input: "" }],
       lore: "",
       prompt_art: "",
       art_options: [],
