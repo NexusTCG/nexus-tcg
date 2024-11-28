@@ -46,74 +46,87 @@ const CardFormAnomaly = dynamic(
 type CardFormProps = {
   currentUserId?: string | null;
   userProfile?: ProfileDTO | null;
+  isEditing?: boolean;
+  cardId?: string;
+  initialData?: any;
 };
 
 export default function CardForm({
   currentUserId,
   userProfile,
+  isEditing = false,
+  cardId,
+  initialData,
 }: CardFormProps) {
   const posthog = PostHogClient();
-
-  const [hasToastedDraftAlert, setHasToastedDraftAlert] = useState(false);
   const router = useRouter();
   const { mode, setMode } = useMode();
 
-  const defaultFormValues = {
-    nexus_card_data: {
-      user_id: currentUserId || null,
-      created_at: null,
-      updated_at: null,
-      username: userProfile?.username || "Username",
-      approved: false,
-      grade: "core",
-    },
-    initialMode: {
-      render: null,
-      name: "",
-      type: "agent",
-      type_sub: [],
-      mythic: false,
-      text: "",
-      keywords: [],
-      lore: "",
-      prompt_art: "",
-      art_options: [],
-      art_direction_options: [],
-      art_selected: 0,
-      energy_value: 0,
-      energy_cost: {
-        light: 0,
-        storm: 0,
-        dark: 0,
-        chaos: 0,
-        growth: 0,
-        void: 0,
-      },
-      speed: 1,
-      attack: 0,
-      defense: 0,
-      reach: false,
-    },
-    anomalyMode: {
-      render: null,
-      name: "",
-      mythic: false,
-      uncommon: false,
-      text: "",
-      lore: "",
-      prompt_art: "",
-      art_options: [],
-      art_direction_options: [],
-      art_selected: 0,
-    },
-  };
+  const [hasToastedDraftAlert, setHasToastedDraftAlert] = useState(false);
 
-  // Load saved form data on initial render
-  const savedForm = getCardFormFromStorage();
+  // Default values uses initialData if editing
+  const defaultFormValues =
+    isEditing && initialData
+      ? initialData
+      : {
+          nexus_card_data: {
+            user_id: currentUserId || null,
+            created_at: null,
+            updated_at: null,
+            username: userProfile?.username || "Username",
+            approved: false,
+            grade: "core",
+          },
+          initialMode: {
+            render: null,
+            name: "",
+            type: "agent",
+            type_sub: [],
+            mythic: false,
+            text: "",
+            keywords: [],
+            lore: "",
+            prompt_art: "",
+            art_options: [],
+            art_direction_options: [],
+            art_selected: 0,
+            energy_value: 0,
+            energy_cost: {
+              light: 0,
+              storm: 0,
+              dark: 0,
+              chaos: 0,
+              growth: 0,
+              void: 0,
+            },
+            speed: 1,
+            attack: 0,
+            defense: 0,
+            reach: false,
+          },
+          anomalyMode: {
+            render: null,
+            name: "",
+            mythic: false,
+            uncommon: false,
+            text: "",
+            lore: "",
+            prompt_art: "",
+            art_options: [],
+            art_direction_options: [],
+            art_selected: 0,
+          },
+        };
 
+  // Load saved form data on initial render if not editing
+  const savedForm = !isEditing ? getCardFormFromStorage() : null;
+
+  // Initialize form
   const methods = useForm({
     resolver: zodResolver(CardFormSchema),
-    defaultValues: savedForm?.formData || defaultFormValues,
+    defaultValues: isEditing
+      ? defaultFormValues
+      : savedForm?.formData || defaultFormValues,
   });
 
   const { setValue, reset, watch } = methods;
@@ -155,20 +168,20 @@ export default function CardForm({
   async function onSubmit(data: CardFormDataType) {
     console.log("Submitting card data:", data);
 
-    toast("Saving card...");
+    toast(isEditing ? "Updating card..." : "Saving card...");
     try {
       let initialModeArtUrls: string[] = [];
       let anomalyModeArtUrls: string[] = [];
 
-      toast("Uploading card art...");
       // Upload initial mode art
-
+      toast("Uploading card art...");
       // TEMPORARILY DISABLED
       // Remove data.initialMode.art_options check
       if (
         data.initialMode.art_options &&
         data.initialMode.art_options.length > 0
       ) {
+        // Upload initial mode art to Supabase bucket
         const response = await fetch("/api/data/upload-generated-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -184,6 +197,7 @@ export default function CardForm({
         data.anomalyMode.art_options &&
         data.anomalyMode.art_options.length > 0
       ) {
+        // Upload anomaly mode art to Supabase bucket
         const response = await fetch("/api/data/upload-generated-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -258,33 +272,43 @@ export default function CardForm({
       // Debugging
       // console.log("Submitting card data:", JSON.stringify(cardData, null, 2));
 
+      // Determine API endpoint
+      const endpoint = isEditing
+        ? "/api/data/update-card"
+        : "/api/data/submit-card";
+
       // Insert form data
-      const insertResponse = await fetch("/api/data/submit-card", {
+      const submitResponse = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cardData),
+        // body: JSON.stringify(cardData),
+        body: JSON.stringify(isEditing ? { cardData, cardId } : cardData),
       });
 
-      const insertData = await insertResponse.json();
+      const insertData = await submitResponse.json();
 
-      console.log("Server response:", insertData);
+      console.log("Server response:", submitResponse);
 
-      if (insertResponse.ok && insertData.success && insertData.data?.id) {
+      if (submitResponse.ok && insertData.success && insertData.data?.id) {
         // Capture event
-        (posthog.capture as any)("card_created", {
-          distinctId: insertData.data.id,
-          creator: insertData.data.username,
+        (posthog.capture as any)(isEditing ? "card_updated" : "card_created", {
+          distinctId: isEditing ? cardId : insertData.data?.id,
+          creator: insertData.data?.username,
         });
 
-        toast("Card saved successfully!");
+        toast(
+          isEditing ? "Card updated successfully!" : "Card saved successfully!"
+        );
         toast("Redirecting...");
 
         clearCardFormStorage();
-        router.push(`/cards/${insertData.data.id}?mode=initial`);
+        router.push(
+          `/cards/${isEditing ? cardId : insertData.data.id}?mode=initial`
+        );
       } else {
-        toast("Failed to save card!");
+        toast(isEditing ? "Failed to update card!" : "Failed to save card!");
         console.error("Card submit error:", insertData.error);
       }
     } catch (error) {
@@ -324,8 +348,10 @@ export default function CardForm({
     return JSON.stringify(formDataCopy) === JSON.stringify(defaultValuesCopy);
   }
 
-  // Save form data to local storage on change
+  // Save form data to local storage on change, if not editing
   useEffect(() => {
+    if (isEditing) return;
+
     const subscription = watch((formData) => {
       if (!isFormDataDefault(formData)) {
         saveCardFormToStorage(formData);
@@ -333,10 +359,12 @@ export default function CardForm({
     });
 
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, [watch, isEditing]);
 
-  // Check for saved draft on mount
+  // Check for saved draft on mount, if not editing
   useEffect(() => {
+    if (isEditing) return;
+
     const savedForm = getCardFormFromStorage();
     if (
       savedForm &&
@@ -358,7 +386,7 @@ export default function CardForm({
         duration: 10000,
       });
     }
-  }, [reset, hasToastedDraftAlert]);
+  }, [reset, hasToastedDraftAlert, isEditing]);
 
   // Debugging
   // useEffect(() => {

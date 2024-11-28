@@ -6,16 +6,24 @@ import type { takeAndUploadScreenshotTask } from "../../../trigger/take-and-uplo
 
 serve(async (req) => {
   try {
-    const { record } = await req.json();
+    const { record, isUpdate } = await req.json();
     const cardId = record.id;
 
     await tasks.trigger<typeof takeAndUploadScreenshotTask>(
       "take-and-upload-screenshot",
-      { cardId },
+      {
+        cardId,
+        isUpdate: !!isUpdate,
+      },
     );
 
     return new Response(
-      JSON.stringify({ success: true, message: "Screenshot task triggered" }),
+      JSON.stringify({
+        success: true,
+        message: `Screenshot task triggered for ${
+          isUpdate ? "updated" : "new"
+        } card`,
+      }),
       { headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {

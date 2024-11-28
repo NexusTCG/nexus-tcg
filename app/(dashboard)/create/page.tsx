@@ -25,7 +25,7 @@ export default async function Create() {
 
   return (
     <div
-      id="learn-page-container"
+      id="create-page-container"
       className="
         flex
         flex-col
@@ -36,7 +36,7 @@ export default async function Create() {
       "
     >
       <div
-        id="learn-content-container"
+        id="create-content-container"
         className="
           flex
           flex-col

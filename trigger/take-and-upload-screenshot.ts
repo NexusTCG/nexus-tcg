@@ -4,9 +4,12 @@ import { createClient } from "@supabase/supabase-js";
 
 export const takeAndUploadScreenshotTask = task({
   id: "take-and-upload-screenshot",
-  run: async (payload: { cardId: string }) => {
-    const { cardId } = payload;
-    logger.info("Starting screenshot task for card", { cardId });
+  run: async (payload: { cardId: string; isUpdate?: boolean }) => {
+    const { cardId, isUpdate } = payload;
+    logger.info(
+      `Starting screenshot task for ${isUpdate ? "updated" : "new"} card`,
+      { cardId },
+    );
 
     // Initialize Supabase client
     const supabase = createClient(
@@ -69,11 +72,16 @@ export const takeAndUploadScreenshotTask = task({
       // Take screenshot of the element
       const screenshot = await element.screenshot({ type: "png" });
 
+      // Generate filename
+      const filename = isUpdate
+        ? `card-${cardId}-initial-${Date.now()}.png`
+        : `card-${cardId}-initial.png`;
+
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase
         .storage
         .from("card-renders")
-        .upload(`card-${cardId}-initial.png`, screenshot, {
+        .upload(filename, screenshot, {
           contentType: "image/png",
           upsert: true,
         });
@@ -84,20 +92,31 @@ export const takeAndUploadScreenshotTask = task({
       const { data: { publicUrl } } = supabase
         .storage
         .from("card-renders")
-        .getPublicUrl(`${cardId}-initial.png`);
+        .getPublicUrl(filename);
 
       // Update card record with render URL
       const { error: updateError } = await supabase
         .from("nexus_cards")
-        .update({ card_render: [publicUrl] })
+        .update({
+          card_render: [publicUrl],
+          updated_at: new Date().toISOString(),
+        })
         .eq("id", cardId);
 
       if (updateError) throw updateError;
 
       await browser.close();
 
-      logger.info("Screenshot task completed", { cardId, publicUrl });
-      return { success: true, cardId, publicUrl };
+      logger.info(
+        `Screenshot task completed for ${isUpdate ? "updated" : "new"} card`,
+        { cardId, publicUrl },
+      );
+      return {
+        success: true,
+        cardId,
+        publicUrl,
+        isUpdate,
+      };
     } catch (error) {
       logger.error("Error in screenshot task", { error });
       throw error;
