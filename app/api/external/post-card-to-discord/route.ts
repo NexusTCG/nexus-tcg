@@ -136,14 +136,11 @@ export async function POST(req: NextRequest) {
       embeds: [{
         title: cardName,
         url: cardUrl,
-        thumbnail: {
+        image: {
           url: cardRender,
+          width: 500,
+          height: 700,
         },
-        // image: {
-        //   url: cardRender,
-        //   width: 500,
-        //   height: 700,
-        // },
         fields: [
           {
             name: "Type",
@@ -162,11 +159,6 @@ export async function POST(req: NextRequest) {
           },
         ],
         color: 0x2ecc71,
-      }],
-      attachments: [{
-        id: 0,
-        filename: `${cardName}.png`,
-        url: cardRender,
       }],
       allowed_mentions: {
         parse: [], // Don't parse any mentions
