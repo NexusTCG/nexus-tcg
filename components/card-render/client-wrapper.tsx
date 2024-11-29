@@ -21,13 +21,6 @@ export default function ClientWrapper({
   activeMode,
   children,
 }: ClientWrapperProps) {
-  // Add debug log
-  console.log("ClientWrapper Props:", {
-    userId: user?.user_id,
-    cardUserId: card.user_id,
-    cardId: card.id,
-  });
-
   const currentCardArtUrl =
     activeMode === "initial"
       ? card.initialMode?.art_options?.[card.initialMode?.art_selected ?? 0]

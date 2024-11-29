@@ -30,14 +30,6 @@ export default function ShareButtonDiscord({
   discordPost: initialDiscordPost,
   discordPostUrl: initialDiscordPostUrl,
 }: ShareButtonDiscordProps) {
-  // Add debug logs
-  console.log("ShareButton Props:", {
-    cardId,
-    isCardCreator,
-    initialDiscordPost,
-    initialDiscordPostUrl,
-  });
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [discordPost, setDiscordPost] = useState<boolean>(initialDiscordPost);
   const [discordPostUrl, setDiscordPostUrl] = useState<string | null>(

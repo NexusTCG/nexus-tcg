@@ -38,16 +38,6 @@ export default function CardRenderPageHeader({
 }: CardRenderPageHeaderProps) {
   const isCardCreator = user?.user_id === card.user_id;
 
-  // Add some debug logs
-  console.log("Header Props:", {
-    userId: user?.user_id,
-    cardUserId: card.user_id,
-    isCardCreator,
-    cardId: card.id,
-    discordPost: card.discord_post,
-    discordPostUrl: card.discord_post_url,
-  });
-
   return (
     <div
       id="card-render-header"
