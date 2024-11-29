@@ -115,8 +115,13 @@ export async function POST(req: NextRequest) {
     const cardName = card.initialMode.name;
     const cardCreator = card.username;
     const cardRender = card.card_render?.[0];
-    const cardType = card.initialMode.type;
-    const cardGrade = card.grade;
+    const cardType = card.initialMode.type
+      ? card.initialMode.type.charAt(0).toUpperCase() +
+        card.initialMode.type.slice(1)
+      : "";
+    const cardGrade = card.grade
+      ? card.grade.charAt(0).toUpperCase() + card.grade.slice(1)
+      : "";
 
     // Prepare message content
     const messageContent = {
@@ -191,6 +196,25 @@ export async function POST(req: NextRequest) {
     const result = await response.json();
     const discordPostUrl =
       `https://discord.com/channels/${result.guild_id}/${DISCORD_FORUM_CHANNEL_ID}/${result.id}`;
+
+    // Vote for card on Discord
+    const messageId = result.message.id;
+    const reactionResponse = await fetch(
+      `https://discord.com/api/v10/channels/${result.id}/messages/${messageId}/reactions/⬆️/@me`,
+      {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bot ${DISCORD_BOT_TOKEN}`,
+        },
+      },
+    );
+
+    if (!reactionResponse.ok) {
+      console.log("[Server] Failed to add reaction", {
+        status: reactionResponse.status,
+        statusText: reactionResponse.statusText,
+      });
+    }
 
     // Update card record with Discord post URL
     const { error: updateError } = await supabase
