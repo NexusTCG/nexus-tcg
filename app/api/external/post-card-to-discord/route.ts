@@ -129,11 +129,10 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           name: cardName,
+          auto_archive_duration: 10080,
           applied_tags: appliedTags,
-          message: {
-            content:
-              `**${cardName}** by ${cardCreator} - ${cardCreatedAt}\n\n${cardUrl}`,
-          },
+          content:
+            `**${cardName}** by ${cardCreator} - ${cardCreatedAt}\n\n${cardUrl}`,
           embeds: [{
             title: cardName,
             url: cardUrl,
