@@ -154,7 +154,7 @@ export default function CardRenderPageHeader({
         </div>
         <small className="opacity-60 text-xs">{mode.toUpperCase()} MODE</small>
       </div>
-      {card.id && (
+      {card.id && card.card_render?.[0] && (
         <ShareButtonDiscord
           cardId={card.id}
           isCardCreator={isCardCreator}

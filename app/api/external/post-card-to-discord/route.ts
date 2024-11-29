@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
     const cardCreatedAt = card.created_at;
     const cardName = card.initialMode.name;
     const cardCreator = card.username;
-    const cardRender = card.card_render;
+    const cardRender = card.card_render?.[0];
     const cardType = card.initialMode.type;
     const cardGrade = card.grade;
 
