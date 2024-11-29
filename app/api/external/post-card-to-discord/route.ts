@@ -111,7 +111,13 @@ export async function POST(req: NextRequest) {
 
     // Prepare card data
     const cardUrl = `https://play.nexus/cards/${card.id}`;
-    const cardCreatedAt = card.created_at;
+    const cardCreatedAt = card.created_at
+      ? new Date(card.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+      : "Unknown date"; // Will format like "Jan 01, 2024"
     const cardName = card.initialMode.name;
     const cardCreator = card.username;
     const cardRender = card.card_render?.[0];
