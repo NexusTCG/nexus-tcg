@@ -150,6 +150,7 @@ export async function POST(req: NextRequest) {
       allowed_mentions: {
         parse: [], // Don't parse any mentions
       },
+      type: 0,
     };
 
     // Create formum post with rich embed
@@ -165,7 +166,7 @@ export async function POST(req: NextRequest) {
           name: cardName,
           auto_archive_duration: 10080,
           applied_tags: appliedTags,
-          ...messageContent,
+          message: messageContent,
         }),
       },
     );
