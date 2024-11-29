@@ -8,6 +8,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 // Icons
 import { FaDiscord } from "react-icons/fa";
 
@@ -24,6 +30,14 @@ export default function ShareButtonDiscord({
   discordPost: initialDiscordPost,
   discordPostUrl: initialDiscordPostUrl,
 }: ShareButtonDiscordProps) {
+  // Add debug logs
+  console.log("ShareButton Props:", {
+    cardId,
+    isCardCreator,
+    initialDiscordPost,
+    initialDiscordPostUrl,
+  });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [discordPost, setDiscordPost] = useState<boolean>(initialDiscordPost);
   const [discordPostUrl, setDiscordPostUrl] = useState<string | null>(
@@ -123,43 +137,62 @@ export default function ShareButtonDiscord({
     };
   }, [cardId]);
 
-  // Don't render button if not owner and card isn't posted
-  if (!isCardCreator && !discordPost) return null;
+  const shouldShowButton = isCardCreator || discordPost;
+
+  if (!shouldShowButton) {
+    console.log("Button hidden because:", { isCardCreator, discordPost });
+    return null;
+  }
+
+  const animateButton =
+    (isCardCreator && discordPost) || (isCardCreator && isLoading);
 
   return (
-    <Button
-      onClick={() =>
-        discordPost && discordPostUrl
-          ? window.open(discordPostUrl, "_blank")
-          : handleDiscordShare()
-      }
-      disabled={isLoading}
-      className={cn(
-        "flex justify-between items-center w-full relative overflow-hidden transition-all duration-300",
-        discordPost
-          ? [
-              "bg-teal-900/20 hover:bg-teal-900/30 border-teal-500/50",
-              "animate-pulse-subtle",
-              "after:absolute after:inset-0",
-              "after:bg-gradient-to-r after:from-transparent after:via-teal-400/10 after:to-transparent",
-              "after:animate-shimmer after:duration-1000",
-            ]
-          : "bg-zinc-900"
-      )}
-    >
-      <div className="flex flex-row gap-2">
-        <FaDiscord className="w-[1.2rem] h-[1.2rem]" />
-        {discordPost && discordPostUrl
-          ? "View on Discord"
-          : isLoading
-          ? "Sharing on Discord..."
-          : "Share on Discord"}
-      </div>
-      {isLoading ? (
-        <Loader2 className="w-[1.2rem] h-[1.2rem] animate-spin" />
-      ) : (
-        <small>Posts to Nexus' server</small>
-      )}
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={() =>
+              discordPost && discordPostUrl
+                ? window.open(discordPostUrl, "_blank")
+                : handleDiscordShare()
+            }
+            disabled={isLoading}
+            className={cn(
+              "flex justify-between items-center relative overflow-hidden transition-all duration-2000",
+              {
+                "bg-teal-300 hover:bg-teal-300/50 border-teal-50/50":
+                  animateButton,
+                "animate-pulse-subtle": animateButton,
+                "after:absolute after:inset-0": animateButton,
+                "after:bg-gradient-to-r after:from-transparent after:via-teal-100/20 after:to-transparent":
+                  animateButton,
+                "after:animate-shimmer after:duration-1000": animateButton,
+              }
+            )}
+          >
+            <div className="flex flex-row gap-2">
+              {isLoading ? (
+                <Loader2 className="w-[1.2rem] h-[1.2rem] animate-spin" />
+              ) : (
+                <FaDiscord className="w-[1.2rem] h-[1.2rem] mt-0.5" />
+              )}
+              {discordPost && discordPostUrl
+                ? "View on Discord"
+                : isLoading
+                ? "Posting on Discord..."
+                : "Post to Discord"}
+            </div>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-[250px] mt-2">
+          {isCardCreator
+            ? discordPost
+              ? "View card on Nexus' Discord server to vote and discuss"
+              : "Share card to Nexus' Discord server to allow voting and discussion"
+            : "View card on Nexus' Discord server to vote and discuss"}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
