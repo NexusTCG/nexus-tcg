@@ -118,6 +118,40 @@ export async function POST(req: NextRequest) {
     const cardType = card.initialMode.type;
     const cardGrade = card.grade;
 
+    // Prepare message content
+    const messageContent = {
+      content:
+        `**${cardName}** by ${cardCreator} - ${cardCreatedAt}\n\n${cardUrl}`,
+      embeds: [{
+        title: cardName,
+        url: cardUrl,
+        image: {
+          url: cardRender,
+        },
+        fields: [
+          {
+            name: "Type",
+            value: cardType,
+            inline: true,
+          },
+          {
+            name: "Grade",
+            value: cardGrade,
+            inline: true,
+          },
+          {
+            name: "Creator",
+            value: cardCreator,
+            inline: true,
+          },
+        ],
+        color: 0x2ecc71,
+      }],
+      allowed_mentions: {
+        parse: [], // Don't parse any mentions
+      },
+    };
+
     // Create formum post with rich embed
     const response = await fetch(
       `https://discord.com/api/v10/channels/${DISCORD_FORUM_CHANNEL_ID}/threads`,
@@ -131,33 +165,7 @@ export async function POST(req: NextRequest) {
           name: cardName,
           auto_archive_duration: 10080,
           applied_tags: appliedTags,
-          content:
-            `**${cardName}** by ${cardCreator} - ${cardCreatedAt}\n\n${cardUrl}`,
-          embeds: [{
-            title: cardName,
-            url: cardUrl,
-            image: {
-              url: cardRender,
-            },
-            fields: [
-              {
-                name: "Type",
-                value: cardType,
-                inline: true,
-              },
-              {
-                name: "Grade",
-                value: cardGrade,
-                inline: true,
-              },
-              {
-                name: "Creator",
-                value: cardCreator,
-                inline: true,
-              },
-            ],
-            color: 0x2ecc71,
-          }],
+          ...messageContent,
         }),
       },
     );
