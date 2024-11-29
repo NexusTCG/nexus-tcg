@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,23 +18,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 // Custom components
-import CardVotes from "@/components/card-render/card-render-votes";
+// import CardVotes from "@/components/card-render/card-render-votes";
+import ShareButtonDiscord from "@/components/card-render/share-button-discord";
 // Icons
 import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md";
 
 type CardRenderPageHeaderProps = {
   user?: ProfileDTO | null;
   card: CardDTO;
-  mode: 'initial' | 'anomaly';
-}
+  mode: "initial" | "anomaly";
+};
 
-export default function CardRenderPageHeader({ 
+export default function CardRenderPageHeader({
   user,
   card,
   mode,
 }: CardRenderPageHeaderProps) {
+  const isCardCreator = user?.user_id === card.user_id;
+
   return (
     <div
       id="card-render-header"
@@ -72,11 +75,7 @@ export default function CardRenderPageHeader({
           "
         >
           <h2 className="font-medium">
-            {
-              card.initialMode.name ? 
-                card.initialMode.name : 
-                "Card name"
-            }
+            {card.initialMode.name ? card.initialMode.name : "Card name"}
           </h2>
           {user?.user_id === card.user_id && (
             <div
@@ -102,11 +101,10 @@ export default function CardRenderPageHeader({
                     />
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
-                    Edit {
-                      mode === "initial" 
-                        ? card.initialMode.name 
-                        : card.anomalyMode.name
-                    }
+                    Edit{" "}
+                    {mode === "initial"
+                      ? card.initialMode.name
+                      : card.anomalyMode.name}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -127,11 +125,10 @@ export default function CardRenderPageHeader({
                         />
                       </TooltipTrigger>
                       <TooltipContent side="bottom">
-                        Delete {
-                          mode === "initial" 
-                            ? card.initialMode.name 
-                            : card.anomalyMode.name
-                        }
+                        Delete{" "}
+                        {mode === "initial"
+                          ? card.initialMode.name
+                          : card.anomalyMode.name}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -142,8 +139,8 @@ export default function CardRenderPageHeader({
                       Are you sure you want to delete this card?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone.{" "}
-                      This will permanently delete {card.initialMode.name}.
+                      This action cannot be undone. This will permanently delete{" "}
+                      {card.initialMode.name}.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -157,7 +154,15 @@ export default function CardRenderPageHeader({
         </div>
         <small className="opacity-60 text-xs">{mode.toUpperCase()} MODE</small>
       </div>
-      {card.id && (<CardVotes cardId={card.id} />)}
+      {/* {card.id && (<CardVotes cardId={card.id} />)} */}
+      {card.id && (
+        <ShareButtonDiscord
+          cardId={card.id}
+          isCardCreator={isCardCreator}
+          discordPost={card.discord_post ?? false}
+          discordPostUrl={card.discord_post_url ?? null}
+        />
+      )}
     </div>
-  )
+  );
 }

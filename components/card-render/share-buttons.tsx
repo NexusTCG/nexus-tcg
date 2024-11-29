@@ -9,8 +9,6 @@ import { SocialShareData, SocialPlatform } from "@/app/lib/types/components";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-// Custom components
-import ShareButtonDiscord from "@/components/card-render/share-button-discord";
 
 type ShareButtonsProps = {
   cardId: number;
@@ -96,11 +94,6 @@ export default function ShareButtons({
         gap-2
       "
     >
-      <ShareButtonDiscord
-        cardId={cardId}
-        cardName={cardName}
-        cardCreator={cardCreator}
-      />
       {Object.entries(socialPlatforms).map(([key, platform]) => {
         const platformKey = key as SocialPlatform;
         return (

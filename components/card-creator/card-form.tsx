@@ -232,7 +232,9 @@ export default function CardForm({
           type_sub: data.initialMode.type_sub,
           mythic: data.initialMode.mythic,
           text: data.initialMode.text,
-          keywords: data.initialMode.keywords,
+          keywords: data.initialMode.type.includes("agent")
+            ? data.initialMode.keywords
+            : [], // Clear keywords for non-agent card types
           lore: data.initialMode.lore,
           prompt_art: data.initialMode.prompt_art,
           art_options: initialModeArtUrls,
