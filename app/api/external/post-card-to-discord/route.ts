@@ -164,8 +164,20 @@ export async function POST(req: NextRequest) {
     );
 
     if (!response.ok) {
-      console.log("[Server] Failed to create Discord thread");
-      throw new Error(`Discord API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.log("[Server] Failed to create Discord thread", {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText,
+        requestBody: {
+          name: cardName,
+          applied_tags: appliedTags,
+          channelId: DISCORD_FORUM_CHANNEL_ID,
+        },
+      });
+      throw new Error(
+        `Discord API error: ${response.statusText} - ${errorText}`,
+      );
     }
 
     const result = await response.json();
