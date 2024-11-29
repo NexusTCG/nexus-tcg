@@ -64,26 +64,7 @@ export async function POST(req: NextRequest) {
       throw new Error("Specified channel is not a forum channel");
     }
 
-    // Get available forum tags
-    const tagsResponse = await fetch(
-      `https://discord.com/api/v10/channels/${DISCORD_FORUM_CHANNEL_ID}/tags`,
-      {
-        headers: {
-          "Authorization": `Bot ${DISCORD_BOT_TOKEN}`,
-        },
-      },
-    );
-
-    if (!tagsResponse.ok) {
-      console.log("[Server] Failed to fetch forum tags", {
-        status: tagsResponse.status,
-        statusText: tagsResponse.statusText,
-        response: await tagsResponse.text(),
-      });
-      throw new Error(`Failed to fetch forum tags: ${tagsResponse.statusText}`);
-    }
-
-    const forumTags = await tagsResponse.json();
+    const forumTags = channelData.available_tags;
 
     // Helper function to get tags that match card properties
     const getRelevantTagIds = (
