@@ -74,3 +74,16 @@ export type RenderedKeywordType = {
 };
 
 export type RenderedKeywordsType = RenderedKeywordType[] | null | undefined;
+
+// --> HOOKS <-- //
+
+export type SubscriptionPlanType = "free" | "pro";
+
+export type SubscriptionDataType = {
+  plan: SubscriptionPlanType;
+  credits: number;
+  daysUntilRefresh: number | null;
+  isLoading: boolean;
+  error: Error | null;
+  refreshSubscription: () => Promise<void>;
+};

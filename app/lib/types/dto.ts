@@ -1,4 +1,5 @@
 import { AnomalyCardType, InitialCardType } from "@/app/lib/types/database";
+import { SubscriptionPlanType } from "@/app/lib/types/components";
 
 // Types for DTOs
 export type ProfileDTO = {
@@ -9,6 +10,9 @@ export type ProfileDTO = {
   username: string | null;
   bio: string | null;
   avatar_url: string | null;
+  plan: SubscriptionPlanType;
+  credits: number;
+  credits_refresh_date: string | null;
 };
 
 export type KeywordsDTO = {

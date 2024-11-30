@@ -22,6 +22,7 @@ import {
 import UserAvatar from "@/components/user-avatar";
 import SidebarPopoverIcon from "@/components/dashboard-nav/sidebar-popover-icon";
 import SidebarProfileMenu from "@/components/dashboard-nav/sidebar-profile-menu";
+import SidebarPlanStatus from "@/components/dashboard-nav/sidebar-plan-status";
 // Icons
 import { GoSidebarCollapse } from "react-icons/go";
 import { MdLogin } from "react-icons/md";
@@ -166,6 +167,12 @@ export default function Sidebar({
             </Tooltip>
           </TooltipProvider>
         </div>
+        {currentUserId && (
+          <>
+            <Separator />
+            <SidebarPlanStatus isCollapsed={isCollapsed} />
+          </>
+        )}
         <Separator />
         <div
           id="nav-links-container"
