@@ -41,7 +41,7 @@ export default function ShareButtonDiscord({
   async function handleDiscordShare() {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/external/discrd/post-card", {
+      const response = await fetch("/api/external/discord/post-card", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
