@@ -56,6 +56,7 @@ export function useSubscription(): SubscriptionDataType {
       setUserId(profile.user_id);
       setPlan(profile.plan ? profile.plan : "free");
       setCredits(profile.credits ? profile.credits : 0);
+      setRefreshDate(profile.credits_refresh_date || null);
     } catch (error) {
       setError(error as Error);
       console.error("Error fetching subscription data:", error);

@@ -87,3 +87,29 @@ export type SubscriptionDataType = {
   error: Error | null;
   refreshSubscription: () => Promise<void>;
 };
+
+// --> STRIPE <-- //
+
+export const TIER_CONFIG = {
+  core: {
+    credits: 10,
+    name: "core",
+  },
+  rare: {
+    credits: 25,
+    name: "rare",
+    priceId: process.env.STRIPE_RARE_PRICE_ID,
+  },
+  epic: {
+    credits: 50,
+    name: "epic",
+    priceId: process.env.STRIPE_EPIC_PRICE_ID,
+  },
+  prime: {
+    credits: 100,
+    name: "prime",
+    priceId: process.env.STRIPE_PRIME_PRICE_ID,
+  },
+} as const;
+
+export type TierName = keyof typeof TIER_CONFIG;

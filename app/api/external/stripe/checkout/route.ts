@@ -8,8 +8,10 @@ export async function POST(
   req: NextRequest,
 ) {
   const token = req.headers.get("Authorization")?.split("Bearer ")[1];
+  const { priceId } = await req.json();
 
   if (!token) {
+    console.error("[Server] No token provided");
     return new Response("No token provided", {
       status: 401,
     });
@@ -23,52 +25,48 @@ export async function POST(
       .auth
       .getUser(token);
 
-    if (error || !user) {
+    // Validate user
+    if (error || !user || !user.id) {
+      console.error("[Server] Unauthorized", error);
       return new Response("Unauthorized", {
         status: 401,
       });
     }
 
-    if (user && user.id) {
-      const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price: process.env.STRIPE_PRICE_ID as string,
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        success_url: `${
-          new URL(req.url).origin
-        }/create?success=true&message=Your%20order%20has%20been%20placed%20successfully`,
-        cancel_url: `${
-          new URL(req.url).origin
-        }/create?canceled=true&message=Your%20order%20was%20canceled`,
-        automatic_tax: { enabled: true },
+    // Create checkout session
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      success_url: `${new URL(req.url).origin}/create?success=true`,
+      cancel_url: `${new URL(req.url).origin}/create?canceled=true`,
+      subscription_data: {
         metadata: {
           userId: user.id,
         },
-      });
+      },
+      metadata: {
+        userId: user.id,
+      },
+    });
 
-      return new Response(
-        JSON.stringify({
-          url: session.url,
-        }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    }
-  } catch (error) {
-    console.log(error);
     return new Response(
-      "An unexpected error occurred",
+      JSON.stringify({
+        url: session.url,
+      }),
       {
-        status: 500,
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
     );
+  } catch (error) {
+    console.error("[Server] Error creating checkout session", error);
+    return new Response("An unexpected error occurred", { status: 500 });
   }
 }

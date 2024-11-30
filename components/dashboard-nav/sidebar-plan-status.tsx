@@ -6,7 +6,6 @@ import { useSubscription } from "@/app/utils/hooks/hooks";
 // Utils
 import { toast } from "sonner";
 import clsx from "clsx";
-import { calculateTimeAgo } from "@/app/utils/actions/actions";
 // Components
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -23,7 +22,8 @@ type SidebarPlanStatusProps = {
 export default function SidebarPlanStatus({
   isCollapsed,
 }: SidebarPlanStatusProps) {
-  const { plan, credits, isLoading, error } = useSubscription();
+  const { plan, credits, daysUntilRefresh, isLoading, error } =
+    useSubscription();
 
   if (error) {
     toast.error("Failed to load subscription status");
@@ -33,6 +33,10 @@ export default function SidebarPlanStatus({
   if (isLoading) {
     return <Loader2 className="h-[1.2rem] w-[1.2rem] animate-spin" />;
   }
+
+  const refreshText = daysUntilRefresh
+    ? `Credits refreshing in ${daysUntilRefresh} days`
+    : "Credits refresh today";
 
   const PlanButton = (
     <Button
@@ -49,16 +53,33 @@ export default function SidebarPlanStatus({
       }
     >
       {isCollapsed ? (
-        <div className="flex items-center justify-center">
+        <div
+          className="
+            flex 
+            items-center 
+            justify-center
+          "
+        >
           <span className="text-xs">{credits}</span>
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center w-full gap-0.5 mt-1 text-left">
+        <div
+          className="
+            flex
+            flex-col 
+            justify-center 
+            items-center 
+            w-full 
+            gap-0.5 
+            mt-1 
+            text-left
+          "
+        >
           <span className="text-sm w-full">
             {plan === "free" ? "Free plan" : "Pro plan"}
           </span>
           <span className="text-xs opacity-50 w-full">
-            {credits} generations remaining
+            {credits} credits left • {refreshText}
           </span>
         </div>
       )}
@@ -73,7 +94,7 @@ export default function SidebarPlanStatus({
           <TooltipContent side="right">
             <p>{plan === "free" ? "Free Plan" : "Pro Plan"}</p>
             <p className="text-xs opacity-50">
-              {credits} generations remaining
+              {credits} generations remaining • {refreshText}
             </p>
           </TooltipContent>
         </Tooltip>
