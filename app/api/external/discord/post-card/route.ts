@@ -120,7 +120,9 @@ export async function POST(req: NextRequest) {
       : "Unknown date"; // Will format like "Jan 01, 2024"
     const cardName = card.initialMode.name;
     const cardCreator = card.username;
-    const cardRender = card.card_render?.[0];
+    const cardRender = card.card_render?.[0]
+      ? card.card_render?.[0]
+      : `https://nxqwqvpgdaksxhkhkiem.supabase.co/storage/v1/object/public/card-renders/card-${cardId}-initial.png`;
     const cardType = card.initialMode.type
       ? card.initialMode.type.charAt(0).toUpperCase() +
         card.initialMode.type.slice(1)
