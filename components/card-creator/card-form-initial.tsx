@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
 // Hooks
-import React from "react"
-import { useFormContext } from 'react-hook-form';
+import React from "react";
+import { useFormContext } from "react-hook-form";
 // Utils
-import clsx from "clsx"
+import clsx from "clsx";
 // Actions
 import { calculateBgColor } from "@/app/utils/actions/actions";
 // Custom components
 import CardContainer from "@/components/card-creator/card-container";
-import CardFormArt from "@/components/card-creator/card-form-art"
-import CardFormText from "@/components/card-creator/card-form-textbox"
+import CardFormArt from "@/components/card-creator/card-form-art";
+import CardFormText from "@/components/card-creator/card-form-textbox";
 import CardFormHeader from "@/components/card-creator/card-form-header";
 import CardFormStats from "@/components/card-creator/card-form-stats";
 
@@ -64,11 +64,11 @@ export default function CardFormInitial() {
           </div>
         </div>
       </div>
-      {activeType === "agent" && (
+      {activeType.includes("agent") && (
         <div className="absolute bottom-0 left-0 z-10">
           <CardFormStats />
         </div>
       )}
     </CardContainer>
-  )
+  );
 }
