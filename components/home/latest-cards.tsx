@@ -97,7 +97,7 @@ export default async function LatestCards() {
               )}
             >
               <CardThumbnail
-                cardRender={card.initialMode.render}
+                cardRender={card.card_render?.[0]}
                 cardName={card.initialMode.name}
                 cardId={card.id}
                 width={"md"}
