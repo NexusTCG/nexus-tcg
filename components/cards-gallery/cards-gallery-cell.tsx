@@ -43,7 +43,7 @@ export default function CardsGalleryCell({
 
   if (!card) return null;
 
-  let cardRender = card.card_render?.[0] || "/images/nexus-tcg-card-back.png";
+  let cardRender = card.card_render?.[0];
   const cardName = card.initialMode?.name;
 
   return (

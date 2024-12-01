@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 // Utils
 import clsx from "clsx";
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/app/utils/supabase/client";
 // Components
 import {
   TooltipProvider,
@@ -19,11 +22,40 @@ type CardThumbnailProps = {
 };
 
 export default function CardThumbnail({
-  cardRender,
+  cardRender: initialCardRender,
   cardName,
   cardId,
   width,
 }: CardThumbnailProps) {
+  const [cardRender, setCardRender] = useState<string | undefined | null>(
+    initialCardRender
+  );
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`card-render-${cardId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "nexus_cards",
+          filter: `id=eq.${cardId}`,
+        },
+        (payload: { new: { card_render?: string[] } }) => {
+          setCardRender(payload.new.card_render?.[0]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [cardId]);
+
+  if (!cardRender) return null;
+
   return (
     <div
       className={clsx(
@@ -32,28 +64,28 @@ export default function CardThumbnail({
         width === "md" && "w-[240px]"
       )}
     >
-      {/* <TooltipProvider>
+      <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger> */}
-      <Link
-        href={`/cards/${cardId}`}
-        className={clsx(
-          "block w-full h-full rounded-lg overflow-hidden",
-          "cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 hover:border-foreground/20",
-          "hover:border hover:border-teal-500"
-        )}
-      >
-        <Image
-          src={cardRender || "/images/nexus-tcg-card-back.png"}
-          alt={cardName || "Card"}
-          fill
-          className="object-cover"
-        />
-      </Link>
-      {/* </TooltipTrigger>
+          <TooltipTrigger>
+            <Link
+              href={`/cards/${cardId}`}
+              className={clsx(
+                "block w-full h-full rounded-lg overflow-hidden",
+                "cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 hover:border-foreground/20",
+                "hover:border hover:border-teal-500"
+              )}
+            >
+              <Image
+                src={cardRender}
+                alt={cardName || "Card"}
+                fill
+                className="object-cover"
+              />
+            </Link>
+          </TooltipTrigger>
           <TooltipContent>{cardName}</TooltipContent>
         </Tooltip>
-      </TooltipProvider> */}
+      </TooltipProvider>
     </div>
   );
 }
