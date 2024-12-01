@@ -99,7 +99,6 @@ export const takeAndUploadScreenshotTask = task({
         .from("nexus_cards")
         .update({
           card_render: [publicUrl],
-          updated_at: new Date().toISOString(),
         })
         .eq("id", cardId);
 
