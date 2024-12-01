@@ -64,8 +64,7 @@ export default function CardThumbnail({
         href={`/cards/${cardId}`}
         className={clsx(
           "block w-full h-full rounded-lg overflow-hidden",
-          "cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 hover:border-foreground/20",
-          "hover:border hover:border-teal-500"
+          "cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 hover:border-foreground/20"
         )}
       >
         <Image
