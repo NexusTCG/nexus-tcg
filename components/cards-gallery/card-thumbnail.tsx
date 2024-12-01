@@ -31,14 +31,17 @@ export default function CardThumbnail({
     initialCardRender
   );
 
+  const supabase = createClient();
+
   useEffect(() => {
-    const supabase = createClient();
+    if (!cardId) return;
+
     const channel = supabase
       .channel(`card-render-${cardId}`)
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "UPDATE",
           schema: "public",
           table: "nexus_cards",
           filter: `id=eq.${cardId}`,
@@ -50,9 +53,9 @@ export default function CardThumbnail({
       .subscribe();
 
     return () => {
-      channel.unsubscribe();
+      supabase.removeChannel(channel);
     };
-  }, [cardId]);
+  }, [supabase, cardId]);
 
   if (!cardRender) return null;
 
