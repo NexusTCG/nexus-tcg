@@ -132,6 +132,7 @@ export default function Sidebar({
         duration-300
         sticky
         top-0
+        z-50
       `}
     >
       <div
@@ -167,7 +168,7 @@ export default function Sidebar({
             </Tooltip>
           </TooltipProvider>
         </div>
-        {currentUserId && (
+        {currentUserId && userProfile?.plan !== null && (
           <>
             <Separator />
             <SidebarPlanStatus isCollapsed={isCollapsed} />

@@ -77,7 +77,7 @@ export type RenderedKeywordsType = RenderedKeywordType[] | null | undefined;
 
 // --> HOOKS <-- //
 
-export type SubscriptionPlanType = "free" | "pro";
+export type SubscriptionPlanType = "core" | "rare" | "epic" | "prime";
 
 export type SubscriptionDataType = {
   plan: SubscriptionPlanType;
@@ -93,21 +93,21 @@ export type SubscriptionDataType = {
 export const TIER_CONFIG = {
   core: {
     credits: 10,
-    name: "core",
+    name: "Core",
   },
   rare: {
     credits: 25,
-    name: "rare",
+    name: "Rare",
     priceId: process.env.STRIPE_RARE_PRICE_ID,
   },
   epic: {
     credits: 50,
-    name: "epic",
+    name: "Epic",
     priceId: process.env.STRIPE_EPIC_PRICE_ID,
   },
   prime: {
     credits: 100,
-    name: "prime",
+    name: "Prime",
     priceId: process.env.STRIPE_PRIME_PRICE_ID,
   },
 } as const;

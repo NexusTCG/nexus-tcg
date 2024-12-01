@@ -7,9 +7,7 @@ const publicRoutes = [
   "/login",
   "/login/create-profile",
   "/cards",
-  // "/create",
   "/learn",
-  // "/play",
   "/profile/[slug]",
 ];
 
@@ -18,24 +16,10 @@ export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // Check if the current path is public
-  const isPublicRoute = publicRoutes.some((route) =>
-    path === route || (route === "/cards" && path.startsWith("/cards/"))
-  );
-
-  if (isPublicRoute) {
-    return response;
-  }
-
   // Check user session
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    // Redirect to login if user is not authenticated
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // If user is authenticated and tries to access login or home page, redirect to dashboard
+  // Redirect authenticated users to home or create profile
   if (user && (path === "/" || path.includes("/login"))) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -50,6 +34,21 @@ export async function middleware(request: NextRequest) {
         new URL("/login/create-profile", request.url),
       );
     }
+  }
+
+  // Check if the current path is public
+  const isPublicRoute = publicRoutes.some((route) =>
+    path === route || (route === "/cards" && path.startsWith("/cards/"))
+  );
+
+  // If the route is public, return the response
+  if (isPublicRoute) {
+    return response;
+  }
+
+  // Redirect to login if user is not authenticated
+  if (!user) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return response;

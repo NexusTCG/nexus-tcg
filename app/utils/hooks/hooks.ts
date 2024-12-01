@@ -36,7 +36,7 @@ export function useClickAway(handler: () => void) {
 
 export function useSubscription(): SubscriptionDataType {
   const [userId, setUserId] = useState<string | null>(null);
-  const [plan, setPlan] = useState<SubscriptionPlanType>("free");
+  const [plan, setPlan] = useState<SubscriptionPlanType>("core");
   const [credits, setCredits] = useState<number>(0);
   const [refreshDate, setRefreshDate] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -54,7 +54,7 @@ export function useSubscription(): SubscriptionDataType {
 
       const profile: ProfileDTO = await response.json();
       setUserId(profile.user_id);
-      setPlan(profile.plan ? profile.plan : "free");
+      setPlan(profile.plan ? profile.plan : "core");
       setCredits(profile.credits ? profile.credits : 0);
       setRefreshDate(profile.credits_refresh_date || null);
     } catch (error) {
