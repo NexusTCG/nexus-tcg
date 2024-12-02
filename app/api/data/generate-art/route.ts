@@ -1,13 +1,16 @@
 import { NextRequest } from "next/server";
 import fetch from "node-fetch";
 
-export const maxDuration = 45; // TODO: Replace with Trigger.dev task with polling
+// Replace with Trigger.dev task with polling
+// when that feature becomes available
+export const maxDuration = 45;
 
 export async function POST(
   req: NextRequest,
 ) {
   if (req.method === "POST") {
     const { prompt } = await req.json();
+
     try {
       const response = await fetch(
         "https://api.openai.com/v1/images/generations",

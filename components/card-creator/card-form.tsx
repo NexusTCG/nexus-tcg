@@ -175,13 +175,12 @@ export default function CardForm({
 
       // Upload initial mode art
       toast("Uploading card art...");
-      // TEMPORARILY DISABLED
-      // Remove data.initialMode.art_options check
+
+      // Upload initial mode art if it exists
       if (
         data.initialMode.art_options &&
         data.initialMode.art_options.length > 0
       ) {
-        // Upload initial mode art to Supabase bucket
         const response = await fetch("/api/data/upload-generated-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -197,7 +196,6 @@ export default function CardForm({
         data.anomalyMode.art_options &&
         data.anomalyMode.art_options.length > 0
       ) {
-        // Upload anomaly mode art to Supabase bucket
         const response = await fetch("/api/data/upload-generated-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

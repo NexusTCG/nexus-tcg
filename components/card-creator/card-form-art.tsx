@@ -134,11 +134,13 @@ export default function CardArtSheet() {
     setIsGenerating(true);
     toast("Generating art...");
 
-    const prompt = form[`${mode}Mode`].prompt_art;
+    const basePrompt =
+      "Rule of thirds, dynamic pose, digital art, fantasy, sci-fi.";
+    const userPrompt = form[`${mode}Mode`].prompt_art;
     const artDirections = Object.values(selectedOptions)
       .filter(Boolean)
       .join(", ");
-    const fullPrompt = `${prompt}. Art style: ${artDirections}`;
+    const fullPrompt = `Motif: ${userPrompt}. Art direction: ${basePrompt} ${artDirections}`;
 
     try {
       const response = await fetch("/api/data/generate-art", {
@@ -165,13 +167,15 @@ export default function CardArtSheet() {
 
       setValue(`${mode}Mode.art_options`, [...artOptions, imageUrl]);
       setValue(`${mode}Mode.art_selected`, artOptions.length);
+
+      // Close sheet and hide overlay on successful art generation
+      setIsSheetOpen(false);
+      hideOverlay();
     } catch (error) {
       console.error("Error generating art:", error);
       toast.error("Art generation failed!");
     } finally {
       setIsGenerating(false);
-      setIsSheetOpen(false);
-      hideOverlay();
     }
   }
 
@@ -182,6 +186,8 @@ export default function CardArtSheet() {
         if (!isGenerating) {
           setIsSheetOpen(open);
           open ? showOverlay() : hideOverlay();
+        } else if (!open) {
+          toast.error("Please wait until art generation is complete");
         }
       }}
     >
