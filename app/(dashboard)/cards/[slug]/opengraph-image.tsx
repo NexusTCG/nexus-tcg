@@ -4,12 +4,11 @@ import { getCardsDTO } from "@/app/server/data/cards-dto";
 export const runtime = "edge";
 
 export const alt = "Nexus TCG Card";
+export const contentType = "image/png";
 export const size = {
   width: 1200,
   height: 630,
 };
-
-export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { slug: string } }) {
   const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
@@ -26,7 +25,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
   ).toString();
 
   const cardImageUrl = card?.card_render?.[0]
-    ? new URL(card.card_render[0]).toString()
+    ? new URL(card.card_render[0], process.env.NEXT_PUBLIC_SITE_URL).toString()
     : new URL(
         "/images/nexus-tcg-card-back.png",
         process.env.NEXT_PUBLIC_SITE_URL
