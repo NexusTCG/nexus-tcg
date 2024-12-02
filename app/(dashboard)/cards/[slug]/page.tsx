@@ -47,12 +47,20 @@ function CardSkeleton() {
 
 export default async function CardSlug(props: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ mode?: "initial" | "anomaly" }>;
+  searchParams: Promise<{ mode?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const params = await props.params;
+
+  // Validate mode
+  const validModes = ["initial", "anomaly"] as const;
+  const requestedMode = searchParams.mode?.toLowerCase();
+
   // Redirect if mode is not specified
-  if (!searchParams.mode) {
+  if (
+    !requestedMode ||
+    !validModes.includes(requestedMode as (typeof validModes)[number])
+  ) {
     redirect(`/cards/${params.slug}?mode=initial`);
   }
 
@@ -63,7 +71,7 @@ export default async function CardSlug(props: {
     return <div>Card not found</div>;
   }
 
-  const activeMode = searchParams.mode || "initial";
+  const activeMode = searchParams.mode as (typeof validModes)[number];
 
   return (
     <div
