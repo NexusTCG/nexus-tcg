@@ -15,11 +15,28 @@ export default async function Image({ params }: { params: { slug: string } }) {
   const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
   const card = cards && cards.length > 0 ? cards[0] : null;
 
+  const logoUrl = new URL(
+    "/brand-assets/nexus-logo-white.png",
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+  ).toString();
+
+  const bgImageUrl = new URL(
+    "/images/og-image-bg.png",
+    process.env.NEXT_PUBLIC_SITE_URL
+  ).toString();
+
+  const cardImageUrl = card?.card_render?.[0]
+    ? new URL(card.card_render[0]).toString()
+    : new URL(
+        "/images/nexus-tcg-card-back.png",
+        process.env.NEXT_PUBLIC_SITE_URL
+      ).toString();
+
   return new ImageResponse(
     (
       <div
         style={{
-          background: `url(${process.env.NEXT_PUBLIC_SUPABASE_URL}/images/og-image-bg.png)`,
+          background: `url(${bgImageUrl})`,
           backgroundSize: "cover",
           height: "100%",
           width: "100%",
@@ -41,7 +58,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
           }}
         >
           <img
-            src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/brand-assets/nexus-logo-white.png`}
+            src={logoUrl}
             alt="Nexus TCG Logo"
             width={300}
             height={72}
@@ -66,12 +83,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
           }}
         >
           <img
-            src={
-              card?.card_render?.[0] &&
-              typeof card.card_render?.[0] === "string"
-                ? card.card_render[0]
-                : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/images/nexus-tcg-card-back.png`
-            }
+            src={cardImageUrl}
             alt={`${
               card?.initialMode?.name || "Nexus TCG Card"
             } - Nexus TCG Card`}
@@ -84,6 +96,19 @@ export default async function Image({ params }: { params: { slug: string } }) {
     ),
     {
       ...size,
+      fonts: [
+        {
+          name: "Inter",
+          data: await fetch(
+            new URL(
+              "https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2",
+              "https://fonts.gstatic.com"
+            )
+          ).then((res) => res.arrayBuffer()),
+          weight: 600,
+          style: "normal",
+        },
+      ],
     }
   );
 }
