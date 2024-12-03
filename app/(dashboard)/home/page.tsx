@@ -2,13 +2,14 @@ import React, { Suspense } from "react";
 // Utils
 import dynamic from "next/dynamic";
 // Data
-import { getCardsDTO } from "@/app/server/data/cards-dto";
+// import { getCardsDTO } from "@/app/server/data/cards-dto";
 // Types
-import { CardDTO } from "@/app/lib/types/dto";
+// import { CardDTO } from "@/app/lib/types/dto";
 // import ReadyToPlay from "@/components/home/ready-to-play";
 // Components
 import { Skeleton } from "@/components/ui/skeleton";
 // Dynamic custom components
+const SteamWidget = dynamic(() => import("@/components/home/steam-widget"));
 const LatestCards = dynamic(() => import("@/components/home/latest-cards"));
 const LatestNotifications = dynamic(
   () => import("@/components/home/latest-notifications")
@@ -86,7 +87,8 @@ export default async function Home() {
               <PlaceholderCard card="top-cards" />
             )}
           </Suspense> */}
-          <LatestNotifications />
+          {/* <LatestNotifications /> */}
+          <SteamWidget />
         </div>
         <div
           id="home-content-col-2"
