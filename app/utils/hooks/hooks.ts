@@ -70,11 +70,14 @@ export function useSubscription(): SubscriptionDataType {
     if (!refreshDate) return null;
 
     const now = new Date();
-    const refresh = new Date(refreshDate);
-    const diffTime = refresh.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const lastRefresh = new Date(refreshDate);
+    const nextRefresh = new Date(lastRefresh);
+    nextRefresh.setDate(lastRefresh.getDate() + 30);
 
-    return diffDays > 0 ? diffDays : null;
+    const diffTime = nextRefresh.getTime() - now.getTime(); // Get difference in milliseconds
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+
+    return diffDays;
   }
 
   // Real-time subscription
