@@ -42,10 +42,10 @@ export default function SteamWidget() {
         "
       >
         <iframe
-          src="https://steamcommunity.com/sharedfiles/filedetails/?id=3279618215"
+          src="https://steamcommunity.com/workshop/filedetails/?id=3279618215&embed=true"
           width="100%"
           height="500"
-          style={{ border: 0 }}
+          style={{ border: 0, overflow: "hidden" }}
           allowFullScreen
         ></iframe>
       </CardContent>
