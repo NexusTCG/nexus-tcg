@@ -46,6 +46,8 @@ export default function SidebarPlanStatus({
     (tier) => tier.name.toLowerCase() === plan
   )?.name;
 
+  if (!credits) return null;
+
   const PlanButton = (
     <Button
       variant="ghost"

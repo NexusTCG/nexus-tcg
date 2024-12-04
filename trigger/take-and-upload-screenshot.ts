@@ -1,6 +1,6 @@
 import { logger, task } from "@trigger.dev/sdk/v3";
 import puppeteer from "puppeteer";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/app/utils/supabase/admin";
 
 export const takeAndUploadScreenshotTask = task({
   id: "take-and-upload-screenshot",
@@ -9,12 +9,6 @@ export const takeAndUploadScreenshotTask = task({
     logger.info(
       `Starting screenshot task for ${isUpdate ? "updated" : "new"} card`,
       { cardId },
-    );
-
-    // Initialize Supabase client
-    const supabase = createClient(
-      process.env.SUPABASE_URL ?? "",
-      process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
     );
 
     // TODO: Update to custom URL
@@ -78,7 +72,7 @@ export const takeAndUploadScreenshotTask = task({
         : `card-${cardId}-initial.png`;
 
       // Upload to Supabase Storage
-      const { error: uploadError } = await supabase
+      const { error: uploadError } = await supabaseAdmin
         .storage
         .from("card-renders")
         .upload(filename, screenshot, {
@@ -89,13 +83,13 @@ export const takeAndUploadScreenshotTask = task({
       if (uploadError) throw uploadError;
 
       // Get public URL
-      const { data: { publicUrl } } = supabase
+      const { data: { publicUrl } } = await supabaseAdmin
         .storage
         .from("card-renders")
         .getPublicUrl(filename);
 
       // Update card record with render URL
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseAdmin
         .from("nexus_cards")
         .update({
           card_render: [publicUrl],
