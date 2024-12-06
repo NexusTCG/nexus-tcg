@@ -6,13 +6,14 @@ export const refreshMonthlyCreditsTask = schedules.task({
   id: "refresh-monthly-credits",
   cron: "0 0 * * *",
   run: async (payload) => {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // Get timestamp and convert to date with YYYY-MM-DD format
+    const now = new Date(payload.timestamp);
+    const today = now.toISOString().split("T")[0];
 
     const { data: usersToRefresh, error } = await supabaseAdmin
       .from("profiles")
       .select("*")
-      .lte("credits_refresh_date", thirtyDaysAgo.toISOString());
+      .like("credits_refresh_date", `${today}%`);
 
     if (error) {
       throw new Error(
@@ -23,6 +24,10 @@ export const refreshMonthlyCreditsTask = schedules.task({
     // Update user credits
     for (const user of usersToRefresh) {
       const tierConfig = TIER_CONFIG[user.plan as keyof typeof TIER_CONFIG];
+
+      // Calculate next refresh date (30 days out)
+      const nextRefresh = new Date(now);
+      nextRefresh.setDate(nextRefresh.getDate() + 30);
 
       await supabaseAdmin
         .from("profiles")
