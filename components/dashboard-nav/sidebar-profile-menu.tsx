@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 // Utils
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 // Components
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ const stripeUrl = "https://stripe.com"; // Replace with actual URL
 
 export default function SidebarProfileMenu({ username }: { username: string }) {
   const [signoutDisabled, setSignoutDisabled] = useState<boolean>(false);
+  const router = useRouter();
 
   async function signOut() {
     try {
@@ -39,6 +41,8 @@ export default function SidebarProfileMenu({ username }: { username: string }) {
       if (!response.ok) {
         throw new Error("Logout failed");
       }
+
+      router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
