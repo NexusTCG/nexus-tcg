@@ -36,6 +36,11 @@ export default async function Image({ params }: { params: { slug: string } }) {
     fetch(cardImageUrl).then((res) => res.arrayBuffer()),
   ]);
 
+  console.log("[Server] Card Data:", card);
+  console.log("[Server] Logo URL:", logoUrl);
+  console.log("[Server] BG URL:", bgImageUrl);
+  console.log("[Server] Card URL:", cardImageUrl);
+
   return new ImageResponse(
     (
       <div
