@@ -50,51 +50,51 @@ type MetadataProps = {
   params: { slug: string };
 };
 
-// Generate metadata
-// export async function generateMetadata({
-//   params,
-// }: MetadataProps): Promise<Metadata> {
-//   const card = await fetchCard(params.slug);
-//   const baseUrl = getBaseUrl();
+Generate metadata
+export async function generateMetadata({
+  params,
+}: MetadataProps): Promise<Metadata> {
+  const card = await fetchCard(params.slug);
+  const baseUrl = getBaseUrl();
 
-//   console.log("[Metadata] Generating for card:", card);
-//   console.log("[Metadata] Base URL:", baseUrl);
+  console.log("[Metadata] Generating for card:", card);
+  console.log("[Metadata] Base URL:", baseUrl);
 
-//   const ogImage = `${baseUrl}/cards/${params.slug}/opengraph-image`;
-//   console.log("[Metadata] OG Image URL:", ogImage);
+  const ogImage = `${baseUrl}/cards/${params.slug}/opengraph-image`;
+  console.log("[Metadata] OG Image URL:", ogImage);
 
-//   if (!card) {
-//     return {
-//       title: "Card Not Found",
-//       description: "The requested card could not be found.",
-//     };
-//   }
+  if (!card) {
+    return {
+      title: "Card Not Found",
+      description: "The requested card could not be found.",
+    };
+  }
 
-//   return {
-//     title: card.initialMode.name,
-//     description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-//     openGraph: {
-//       title: card.initialMode.name,
-//       description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-//       type: "article",
-//       url: `${baseUrl}/cards/${card.id}`,
-//       images: [
-//         {
-//           url: `${baseUrl}/cards/${card.id}/opengraph-image`,
-//           width: 1200,
-//           height: 630,
-//           alt: card.initialMode.name,
-//         },
-//       ],
-//     },
-//     twitter: {
-//       card: "summary_large_image",
-//       title: card.initialMode.name,
-//       description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-//       images: [`${baseUrl}/cards/${card.id}/opengraph-image`],
-//     },
-//   };
-// }
+  return {
+    title: card.initialMode.name,
+    description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
+    openGraph: {
+      title: card.initialMode.name,
+      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
+      type: "article",
+      url: `${baseUrl}/cards/${card.id}`,
+      images: [
+        {
+          url: `/cards/${card.id}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: card.initialMode.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: card.initialMode.name,
+      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
+      images: [`/cards/${card.id}/opengraph-image`],
+    },
+  };
+}
 
 export default async function CardSlug(props: {
   params: Promise<{ slug: string }>;
