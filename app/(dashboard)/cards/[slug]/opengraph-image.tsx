@@ -19,29 +19,34 @@ export default async function Image({ params }: { params: { slug: string } }) {
   const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
   const card = cards && cards.length > 0 ? cards[0] : null;
 
+  console.log("[OpenGraph] Card data:", card);
+
   return (
     new ImageResponse(
       (
-        <div>
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#000",
+            color: "#fff",
+          }}
+        >
+          <p>Card ID: {params.slug}</p>
           <p>Card render URL: {card?.card_render?.[0]}</p>
         </div>
       )
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Inter",
-          data: await fetch(
-            new URL(
-              "https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2",
-              "https://fonts.gstatic.com"
-            )
-          ).then((res) => res.arrayBuffer()),
-          weight: 600,
-          style: "normal",
-        },
-      ],
+      headers: {
+        "content-type": contentType,
+        "cache-control": "no-cache, no-store", // For debugging
+      },
     }
   );
 }
