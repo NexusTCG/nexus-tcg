@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getCardsDTO } from "@/app/server/data/cards-dto";
+// import { getCardsDTO } from "@/app/server/data/cards-dto";
 
 export const runtime = "edge";
 
@@ -11,8 +11,8 @@ export const size = {
 };
 
 export default async function Image({ params }: { params: { slug: string } }) {
-  const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
-  const card = cards && cards.length > 0 ? cards[0] : null;
+  // const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
+  // const card = cards && cards.length > 0 ? cards[0] : null;
 
   const logoUrl = new URL(
     "/brand-assets/nexus-logo-white.png",
@@ -24,12 +24,17 @@ export default async function Image({ params }: { params: { slug: string } }) {
     process.env.NEXT_PUBLIC_SITE_URL
   ).toString();
 
-  const cardImageUrl = card?.card_render?.[0]
-    ? new URL(card.card_render[0], process.env.NEXT_PUBLIC_SITE_URL).toString()
-    : new URL(
-        "/images/nexus-tcg-card-back.png",
-        process.env.NEXT_PUBLIC_SITE_URL
-      ).toString();
+  const cardImageUrl = new URL(
+    "/images/nexus-tcg-card-back.png",
+    process.env.NEXT_PUBLIC_SITE_URL
+  ).toString();
+
+  // const cardImageUrl = card?.card_render?.[0]
+  //   ? new URL(card.card_render[0], process.env.NEXT_PUBLIC_SITE_URL).toString()
+  //   : new URL(
+  //       "/images/nexus-tcg-card-back.png",
+  //       process.env.NEXT_PUBLIC_SITE_URL
+  //     ).toString();
 
   return new ImageResponse(
     (
@@ -64,7 +69,8 @@ export default async function Image({ params }: { params: { slug: string } }) {
             style={{ marginBottom: 20 }}
           />
           <h1 style={{ fontSize: 60, color: "white", marginTop: 30 }}>
-            {card?.initialMode?.name || "Nexus TCG Card"}
+            {/* {card?.initialMode?.name || "Nexus TCG Card"} */}
+            Nexus TCG Card
           </h1>
           <p style={{ fontSize: 30, color: "white", marginTop: 10 }}>
             Join play.nexus to create your own Nexus cards!
@@ -83,9 +89,10 @@ export default async function Image({ params }: { params: { slug: string } }) {
         >
           <img
             src={cardImageUrl}
-            alt={`${
-              card?.initialMode?.name || "Nexus TCG Card"
-            } - Nexus TCG Card`}
+            // alt={`${
+            //   card?.initialMode?.name || "Nexus TCG Card"
+            // } - Nexus TCG Card`}
+            alt="Nexus TCG Card"
             width={300}
             height={420}
             style={{ marginTop: 20, border: "5px solid white" }}
