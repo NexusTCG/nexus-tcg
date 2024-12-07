@@ -15,7 +15,7 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
-export const revalidate = 3600;
+export const revalidate = 0; // Temporarily disabled, set to 3600
 
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
