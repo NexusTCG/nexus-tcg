@@ -11,28 +11,10 @@ const publicRoutes = [
   "/profile/[slug]",
 ];
 
-// function isOpenGraphRoute(path: string) {
-//   const isOG = path.includes("/opengraph-image") ||
-//     path.includes("/twitter-image");
-//   console.log(
-//     `[Server] Path: ${path} Is OpenGraph: ${isOG}`,
-//   );
-//   return isOG;
-// }
-
-function isOpenGraphRoute(path: string) {
-  return /^\/cards\/\d+\/(opengraph-image|twitter-image)(\.png)?$/.test(path);
-}
-
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request);
   const url = new URL(request.url);
   const path = url.pathname;
-
-  // Return response for opengraph image
-  if (isOpenGraphRoute(path)) {
-    return NextResponse.next();
-  }
 
   // Check user session
   const { data: { user } } = await supabase.auth.getUser();
@@ -75,9 +57,5 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
-    "/cards/:slug/opengraph-image",
-    "/cards/:slug/opengraph-image.png",
-    "/cards/:slug/twitter-image",
-    "/cards/:slug/twitter-image.png",
   ],
 };

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 // Utils
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
@@ -57,12 +57,6 @@ export async function generateMetadata({
   const card = await fetchCard(params.slug);
   const baseUrl = getBaseUrl();
 
-  console.log("[Metadata] Generating for card:", card);
-  console.log("[Metadata] Base URL:", baseUrl);
-
-  const ogImage = `${baseUrl}/cards/${params.slug}/opengraph-image`;
-  console.log("[Metadata] OG Image URL:", ogImage);
-
   if (!card) {
     return {
       title: "Card Not Found",
@@ -72,15 +66,15 @@ export async function generateMetadata({
 
   return {
     title: card.initialMode.name,
-    description: `Check out ${card.initialMode.name}, an exciting and unique Nexus TCG card meticulously crafted and brought to life by ${card.username}!`,
+    description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
     openGraph: {
       title: card.initialMode.name,
-      description: `Check out ${card.initialMode.name}, an exciting and unique Nexus TCG card meticulously crafted and brought to life by ${card.username}!`,
+      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
       type: "article",
       url: `${baseUrl}/cards/${card.id}`,
       images: [
         {
-          url: `${baseUrl}/cards/${card.id}/opengraph-image.png`, // Added .png extension
+          url: `${baseUrl}/opengraph-image.png`,
           width: 1200,
           height: 630,
           alt: card.initialMode.name,
@@ -91,9 +85,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: card.initialMode.name,
       description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-      images: [
-        `${baseUrl}/cards/${card.id}/opengraph-image.png`, // Added .png extension
-      ],
+      images: [`${baseUrl}/twitter-image.png`],
     },
   };
 }
