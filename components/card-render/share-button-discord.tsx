@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePostHog } from "posthog-js/react";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ export default function ShareButtonDiscord({
   );
 
   const supabase = createClient();
+  const posthog = usePostHog();
 
   async function handleDiscordShare() {
     setIsLoading(true);
@@ -56,6 +58,12 @@ export default function ShareButtonDiscord({
       const result = await response.json();
 
       if (result.success) {
+        posthog.capture("card_shared", {
+          distinctId: cardId,
+          platform: "discord",
+          success: true,
+        });
+
         toast({
           title: "Shared successfully",
           description: "Your card has been posted to Discord!",
@@ -64,6 +72,13 @@ export default function ShareButtonDiscord({
           window.open(result.discordPostUrl, "_blank");
         }, 1000);
       } else {
+        posthog.capture("card_shared", {
+          distinctId: cardId,
+          platform: "discord",
+          success: false,
+          error: result.error,
+        });
+
         throw new Error(result.error || "Failed to share to Discord");
       }
     } catch (error) {

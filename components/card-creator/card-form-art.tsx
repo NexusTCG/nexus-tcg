@@ -92,6 +92,7 @@ export default function CardArtSheet() {
     };
   }, []);
 
+  // Update art direction options
   useEffect(() => {
     const updatedArtOptions = Object.entries(selectedOptions)
       .filter(([_, value]) => value !== null)
@@ -103,6 +104,7 @@ export default function CardArtSheet() {
     setValue(`${mode}Mode.art_direction_options`, updatedArtOptions);
   }, [selectedOptions, setValue, mode]);
 
+  // Remove selected option from art direction options
   function handleBadgeClick(sectionKey: string) {
     setSelectedOptions((prev) => {
       const newOptions = { ...prev };
@@ -121,6 +123,7 @@ export default function CardArtSheet() {
     });
   }
 
+  // Generate art
   async function handleGenerateArt() {
     if (artOptions.length >= MAX_ART_GENERATIONS) {
       toast.error(

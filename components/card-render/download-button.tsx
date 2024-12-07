@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePostHog } from "posthog-js/react";
 // Utils
 import { toPng } from "html-to-image";
 import { createClient } from "@/app/utils/supabase/client";
@@ -23,6 +24,7 @@ export function DownloadButton({
   const [downloaded, setDownloaded] = useState(false);
 
   const supabase = createClient();
+  const posthog = usePostHog();
 
   async function downloadImage(path: string, filename: string) {
     try {
@@ -39,8 +41,19 @@ export function DownloadButton({
       link.click();
       URL.revokeObjectURL(url);
 
+      posthog.capture("card_downloaded", {
+        distinctId: cardId,
+        success: true,
+      });
+
       toast("Your card has been downloaded.");
     } catch (error) {
+      posthog.capture("card_downloaded", {
+        distinctId: cardId,
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+
       console.error("Error downloading image:", error);
       toast("Failed to download the image. Please try again.");
     }
