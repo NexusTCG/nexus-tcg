@@ -72,21 +72,15 @@ export async function generateMetadata({
 
   return {
     title: card.initialMode.name,
-    description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
+    description: `Check out ${card.initialMode.name}, an exciting and unique Nexus TCG card meticulously crafted and brought to life by ${card.username}!`,
     openGraph: {
       title: card.initialMode.name,
-      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
+      description: `Check out ${card.initialMode.name}, an exciting and unique Nexus TCG card meticulously crafted and brought to life by ${card.username}!`,
       type: "article",
       url: `${baseUrl}/cards/${card.id}`,
       images: [
         {
-          url: `/cards/${card.id}/opengraph-image.png`, // Added .png extension
-          width: 1200,
-          height: 630,
-          alt: card.initialMode.name,
-        },
-        {
-          url: `/cards/${card.id}/twitter-image.png`, // Added .png extension
+          url: `${baseUrl}/cards/${card.id}/opengraph-image.png`, // Added .png extension
           width: 1200,
           height: 630,
           alt: card.initialMode.name,
@@ -98,8 +92,7 @@ export async function generateMetadata({
       title: card.initialMode.name,
       description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
       images: [
-        `/cards/${card.id}/opengraph-image.png`, // Added .png extension
-        `/cards/${card.id}/twitter-image.png`, // Added .png extension
+        `${baseUrl}/cards/${card.id}/opengraph-image.png`, // Added .png extension
       ],
     },
   };

@@ -21,7 +21,7 @@ const publicRoutes = [
 // }
 
 function isOpenGraphRoute(path: string) {
-  return path.includes("/opengraph-image") || path.includes("/twitter-image");
+  return /^\/cards\/\d+\/(opengraph-image|twitter-image)(\.png)?$/.test(path);
 }
 
 export async function middleware(request: NextRequest) {
@@ -74,8 +74,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|images|favicon.ico|opengraph-image|twitter-image).*)",
-    "/cards/:path*/opengraph-image",
-    "/cards/:path*/twitter-image",
+    "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
+    "/cards/:slug/opengraph-image",
+    "/cards/:slug/twitter-image",
   ],
 };
