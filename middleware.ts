@@ -21,13 +21,13 @@ const publicRoutes = [
 // }
 
 function isOpenGraphRoute(path: string) {
-  return path.includes("/opengraph-image") ||
-    path.includes("/twitter-image") ||
-    path.includes("/robots.txt") ||
-    path.includes("/sitemap.xml") ||
-    path.endsWith(".png") ||
-    path.endsWith(".jpg") ||
-    path.endsWith(".jpeg");
+  if (path.match(/^\/cards\/\d+\/opengraph-image$/)) {
+    return true;
+  }
+  if (path.match(/^\/cards\/\d+\/twitter-image$/)) {
+    return true;
+  }
+  return false;
 }
 
 export async function middleware(request: NextRequest) {
@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
   // Return response for opengraph image
   if (isOpenGraphRoute(path)) {
-    return response;
+    return NextResponse.next();
   }
 
   // Check user session
@@ -81,5 +81,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|images|favicon.ico|opengraph-image|twitter-image|robots.txt|sitemap.xml).*)",
+    "/cards/:slug/opengraph-image",
+    "/cards/:slug/twitter-image",
   ],
 };

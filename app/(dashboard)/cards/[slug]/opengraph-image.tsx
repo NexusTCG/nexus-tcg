@@ -6,7 +6,7 @@ import { getBaseUrl } from "@/app/utils/actions/actions";
 // So we are generating a dynamic OG images with static assets for now
 
 export const runtime = "edge";
-export const revalidate = 3600;
+export const revalidate = 0; // Temporarily disable, set to 3600 after testing
 export const contentType = "image/png";
 export const size = {
   width: 1200,
@@ -18,6 +18,9 @@ export default async function Image({ params }: { params: { slug: string } }) {
 
   const cards = await getCardsDTO({ id: parseInt(params.slug, 10) });
   const card = cards && cards.length > 0 ? cards[0] : null;
+
+  // Debugging
+  console.log("[OpenGraph] Card data:", card);
 
   const logoUrl = new URL(
     "/brand-assets/nexus-logo-white.png",
@@ -36,10 +39,12 @@ export default async function Image({ params }: { params: { slug: string } }) {
     fetch(cardImageUrl).then((res) => res.arrayBuffer()),
   ]);
 
-  console.log("[Server] Card Data:", card);
-  console.log("[Server] Logo URL:", logoUrl);
-  console.log("[Server] BG URL:", bgImageUrl);
-  console.log("[Server] Card URL:", cardImageUrl);
+  // Debugging
+  console.log("[OpenGraph] Assets:", {
+    logoUrl,
+    bgImageUrl,
+    cardImageUrl,
+  });
 
   return new ImageResponse(
     (

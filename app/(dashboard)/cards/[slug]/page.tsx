@@ -57,6 +57,12 @@ export async function generateMetadata({
   const card = await fetchCard(params.slug);
   const baseUrl = getBaseUrl();
 
+  console.log("[Metadata] Generating for card:", card);
+  console.log("[Metadata] Base URL:", baseUrl);
+
+  const ogImage = `${baseUrl}/cards/${params.slug}/opengraph-image`;
+  console.log("[Metadata] OG Image URL:", ogImage);
+
   if (!card) {
     return {
       title: "Card Not Found",
