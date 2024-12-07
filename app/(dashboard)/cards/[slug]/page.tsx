@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 // Utils
-import { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";

@@ -11,13 +11,23 @@ const publicRoutes = [
   "/profile/[slug]",
 ];
 
+// function isOpenGraphRoute(path: string) {
+//   const isOG = path.includes("/opengraph-image") ||
+//     path.includes("/twitter-image");
+//   console.log(
+//     `[Server] Path: ${path} Is OpenGraph: ${isOG}`,
+//   );
+//   return isOG;
+// }
+
 function isOpenGraphRoute(path: string) {
-  const isOG = path.includes("/opengraph-image") ||
-    path.includes("/twitter-image");
-  console.log(
-    `[Server] Path: ${path} Is OpenGraph: ${isOG}`,
-  );
-  return isOG;
+  return path.includes("/opengraph-image") ||
+    path.includes("/twitter-image") ||
+    path.includes("/robots.txt") ||
+    path.includes("/sitemap.xml") ||
+    path.endsWith(".png") ||
+    path.endsWith(".jpg") ||
+    path.endsWith(".jpeg");
 }
 
 export async function middleware(request: NextRequest) {
@@ -70,6 +80,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|images|favicon.ico|opengraph-image|twitter-image).*)",
+    "/((?!api|_next/static|_next/image|images|favicon.ico|opengraph-image|twitter-image|robots.txt|sitemap.xml).*)",
   ],
 };
