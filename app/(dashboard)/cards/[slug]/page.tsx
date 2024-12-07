@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 // Utils
-// import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
@@ -50,7 +50,7 @@ type MetadataProps = {
   params: { slug: string };
 };
 
-Generate metadata
+// Generate metadata
 export async function generateMetadata({
   params,
 }: MetadataProps): Promise<Metadata> {
