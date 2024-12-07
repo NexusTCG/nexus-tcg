@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
-  const url = new URL(req.url).origin;
+  // const url = new URL(req.url).origin;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
@@ -16,5 +16,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false }, { status: 500 });
   }
 
-  return NextResponse.redirect(new URL('/login', req.url));
-};
+  return NextResponse.redirect(new URL("/login", req.url));
+}

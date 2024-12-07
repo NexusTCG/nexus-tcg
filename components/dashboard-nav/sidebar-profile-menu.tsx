@@ -2,13 +2,10 @@
 
 // Hooks
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 // Utils
 import Link from "next/link";
-import { createClient } from "@/app/utils/supabase/client";
 // Components
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,18 +26,23 @@ import {
 const stripeUrl = "https://stripe.com"; // Replace with actual URL
 
 export default function SidebarProfileMenu({ username }: { username: string }) {
-  const supabase = createClient();
-  const router = useRouter();
-
   const [signoutDisabled, setSignoutDisabled] = useState<boolean>(false);
 
   async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Logout error:", error.message);
-      return;
-    } else {
-      router.push("/login");
+    try {
+      setSignoutDisabled(true);
+
+      const response = await fetch("/api/auth/logout-user", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setSignoutDisabled(false);
     }
   }
 
@@ -86,7 +88,6 @@ export default function SidebarProfileMenu({ username }: { username: string }) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {/* TODO: Add logout logic */}
         <DropdownMenuItem
           className="hover:cursor-pointer"
           onClick={signOut}
