@@ -8,12 +8,14 @@ export const refreshMonthlyCreditsTask = schedules.task({
   run: async (payload) => {
     // Get timestamp and convert to date with YYYY-MM-DD format
     const now = new Date(payload.timestamp);
+    console.log(`[Server] Starting refresh at ${now}`);
     const today = now.toISOString().split("T")[0];
+    console.log(`[Server] Refreshing monthly credits for ${today}`);
 
     const { data: usersToRefresh, error } = await supabaseAdmin
       .from("profiles")
       .select("*")
-      .like("credits_refresh_date", `${today}%`);
+      .eq("credits_refresh_date", today);
 
     if (error) {
       throw new Error(
