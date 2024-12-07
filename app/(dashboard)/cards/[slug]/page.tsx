@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 // Utils
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
@@ -15,7 +14,7 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
-export const revalidate = 0; // Temporarily disabled, set to 3600
+export const revalidate = 3600;
 
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
@@ -44,50 +43,6 @@ function CardSkeleton() {
       className="w-[400px] h-[560px] absolute"
     />
   );
-}
-
-type MetadataProps = {
-  params: { slug: string };
-};
-
-// Generate metadata
-export async function generateMetadata({
-  params,
-}: MetadataProps): Promise<Metadata> {
-  const card = await fetchCard(params.slug);
-  const baseUrl = getBaseUrl();
-
-  if (!card) {
-    return {
-      title: "Card Not Found",
-      description: "The requested card could not be found.",
-    };
-  }
-
-  return {
-    title: card.initialMode.name,
-    description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-    openGraph: {
-      title: card.initialMode.name,
-      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-      type: "article",
-      url: `${baseUrl}/cards/${card.id}`,
-      images: [
-        {
-          url: `${baseUrl}/opengraph-image.png`,
-          width: 1200,
-          height: 630,
-          alt: card.initialMode.name,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: card.initialMode.name,
-      description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-      images: [`${baseUrl}/twitter-image.png`],
-    },
-  };
 }
 
 export default async function CardSlug(props: {
