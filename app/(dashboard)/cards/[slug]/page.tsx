@@ -80,7 +80,7 @@ export async function generateMetadata({
       url: `${baseUrl}/cards/${card.id}`,
       images: [
         {
-          url: `/cards/${card.id}/opengraph-image`,
+          url: `/cards/${card.id}/opengraph-image.png`, // Added .png extension
           width: 1200,
           height: 630,
           alt: card.initialMode.name,
@@ -91,7 +91,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: card.initialMode.name,
       description: `Check out ${card.initialMode.name}, a Nexus TCG card created by ${card.username}!`,
-      images: [`/cards/${card.id}/opengraph-image`],
+      images: [`/cards/${card.id}/opengraph-image.png`], // Added .png extension
     },
   };
 }
