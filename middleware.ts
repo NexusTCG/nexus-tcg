@@ -76,6 +76,8 @@ export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
     "/cards/:slug/opengraph-image",
+    "/cards/:slug/opengraph-image.png",
     "/cards/:slug/twitter-image",
+    "/cards/:slug/twitter-image.png",
   ],
 };
