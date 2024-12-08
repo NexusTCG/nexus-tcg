@@ -52,7 +52,7 @@ export const CardFormSchema = z.object({
     ),
     approved: z.boolean().default(false),
     grade: z.string().default("core"),
-    card_ender: z.string().nullable().optional(),
+    card_render: z.string().nullable().optional(),
   }),
   initialMode: z.object({
     // render: z.string().nullable().optional(),
