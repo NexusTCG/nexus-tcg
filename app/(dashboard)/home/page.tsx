@@ -1,16 +1,11 @@
-import React, { Suspense } from "react";
+import React from "react";
 // Utils
 import dynamic from "next/dynamic";
-// Components
-import { Skeleton } from "@/components/ui/skeleton";
 // Dynamic custom components
 const SteamWidget = dynamic(() => import("@/components/home/steam-widget"));
 const LatestCards = dynamic(() => import("@/components/home/latest-cards"));
 const QuickLearn = dynamic(() => import("@/components/home/quick-learn"));
 const WeeklyTrends = dynamic(() => import("@/components/home/weekly-trends"));
-const PlaceholderCard = dynamic(
-  () => import("@/components/home/placeholder-card")
-);
 
 export default async function Home() {
   return (
@@ -44,9 +39,7 @@ export default async function Home() {
             gap-4
           "
         >
-          <Suspense fallback={<PlaceholderCard card="latest-cards" />}>
-            <LatestCards />
-          </Suspense>
+          <LatestCards />
           <SteamWidget />
         </div>
         <div
@@ -60,9 +53,7 @@ export default async function Home() {
           "
         >
           <QuickLearn />
-          <Suspense fallback={<PlaceholderCard card="weekly-trends" />}>
-            <WeeklyTrends />
-          </Suspense>
+          <WeeklyTrends />
         </div>
       </div>
     </div>
