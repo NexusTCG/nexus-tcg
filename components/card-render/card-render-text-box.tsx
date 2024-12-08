@@ -22,12 +22,17 @@ export default function CardRenderTextBox({
     mode === "initial" && card.initialMode.type.includes("agent")
       ? card.initialMode.keywords
       : null;
-  const cardText =
-    mode === "initial"
-      ? card.initialMode.text
-      : card.anomalyMode.uncommon
-      ? card.anomalyMode.text
-      : "Once during each of your turns, a common anomaly in your hand can be manifested into any of the five common anomalies. Light, Storm, Dark, Chaos, or Growth.";
+  const cardText = (() => {
+    if (mode === "initial") {
+      return card.initialMode.text?.replace(/~/g, card.initialMode.name) ?? "";
+    }
+
+    if (card.anomalyMode.uncommon) {
+      return card.anomalyMode.text?.replace(/~/g, card.anomalyMode.name) ?? "";
+    }
+
+    return "Once during each of your turns, a common anomaly in your hand can be manifested into any of the five common anomalies. Light, Storm, Dark, Chaos, or Growth.";
+  })();
   const cardLoreText =
     mode === "initial"
       ? card.initialMode.lore
