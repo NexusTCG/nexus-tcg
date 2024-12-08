@@ -44,7 +44,7 @@ export default async function Home() {
             gap-4
           "
         >
-          <Suspense fallback={<Skeleton className="w-full h-[300px]" />}>
+          <Suspense fallback={<PlaceholderCard card="latest-cards" />}>
             <LatestCards />
           </Suspense>
           <SteamWidget />

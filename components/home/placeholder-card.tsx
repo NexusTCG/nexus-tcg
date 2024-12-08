@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type PlaceholderCardProps = {
-  card: "weekly-trends" | "top-cards";
+  card: "weekly-trends" | "latest-cards";
 };
 
 const cardPlaceholderText = {
@@ -15,8 +15,8 @@ const cardPlaceholderText = {
     hrefText: "Create a card",
     href: "/create",
   },
-  "top-cards": {
-    title: "Top cards",
+  "latest-cards": {
+    title: "Latest cards",
     cta: "Create the first card of the week.",
     hrefText: "Create a card",
     href: "/create",
