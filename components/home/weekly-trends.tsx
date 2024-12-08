@@ -7,7 +7,6 @@ import { CardsDTO } from "@/app/lib/types/dto";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // Custom components
 import WeeklyTrendsChart from "@/components/home/weekly-trends-chart";
-import PlaceholderCard from "@/components/home/placeholder-card";
 
 export default async function WeeklyTrends() {
   let response = await fetch(
@@ -19,10 +18,8 @@ export default async function WeeklyTrends() {
   // Check if data is an array (cards were found)
   const cards: CardsDTO = Array.isArray(data) ? data : [];
 
-  // If no cards were found, return placeholder card
-  if (!cards || cards.length === 0) {
-    return <PlaceholderCard card="weekly-trends" />;
-  }
+  // If no cards were found, return null
+  if (!cards || cards.length === 0) return null;
 
   // Count the number of cards for each type
   const typeCounts: Record<string, number> = cards.reduce(function (
