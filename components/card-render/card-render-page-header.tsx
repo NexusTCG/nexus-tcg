@@ -154,14 +154,6 @@ export default function CardRenderPageHeader({
         </div>
         <small className="opacity-60 text-xs">{mode.toUpperCase()} MODE</small>
       </div>
-      {/* {card.id && card.card_render?.[0] && (
-        <ShareButtonDiscord
-          cardId={card.id}
-          isCardCreator={isCardCreator}
-          discordPost={card.discord_post ?? false}
-          discordPostUrl={card.discord_post_url ?? null}
-        />
-      )} */}
       {card.id && (
         <ShareButtonDiscord
           cardId={card.id}

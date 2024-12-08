@@ -25,7 +25,7 @@ export type ArtDirectionOption = {
 export type InitialCardType = {
   id?: number;
   card_id?: number;
-  render?: string;
+  // render?: string;
   name: string;
   type:
     | "agent"
@@ -62,7 +62,7 @@ export type InitialCardType = {
 export type AnomalyCardType = {
   id?: number;
   card_id?: number;
-  render?: string;
+  // render?: string;
   name: string;
   mythic: boolean;
   uncommon: boolean;
@@ -82,7 +82,7 @@ export type NexusCardType = {
   username: string;
   grade: string;
   approved: boolean;
-  card_render?: string[];
+  card_render?: string;
   discord_post?: boolean;
   discord_post_url?: string;
 };

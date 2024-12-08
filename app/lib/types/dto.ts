@@ -40,8 +40,7 @@ export type CardDTO = {
   username?: string | null;
   grade?: string | null;
   approved?: boolean | null;
-  votes?: number | null;
-  card_render?: string[] | null;
+  card_render?: string | null;
   discord_post?: boolean | null;
   discord_post_url?: string | null;
   initialMode: InitialCardType;

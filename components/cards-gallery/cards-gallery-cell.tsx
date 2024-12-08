@@ -43,7 +43,7 @@ export default function CardsGalleryCell({
 
   if (!card) return null;
 
-  let cardRender = card.card_render?.[0];
+  const cardRender = card.card_render;
   const cardName = card.initialMode?.name;
 
   return (

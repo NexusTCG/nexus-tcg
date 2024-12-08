@@ -48,7 +48,6 @@ export const getCardsDTO = cache(
           initial_mode_cards!inner (
             id,
             card_id,
-            render,
             name,
             type,
             type_sub,
@@ -70,7 +69,6 @@ export const getCardsDTO = cache(
           anomaly_mode_cards!inner (
             id,
             card_id,
-            render,
             name,
             mythic,
             uncommon,

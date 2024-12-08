@@ -15,6 +15,10 @@ export default async function SectionFeaturedCards() {
     approvedOnly: true,
   });
 
+  if (!cards || cards.length === 0 || !cards[0].card_render) {
+    return null;
+  }
+
   return (
     <SectionContainer label="featured-cards" bgImage size="md">
       <div
@@ -39,9 +43,7 @@ export default async function SectionFeaturedCards() {
             })}
           >
             <CardThumbnail
-              cardRender={
-                card.initialMode.render ?? "/images/card-placeholder.png"
-              } // TODO: Remove placeholder
+              cardRender={cards[0].card_render}
               cardName={card.initialMode.name}
               cardId={card.id}
               width={"md"}

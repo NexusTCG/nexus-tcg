@@ -68,8 +68,8 @@ export const takeAndUploadScreenshotTask = task({
 
       // Generate filename
       const filename = isUpdate
-        ? `card-${cardId}-initial-${Date.now()}.png`
-        : `card-${cardId}-initial.png`;
+        ? `card-${cardId}-${Date.now()}.png`
+        : `card-${cardId}.png`;
 
       // Upload to Supabase Storage
       const { error: uploadError } = await supabaseAdmin
@@ -92,7 +92,7 @@ export const takeAndUploadScreenshotTask = task({
       const { error: updateError } = await supabaseAdmin
         .from("nexus_cards")
         .update({
-          card_render: [publicUrl],
+          card_render: publicUrl,
         })
         .eq("id", cardId);
 

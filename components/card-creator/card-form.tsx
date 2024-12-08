@@ -76,9 +76,10 @@ export default function CardForm({
             username: userProfile?.username || "Username",
             approved: false,
             grade: "core",
+            card_render: "", // Was array of strings
           },
           initialMode: {
-            render: null,
+            // render: null,
             name: "",
             type: "agent",
             type_sub: [],
@@ -105,7 +106,7 @@ export default function CardForm({
             reach: false,
           },
           anomalyMode: {
-            render: null,
+            // render: null,
             name: "",
             mythic: false,
             uncommon: false,
@@ -224,7 +225,7 @@ export default function CardForm({
           grade: data.nexus_card_data.grade,
         },
         initialMode: {
-          render: data.initialMode.render,
+          // render: data.initialMode.render,
           name: data.initialMode.name,
           type: data.initialMode.type,
           type_sub: data.initialMode.type_sub,
@@ -251,7 +252,7 @@ export default function CardForm({
           reach: data.initialMode.reach,
         },
         anomalyMode: {
-          render: data.anomalyMode.render,
+          // render: data.anomalyMode.render,
           name: data.anomalyMode.name,
           mythic: data.anomalyMode.mythic,
           uncommon: data.anomalyMode.uncommon,

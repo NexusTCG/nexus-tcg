@@ -39,8 +39,8 @@ export default function CardThumbnail({
           table: "nexus_cards",
           filter: `id=eq.${cardId}`,
         },
-        (payload: { new: { card_render?: string[] } }) => {
-          setCardRender(payload.new.card_render?.[0]);
+        (payload: { new: { card_render?: string } }) => {
+          setCardRender(payload.new.card_render);
         }
       )
       .subscribe();

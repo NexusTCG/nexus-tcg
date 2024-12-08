@@ -52,10 +52,10 @@ export const CardFormSchema = z.object({
     ),
     approved: z.boolean().default(false),
     grade: z.string().default("core"),
-    votes: z.number().default(1).optional(),
+    card_ender: z.string().nullable().optional(),
   }),
   initialMode: z.object({
-    render: z.string().nullable().optional(),
+    // render: z.string().nullable().optional(),
     name: z.string().min(1, { message: "Card name is required." }).default(
       "Card name",
     ),
@@ -83,7 +83,7 @@ export const CardFormSchema = z.object({
     card_art_url: z.string().nullable().optional(),
   }),
   anomalyMode: z.object({
-    render: z.string().nullable().optional(),
+    // render: z.string().nullable().optional(),
     name: z.string().optional(),
     mythic: z.boolean().default(false),
     uncommon: z.boolean().default(false),
