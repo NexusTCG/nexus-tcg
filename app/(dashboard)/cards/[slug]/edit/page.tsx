@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 // Server
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
 import { getCardsDTO } from "@/app/server/data/cards-dto";
+// Validation
+import { CardsDTO, CardDTO } from "@/app/lib/types/dto";
 // Components
 import CardFormWrapper from "@/components/card-creator/card-form-wrapper";
 
@@ -13,15 +15,16 @@ export default async function EditCardSlug({
   params: { slug: string };
 }) {
   const profileDTO = await getUserProfileDTO();
-  const cardsDTO = await getCardsDTO();
 
   if (!profileDTO?.user_id) {
     redirect("/login");
   }
-
   // Fetch card data
-  const cardsData = await getCardsDTO({ id: parseInt(params.slug, 10) });
-  const card = cardsData && cardsData.length > 0 ? cardsData[0] : null;
+  const cardsDTO: CardsDTO | null = await getCardsDTO({
+    id: parseInt(params.slug, 10),
+  });
+  const card: CardDTO | null =
+    cardsDTO && cardsDTO.length > 0 ? cardsDTO[0] : null;
 
   // Verify card exists
   if (!card) {
@@ -40,9 +43,9 @@ export default async function EditCardSlug({
       username: card.username,
       approved: card.approved,
       grade: card.grade,
+      card_render: card.card_render,
     },
     initialMode: {
-      render: card.initialMode.render,
       name: card.initialMode.name,
       type: card.initialMode.type,
       type_sub: card.initialMode.type_sub,
@@ -62,7 +65,6 @@ export default async function EditCardSlug({
       reach: card.initialMode.reach,
     },
     anomalyMode: {
-      render: card.anomalyMode.render,
       name: card.anomalyMode.name,
       mythic: card.anomalyMode.mythic,
       uncommon: card.anomalyMode.uncommon,
