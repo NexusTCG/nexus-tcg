@@ -30,7 +30,7 @@ export default async function CardsGallery({
   from,
 }: // userProfile,
 CardsGalleryProps) {
-  const limit = 20;
+  const limit = 1000; // TODO: Add virtual scrolling
 
   // Construct query parameters
   const queryParams = new URLSearchParams();
