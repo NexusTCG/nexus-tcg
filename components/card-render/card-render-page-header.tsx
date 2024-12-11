@@ -19,11 +19,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 // Custom components
 // import CardVotes from "@/components/card-render/card-render-votes";
 import ShareButtonDiscord from "@/components/card-render/share-button-discord";
 // Icons
-import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md";
+import { MdOutlineEdit, MdOutlineDelete, MdOutlineCheck } from "react-icons/md";
 
 type CardRenderPageHeaderProps = {
   user?: ProfileDTO | null;
@@ -74,9 +75,40 @@ export default function CardRenderPageHeader({
             gap-2
           "
         >
-          <h2 className="font-medium">
-            {card.initialMode.name ? card.initialMode.name : "Card name"}
-          </h2>
+          <div
+            className="
+              flex
+              flex-row
+              justify-start
+              items-start
+              text-align-top
+              gap-0.5
+            "
+          >
+            <h2 className="font-medium">
+              {card.initialMode.name ? card.initialMode.name : "Card name"}
+            </h2>
+            {card.approved && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <MdOutlineCheck
+                      className="
+                        w-[1rem]
+                        h-[1rem]
+                        font-bold
+                        text-green-500
+                        hover:text-green-600
+                      "
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    Card is approved
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
           {user?.user_id === card.user_id && (
             <div
               className="
@@ -154,14 +186,24 @@ export default function CardRenderPageHeader({
         </div>
         <small className="opacity-60 text-xs">{mode.toUpperCase()} MODE</small>
       </div>
-      {card.id && (
-        <ShareButtonDiscord
-          cardId={card.id}
-          isCardCreator={isCardCreator}
-          discordPost={card.discord_post ?? false}
-          discordPostUrl={card.discord_post_url ?? null}
-        />
-      )}
+      <div
+        className="
+          flex
+          flex-row
+          justify-start
+          items-center
+          gap-2
+        "
+      >
+        {card.id && (
+          <ShareButtonDiscord
+            cardId={card.id}
+            isCardCreator={isCardCreator}
+            discordPost={card.discord_post ?? false}
+            discordPostUrl={card.discord_post_url ?? null}
+          />
+        )}
+      </div>
     </div>
   );
 }
