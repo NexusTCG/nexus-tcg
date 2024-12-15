@@ -1,4 +1,4 @@
-import { logger, task } from "@trigger.dev/sdk/v3";
+import { logger, task, wait } from "@trigger.dev/sdk/v3";
 import puppeteer from "puppeteer";
 import { supabaseAdmin } from "@/app/utils/supabase/admin";
 
@@ -51,6 +51,9 @@ export const takeAndUploadScreenshotTask = task({
           (header as HTMLElement).style.display = "none";
         }
       });
+
+      // Wait for 2 seconds to ensure the card is fully loaded
+      await wait.for({ seconds: 2 });
 
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {

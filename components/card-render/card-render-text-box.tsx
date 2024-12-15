@@ -76,7 +76,7 @@ export default function CardRenderTextBox({
           )}
           style={{
             minHeight: "36px",
-            maxHeight: "36px",
+            // maxHeight: "36px",
           }}
         >
           <p>{cardLoreText}</p>
