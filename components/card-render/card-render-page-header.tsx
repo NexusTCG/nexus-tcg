@@ -88,17 +88,25 @@ export default function CardRenderPageHeader({
             <h2 className="font-medium">
               {card.initialMode.name ? card.initialMode.name : "Card name"}
             </h2>
-            {card.approved !== false && card.approved !== null && (
+            {card.approved === true && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
                     <MdOutlineCheck
                       className="
-                        w-[1rem]
-                        h-[1rem]
+                        w-[1.2rem]
+                        h-[1.2rem]
                         font-bold
                         text-green-500
                         hover:text-green-600
+                        transition-all
+                        duration-300
+                        ease-in-out
+                        animate-pulse
+                        shadow-lg
+                        shadow-green-500/20
+                        hover:shadow-green-500/40
+                        hover:scale-110
                       "
                     />
                   </TooltipTrigger>
