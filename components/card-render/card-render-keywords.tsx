@@ -40,18 +40,19 @@ export default function CardRenderKeywords({
   }, []);
 
   function renderKeyword(keyword: RenderedKeywordType) {
-    const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
+    const keywordInfo = keywordData.find(
+      (kw) => kw.name?.toLowerCase() === keyword.name.toLowerCase()
+    );
     if (!keywordInfo) return null;
 
-    // Check if the keyword has an input
+    // Check if the keyword has text input or contains [N]
     const hasInput =
       keywordInfo.reminder?.includes("[") ||
       /\bN\b/.test(keywordInfo.reminder || "");
 
-    // Split the input text to find any abbreviations
-    const inputSegments = keyword.input
-      ? keyword.input.split(/(\{[^}]+\})/g)
-      : [];
+    // Split the input text to find {abbreviations} or (parentheticals)
+    const textToSplit = keyword.input || "";
+    const inputSegments = textToSplit.split(/(\{[^}]+\}|\([^)]+\))/g);
 
     return (
       <TooltipProvider key={keyword.name}>

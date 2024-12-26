@@ -67,7 +67,7 @@ export default function CardRenderTextBox({
         bgColorClass50 || "bg-neutral-50"
       )}
     >
-      {cardKeywords && (
+      {cardKeywords && cardKeywords.length > 0 && (
         <div className="flex-shrink-0">
           <CardRenderKeywords keywords={cardKeywords} />
         </div>
