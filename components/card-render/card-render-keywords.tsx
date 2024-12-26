@@ -40,13 +40,12 @@ export default function CardRenderKeywords({
   }, []);
 
   function renderKeyword(keyword: RenderedKeywordType) {
-    const keywordInfo = keywordData.find(
-      (kw) => kw.name?.toLowerCase() === keyword.name.toLowerCase()
-    );
+    const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
     if (!keywordInfo) return null;
 
     // Check if the keyword has text input or contains [N]
     const hasInput =
+      Boolean(keyword.input) ||
       keywordInfo.reminder?.includes("[") ||
       /\bN\b/.test(keywordInfo.reminder || "");
 
@@ -58,7 +57,7 @@ export default function CardRenderKeywords({
       <TooltipProvider key={keyword.name}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="inline-flex items-baseline">
+            <div className="inline items-baseline">
               <span
                 className={clsx("font-bold", {
                   "mr-1": !hasInput,
@@ -68,42 +67,33 @@ export default function CardRenderKeywords({
                 })}
               >
                 {keyword.name}
-                {hasInput && <span className="text-black">:</span>}
+                {hasInput && (
+                  <span className="text-black font-medium mr-1">:</span>
+                )}
               </span>
               {hasInput && (
-                <span className="text-black font-semibold ml-1">
-                  {keyword.input ? (
-                    <span className="inline-flex items-center">
-                      {inputSegments.map((segment, index) => {
-                        // If it is an icon abbreviation, render the icon
-                        const iconMatch = segment.match(/^\{([^}]+)\}$/);
-                        if (iconMatch) {
-                          const iconKey = iconMatch[1];
-                          return (
-                            <AbbreviationIcon key={index} iconKey={iconKey} />
-                          );
-                        }
+                <span className="text-black font-medium">
+                  {inputSegments.map((segment, index) => {
+                    // If it is an icon abbreviation, render the icon
+                    const iconMatch = segment.match(/^\{([^}]+)\}$/);
+                    if (iconMatch) {
+                      const iconKey = iconMatch[1];
+                      return <AbbreviationIcon key={index} iconKey={iconKey} />;
+                    }
 
-                        // If it is a parenthetical text, render the parenthetical text
-                        const parentheticalMatch =
-                          segment.match(/^\(([^)]+)\)$/);
-                        if (parentheticalMatch) {
-                          return (
-                            <span key={index} className="italic font-light">
-                              ({parentheticalMatch[1]})
-                            </span>
-                          );
-                        }
+                    // If it is a parenthetical text, render the parenthetical text
+                    const parentheticalMatch = segment.match(/^\(([^)]+)\)$/);
+                    if (parentheticalMatch) {
+                      return (
+                        <span key={index} className="italic font-light">
+                          ({parentheticalMatch[1]})
+                        </span>
+                      );
+                    }
 
-                        // Regular text segment
-                        return <span key={index}>{segment}</span>;
-                      })}
-                    </span>
-                  ) : keywordInfo.reminder?.includes("[") ? (
-                    "[...]"
-                  ) : (
-                    "0"
-                  )}
+                    // Regular text segment
+                    return <span key={index}>{segment}</span>;
+                  })}
                 </span>
               )}
             </div>

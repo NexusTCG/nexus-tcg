@@ -19,8 +19,6 @@ export const revalidate = 3600;
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
 
-  // TODO: Replace slug === id with slug === initialMode.name
-
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
 
   console.log("[Server] Fetching from URL:", fetchUrl);

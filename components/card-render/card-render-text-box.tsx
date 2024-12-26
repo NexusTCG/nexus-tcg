@@ -20,7 +20,7 @@ export default function CardRenderTextBox({
   mode,
 }: CardRenderTextBoxProps) {
   const cardKeywords: RenderedKeywordsType =
-    mode === "initial" && card.initialMode.type.includes("agent")
+    mode === "initial" && !card.initialMode.type.includes("event")
       ? card.initialMode.keywords
       : null;
   const cardText = (() => {
@@ -41,6 +41,13 @@ export default function CardRenderTextBox({
       ? card.anomalyMode.lore
       : null;
 
+  // DEBUGGING
+  console.log("mode:", mode);
+  console.log("card type:", card.initialMode.type);
+  console.log("cardKeywords:", cardKeywords);
+  console.log("cardText:", cardText);
+  console.log("cardLoreText:", cardLoreText);
+
   const bgColorClass50 =
     mode === "anomaly"
       ? null
@@ -50,11 +57,8 @@ export default function CardRenderTextBox({
       ? null
       : calculateBgColor(card.initialMode.energy_cost as EnergyCost, 200)[0];
 
-  // Split the card text into three segments:
-  // 1. Regular text
-  // 2. Parenthetical text
-  // 3. Icon abbreviations
-  const segmentedCardText = cardText.split(/(\{[^}]+\}|\([^)]+\))/g);
+  // Split card text into paragraphs
+  const paragraphs = cardText.split(/\n+/).filter(Boolean);
 
   return (
     <div
@@ -73,28 +77,60 @@ export default function CardRenderTextBox({
         </div>
       )}
       <div className="flex-grow w-full overflow-hidden">
-        {/* <p>{cardText}</p> */}
         <div className="inline">
-          {segmentedCardText.map((segment, index) => {
-            // If it is an icon abbreviation, render the icon
-            const iconMatch = segment.match(/^\{([^}]+)\}$/);
-            if (iconMatch) {
-              const iconKey = iconMatch[1];
-              return <AbbreviationIcon key={index} iconKey={iconKey} />;
-            }
+          {paragraphs.map((paragraph, paragraphIndex) => {
+            const segments = paragraph
+              .split(/("(?:[^"\\]|\\.)*")/g)
+              .filter(Boolean);
 
-            // If it is parenthetical text, render the parenthetical text
-            const parentheticalMatch = segment.match(/^\(([^)]+)\)$/);
-            if (parentheticalMatch) {
-              return (
-                <span key={index} className="italic font-light">
-                  ({parentheticalMatch[1]})
-                </span>
-              );
-            }
+            return (
+              <div key={paragraphIndex} className="mb-2">
+                {segments.map((segment, segmentIndex) => {
+                  // If this is a quoted segment (starts and ends with ")
+                  if (segment.startsWith('"') && segment.endsWith('"')) {
+                    // Process the quoted text as a single unit
+                    return <span key={segmentIndex}>{segment}</span>;
+                  }
 
-            // Regular text segment
-            return <span key={index}>{segment}</span>;
+                  // For non-quoted text, process for abbreviations and parentheticals
+                  const subSegments = segment.split(/(\{[^}]+\}|\([^)]+\))/g);
+                  return subSegments.map((subSegment, subIndex) => {
+                    // If it is an icon abbreviation, render the icon
+                    const iconMatch = subSegment.match(/^\{([^}]+)\}$/);
+                    if (iconMatch) {
+                      const iconKey = iconMatch[1];
+                      return (
+                        <AbbreviationIcon
+                          key={`${segmentIndex}-${subIndex}`}
+                          iconKey={iconKey}
+                        />
+                      );
+                    }
+
+                    // If it is parenthetical text, render the parenthetical text
+                    const parentheticalMatch =
+                      subSegment.match(/^\(([^)]+)\)$/);
+                    if (parentheticalMatch) {
+                      return (
+                        <span
+                          key={`${segmentIndex}-${subIndex}`}
+                          className="italic font-light"
+                        >
+                          ({parentheticalMatch[1]})
+                        </span>
+                      );
+                    }
+
+                    // Regular text segment
+                    return (
+                      <span key={`${segmentIndex}-${subIndex}`}>
+                        {subSegment}
+                      </span>
+                    );
+                  });
+                })}
+              </div>
+            );
           })}
         </div>
       </div>
