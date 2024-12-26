@@ -61,9 +61,6 @@ CardsGalleryProps) {
     `${process.env.NEXT_PUBLIC_SITE_URL}/api/data/fetch-cards?${queryParams}`,
     {
       cache: "no-store",
-      next: {
-        revalidate: 0,
-      },
     }
   );
 
