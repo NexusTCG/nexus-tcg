@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 // Utils
 import { cn } from "@/lib/utils";

@@ -1,13 +1,9 @@
 import React from "react";
-// Utils
-import Link from "next/link";
 import dynamic from "next/dynamic";
-// Components
-import { Button } from "@/components/ui/button";
 // Custom components
-const CardsGallerySearchbar = dynamic(
-  () => import("@/components/cards-gallery/cards-gallery-searchbar")
-);
+// const CardsGallerySearchbar = dynamic(
+//   () => import("@/components/cards-gallery/cards-gallery-searchbar")
+// );
 const CardsGallerySortFilter = dynamic(
   () => import("@/components/cards-gallery/cards-gallery-sort-filter-options")
 );
@@ -44,30 +40,10 @@ export default function CardsGalleryHeader({
         border-zinc-700
       "
     >
-      <CardsGallerySearchbar
+      {/* <CardsGallerySearchbar
         totalResults={totalResults}
         initialSearch={search}
-      />
-      {/* <div
-        id="cards-gallery-header-search-create-container"
-        className="
-          flex
-          flex-row
-          justify-between
-          items-center
-          w-full
-          md:gap-8
-          gap-4
-        "
-      >
-        <CardsGallerySearchbar
-          totalResults={totalResults}
-          initialSearch={search}
-        />
-        <Link href="/create" className="hidden md:block">
-          <Button className="min-w-24">Create a card</Button>
-        </Link>
-      </div> */}
+      /> */}
       <div
         id="cards-gallery-results-sort-filter-container"
         className="
