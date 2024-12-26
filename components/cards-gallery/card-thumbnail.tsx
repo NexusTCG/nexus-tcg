@@ -6,6 +6,8 @@ import clsx from "clsx";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/app/utils/supabase/client";
+// Components
+import { Skeleton } from "@/components/ui/skeleton";
 
 type CardThumbnailProps = {
   cardRender: string | undefined | null;
@@ -20,9 +22,21 @@ export default function CardThumbnail({
   cardId,
   width,
 }: CardThumbnailProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [cardRender, setCardRender] = useState<string | undefined | null>(
     initialCardRender
   );
+
+  const dimensions = {
+    sm: {
+      width: 200,
+      height: 280,
+    },
+    md: {
+      width: 240,
+      height: 336,
+    },
+  }[width];
 
   const supabase = createClient();
 
@@ -50,8 +64,6 @@ export default function CardThumbnail({
     };
   }, [supabase, cardId]);
 
-  if (!cardRender) return null;
-
   return (
     <div
       className={clsx(
@@ -67,12 +79,25 @@ export default function CardThumbnail({
           "cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 hover:border-foreground/20"
         )}
       >
-        <Image
-          src={cardRender}
-          alt={cardName || "Card"}
-          fill
-          className="object-cover"
-        />
+        {(isLoading || !cardRender) && (
+          <Skeleton
+            className="absolute inset-0 z-10"
+            style={{
+              width: dimensions.width,
+              height: dimensions.height,
+            }}
+          />
+        )}
+        {cardRender && (
+          <Image
+            src={cardRender}
+            alt={cardName || "Card"}
+            fill
+            className="object-cover"
+            onLoadingComplete={() => setIsLoading(false)}
+            onError={() => setIsLoading(false)} // Handle load errors
+          />
+        )}
       </Link>
     </div>
   );

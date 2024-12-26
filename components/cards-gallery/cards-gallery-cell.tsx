@@ -4,13 +4,17 @@ import dynamic from "next/dynamic";
 // Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
 // Dynamic import
+// const CardThumbnail = dynamic(
+//   () => import("@/components/cards-gallery/card-thumbnail"),
+//   {
+//     loading: () => (
+//       <div className="w-[240px] h-[336px] bg-gray-200 animate-pulse rounded-lg"></div>
+//     ),
+//   }
+// );
 const CardThumbnail = dynamic(
   () => import("@/components/cards-gallery/card-thumbnail"),
-  {
-    loading: () => (
-      <div className="w-[240px] h-[336px] bg-gray-200 animate-pulse rounded-lg"></div>
-    ),
-  }
+  { ssr: false }
 );
 
 type CardsGalleryCellProps = {
