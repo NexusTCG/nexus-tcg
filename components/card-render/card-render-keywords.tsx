@@ -13,6 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+//Custom components
+import AbbreviationIcon from "@/components/card-render/abbreviation-icon";
 
 type CardRenderKeywordsProps = {
   keywords: RenderedKeywordType[];
@@ -41,9 +43,15 @@ export default function CardRenderKeywords({
     const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
     if (!keywordInfo) return null;
 
+    // Check if the keyword has an input
     const hasInput =
       keywordInfo.reminder?.includes("[") ||
       /\bN\b/.test(keywordInfo.reminder || "");
+
+    // Split the input text to find any abbreviations
+    const inputSegments = keyword.input
+      ? keyword.input.split(/(\{[^}]+\})/g)
+      : [];
 
     return (
       <TooltipProvider key={keyword.name}>
@@ -63,8 +71,38 @@ export default function CardRenderKeywords({
               </span>
               {hasInput && (
                 <span className="text-black font-semibold ml-1">
-                  {keyword.input ||
-                    (keywordInfo.reminder?.includes("[") ? "[...]" : "0")}
+                  {keyword.input ? (
+                    <span className="inline-flex items-center">
+                      {inputSegments.map((segment, index) => {
+                        // If it is an icon abbreviation, render the icon
+                        const iconMatch = segment.match(/^\{([^}]+)\}$/);
+                        if (iconMatch) {
+                          const iconKey = iconMatch[1];
+                          return (
+                            <AbbreviationIcon key={index} iconKey={iconKey} />
+                          );
+                        }
+
+                        // If it is a parenthetical text, render the parenthetical text
+                        const parentheticalMatch =
+                          segment.match(/^\(([^)]+)\)$/);
+                        if (parentheticalMatch) {
+                          return (
+                            <span key={index} className="italic font-light">
+                              ({parentheticalMatch[1]})
+                            </span>
+                          );
+                        }
+
+                        // Regular text segment
+                        return <span key={index}>{segment}</span>;
+                      })}
+                    </span>
+                  ) : keywordInfo.reminder?.includes("[") ? (
+                    "[...]"
+                  ) : (
+                    "0"
+                  )}
                 </span>
               )}
             </div>
