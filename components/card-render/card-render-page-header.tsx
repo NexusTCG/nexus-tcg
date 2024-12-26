@@ -88,7 +88,7 @@ export default function CardRenderPageHeader({
             <h2 className="font-medium">
               {card.initialMode.name ? card.initialMode.name : "Card name"}
             </h2>
-            {card.approved && (
+            {card.approved !== false && card.approved !== null && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
