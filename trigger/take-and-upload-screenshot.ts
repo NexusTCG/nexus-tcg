@@ -29,12 +29,6 @@ export const takeAndUploadScreenshotTask = task({
         deviceScaleFactor: 4, // Increased from 2 to match html-to-image quality
       });
 
-      // Add console log listener for debugging
-      page.on(
-        "console",
-        (msg) => logger.info("Browser console:", { message: msg.text() }),
-      );
-
       // Navigate to the card page
       await page.goto(
         `${siteUrl}/cards/${cardId}?mode=initial`,
@@ -72,22 +66,19 @@ export const takeAndUploadScreenshotTask = task({
             .then(() => logger.info("Card container found")),
           page.waitForSelector(`#grade-icon-initial`, { timeout: 60000 })
             .then(() => logger.info("Grade icon element found")),
-          page.waitForFunction(
-            () => {
-              const img = document.querySelector(
-                "#grade-icon-initial",
-              ) as HTMLImageElement;
-              const isLoaded = img && img.complete && img.naturalHeight !== 0;
-              console.log("Grade icon load status:", {
-                exists: !!img,
-                complete: img?.complete,
-                naturalHeight: img?.naturalHeight,
-              });
-              return isLoaded;
-            },
-            { timeout: 60000 },
-          ).then(() => logger.info("Grade icon fully loaded")),
         ]);
+
+        // Verify grade icon is loaded
+        const imageState = await page.evaluate(() => {
+          const img = document.querySelector(
+            "#grade-icon-initial",
+          ) as HTMLImageElement;
+          return {
+            exists: !!img,
+            src: img?.src || "no-src",
+          };
+        });
+        logger.info("Image state:", imageState);
       } catch (waitError) {
         // Log the HTML state when the error occurs
         const pageContent = await page.content();
