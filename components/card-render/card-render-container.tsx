@@ -3,6 +3,13 @@ import React from "react";
 import Image from "next/image";
 // Types
 import { EnergyCost } from "@/app/lib/types/components";
+// Components
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 // Custom components
 import CardRenderFooter from "@/components/card-render/card-render-footer";
 
@@ -110,18 +117,28 @@ export default function CardRenderContainer({
               bottom-0 
               right-0 
               z-50 
-              p-2 
+              p-2
               rounded-tl-2xl 
               bg-black 
-              mb-1 mr-1 pl-1
+              mb-2 mr-2 pl-2.5
             "
           >
-            <Image
-              src={`/icons/grade-icons/${grade.toLowerCase()}.svg`}
-              alt={grade}
-              width={20}
-              height={20}
-            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Image
+                    id={`grade-icon-${mode}`}
+                    src={`/icons/grade-icons/${grade.toLowerCase()}.svg`}
+                    alt={grade}
+                    width={24}
+                    height={24}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p>{grade.charAt(0).toUpperCase() + grade.slice(1)}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
         <CardRenderFooter

@@ -55,6 +55,18 @@ export const takeAndUploadScreenshotTask = task({
       // Wait for 2 seconds to ensure the card is fully loaded
       await wait.for({ seconds: 2 });
 
+      // Wait for the card render container and grade icon to be loaded
+      await Promise.all([
+        page.waitForSelector(`#card-render-container-${cardId}-initial`),
+        page.waitForSelector(`#grade-icon-initial`),
+        page.waitForFunction(() => {
+          const img = document.querySelector(
+            "#grade-icon-initial",
+          ) as HTMLImageElement;
+          return img && img.complete && img.naturalHeight !== 0;
+        }),
+      ]);
+
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {
         throw new Error("Card element not found");
