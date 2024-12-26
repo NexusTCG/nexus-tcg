@@ -96,9 +96,13 @@ export default function CardsGallerySortFilter({
   }
 
   function updateSearchParams(key: string, value: string) {
-    router.replace(`/cards?${createQueryString(key, value)}`, {
-      scroll: false,
-    });
+    // Temporary solution to update search params with a hard page reload
+    const queryString = createQueryString(key, value);
+    window.location.href = `/cards?${queryString}`;
+
+    // router.replace(`/cards?${createQueryString(key, value)}`, {
+    //   scroll: false,
+    // });
   }
 
   return (
