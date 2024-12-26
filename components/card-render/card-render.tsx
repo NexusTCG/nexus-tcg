@@ -73,6 +73,7 @@ export default function CardRender({ card, mode, isActive }: CardRenderProps) {
     <CardAnimationWrapper isActive={isActive}>
       <CardRenderContainer
         mode={mode}
+        cardType={cardType.toLowerCase()}
         username={card.username || ""}
         grade={card.grade || ""}
         isUncommon={card.anomalyMode.uncommon}

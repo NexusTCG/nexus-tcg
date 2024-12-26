@@ -18,6 +18,7 @@ type CardContainerProps = {
   mode: "initial" | "anomaly";
   username: string;
   grade: string;
+  cardType: string;
   isUncommon?: boolean;
   energyCost?: EnergyCost;
   cardId: number;
@@ -28,44 +29,52 @@ export default function CardRenderContainer({
   mode,
   grade,
   username,
+  cardType,
   isUncommon,
   energyCost,
   cardId,
 }: CardContainerProps) {
   function getCardFrameImage() {
+    let cardFrame = "default";
+
     if (mode === "anomaly" || !energyCost) {
-      return "anomaly.jpg";
+      cardFrame = "anomaly";
     }
 
-    const activeTypes = Object.entries(energyCost)
+    const activeTypes = Object.entries(energyCost || {})
       .filter(([type, value]) => value > 0)
       .map(([type]) => type);
-
-    if (activeTypes.length === 0) {
-      return "default.jpg";
-    }
 
     const nonVoidTypes = activeTypes.filter((type) => type !== "void");
 
     if (nonVoidTypes.length === 0) {
-      return "void.jpg";
+      cardFrame = "void";
     }
 
     if (nonVoidTypes.length === 1) {
-      return `${nonVoidTypes[0]}.jpg`;
+      cardFrame = `${nonVoidTypes[0]}`;
     }
 
     if (nonVoidTypes.length === 2) {
-      return `${nonVoidTypes.sort().join("-")}.jpg`;
+      cardFrame = `${nonVoidTypes.sort().join("-")}`;
     }
 
     if (
       nonVoidTypes.length >= 3 ||
       (nonVoidTypes.length === 2 && activeTypes.includes("void"))
     ) {
-      return "multi.jpg";
+      cardFrame = "multi";
     }
-    return "default.jpg";
+
+    if (cardType.includes("hardware")) {
+      cardFrame = `${cardFrame}-hardware`;
+    } else if (cardType.includes("software")) {
+      cardFrame = `${cardFrame}-software`;
+    }
+
+    cardFrame = `${cardFrame}.jpg`;
+
+    return cardFrame;
   }
 
   const cardFrame = getCardFrameImage();
