@@ -29,11 +29,20 @@ export const takeAndUploadScreenshotTask = task({
         deviceScaleFactor: 4, // Increased from 2 to match html-to-image quality
       });
 
+      // Add console log listener for debugging
+      page.on(
+        "console",
+        (msg) => logger.info("Browser console:", { message: msg.text() }),
+      );
+
       // Navigate to the card page
       await page.goto(
         `${siteUrl}/cards/${cardId}?mode=initial`,
-        { waitUntil: "networkidle0" },
+        { waitUntil: "networkidle0", timeout: 60000 },
       );
+
+      // Wait for initial render with logging
+      logger.info("Waiting for elements to load...");
 
       // Wait for card element and hide unwanted elements
       await page.evaluate(() => {
@@ -55,17 +64,39 @@ export const takeAndUploadScreenshotTask = task({
       // Wait for 2 seconds to ensure the card is fully loaded
       await wait.for({ seconds: 2 });
 
-      // Wait for the card render container and grade icon to be loaded
-      await Promise.all([
-        page.waitForSelector(`#card-render-container-${cardId}-initial`),
-        page.waitForSelector(`#grade-icon-initial`),
-        page.waitForFunction(() => {
-          const img = document.querySelector(
-            "#grade-icon-initial",
-          ) as HTMLImageElement;
-          return img && img.complete && img.naturalHeight !== 0;
-        }),
-      ]);
+      try {
+        await Promise.all([
+          page.waitForSelector(`#card-render-container-${cardId}-initial`, {
+            timeout: 60000,
+          })
+            .then(() => logger.info("Card container found")),
+          page.waitForSelector(`#grade-icon-initial`, { timeout: 60000 })
+            .then(() => logger.info("Grade icon element found")),
+          page.waitForFunction(
+            () => {
+              const img = document.querySelector(
+                "#grade-icon-initial",
+              ) as HTMLImageElement;
+              const isLoaded = img && img.complete && img.naturalHeight !== 0;
+              console.log("Grade icon load status:", {
+                exists: !!img,
+                complete: img?.complete,
+                naturalHeight: img?.naturalHeight,
+              });
+              return isLoaded;
+            },
+            { timeout: 60000 },
+          ).then(() => logger.info("Grade icon fully loaded")),
+        ]);
+      } catch (waitError) {
+        // Log the HTML state when the error occurs
+        const pageContent = await page.content();
+        logger.error("Element wait failed. Current page state:", {
+          error: waitError,
+          html: pageContent.substring(0, 1000), // Limit to first 1000 chars
+        });
+        throw waitError;
+      }
 
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {
