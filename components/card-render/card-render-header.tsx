@@ -88,8 +88,10 @@ export default function CardRenderHeader({
           )}
         >
           {activeMode === "initial"
-            ? card.initialMode.type.charAt(0).toUpperCase() +
-              card.initialMode.type.slice(1)
+            ? card.initialMode.type
+                .split("_")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")
             : "Anomaly"}
           {activeMode === "initial" &&
             card.initialMode.type_sub &&
