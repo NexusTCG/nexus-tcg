@@ -19,14 +19,20 @@ export default async function Profile(props: {
   let search = (await props.searchParams).search;
   let sort = (await props.searchParams).sort;
   let order = (await props.searchParams).order;
-  let filter = (await props.searchParams).filter;
+  let type = (await props.searchParams).type;
+  let energy = (await props.searchParams).energy;
+  let grade = (await props.searchParams).grade;
+  let approvedOnly = (await props.searchParams).approvedOnly;
   let from = (await props.searchParams).from;
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
   sort = sort?.toString() ?? "created_at";
   order = order?.toString() ?? "asc";
-  filter = filter?.toString() ?? "all";
+  type = type?.toString() ?? "all";
+  energy = energy?.toString() ?? "all";
+  grade = grade?.toString() ?? "all";
+  approvedOnly = approvedOnly?.toString() ?? "false";
   from = from?.toString() ?? "all";
 
   // Destructure params to get username
@@ -114,9 +120,11 @@ export default async function Profile(props: {
           search={search}
           sort={sort}
           order={order as "asc" | "desc"}
-          filter={filter}
+          type={type}
+          energy={energy}
+          grade={grade}
+          approvedOnly={approvedOnly}
           from={from}
-          // userProfile={userProfile}
         />
       </div>
     </div>
