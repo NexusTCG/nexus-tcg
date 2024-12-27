@@ -235,9 +235,6 @@ export default function CardsGallerySortFilter({
           w-full
         "
       >
-        <small className="text-muted-foreground text-xs whitespace-nowrap">
-          Filter
-        </small>
         <CardsGalleryFilters
           type={type}
           energy={energy}
@@ -253,7 +250,6 @@ export default function CardsGallerySortFilter({
           justify-start
           items-center
           gap-2
-          w-full
         "
       >
         <small className="text-muted-foreground text-xs whitespace-nowrap">
@@ -289,7 +285,6 @@ export default function CardsGallerySortFilter({
           justify-start
           items-center
           gap-2
-          w-full
         "
       >
         <small className="text-muted-foreground text-xs whitespace-nowrap">

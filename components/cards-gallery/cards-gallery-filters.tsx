@@ -43,7 +43,7 @@ export default function CardsGalleryFilters({
           <SelectValue placeholder="Card type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All types</SelectItem>
+          <SelectItem value="all">All</SelectItem>
           <SelectItem value="agent">Agent</SelectItem>
           <SelectItem value="event">Event</SelectItem>
           <SelectItem value="software">Software</SelectItem>
@@ -62,7 +62,7 @@ export default function CardsGalleryFilters({
           <SelectValue placeholder="Energy type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All energy</SelectItem>
+          <SelectItem value="all">All</SelectItem>
           <SelectItem value="light">Light</SelectItem>
           <SelectItem value="storm">Storm</SelectItem>
           <SelectItem value="dark">Dark</SelectItem>
@@ -81,12 +81,11 @@ export default function CardsGalleryFilters({
           <SelectValue placeholder="Grade" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All grades</SelectItem>
+          <SelectItem value="all">All</SelectItem>
           <SelectItem value="core">Core</SelectItem>
           <SelectItem value="rare">Rare</SelectItem>
           <SelectItem value="epic">Epic</SelectItem>
           <SelectItem value="prime">Prime</SelectItem>
-          <SelectItem value="legendary">Legendary</SelectItem>
         </SelectContent>
       </Select>
     </div>
