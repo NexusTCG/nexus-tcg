@@ -17,7 +17,10 @@ type CardsGalleryProps = {
   search: string;
   sort: string | "created_at";
   order: "asc" | "desc";
-  filter: string | "all";
+  type: string | "all";
+  energy: string | "all";
+  grade: string | "all";
+  approvedOnly: string | "false";
   from: string | "week";
   // userProfile?: ProfileDTO | null;
 };
@@ -26,7 +29,10 @@ export default async function CardsGallery({
   search,
   sort,
   order,
-  filter,
+  type,
+  energy,
+  grade,
+  approvedOnly,
   from,
 }: // userProfile,
 CardsGalleryProps) {
@@ -42,7 +48,11 @@ CardsGalleryProps) {
   if (search) queryParams.set("search", search);
 
   // Add filter to query param
-  if (filter && filter !== "all") queryParams.set("filter", filter);
+  if (type && type !== "all") queryParams.set("type", type);
+  if (energy && energy !== "all") queryParams.set("energy", energy);
+  if (grade && grade !== "all") queryParams.set("grade", grade);
+  if (approvedOnly && approvedOnly !== "false")
+    queryParams.set("approvedOnly", approvedOnly);
 
   // Add sort and order to query param
   queryParams.set("sort", sort || "id");
@@ -85,13 +95,19 @@ CardsGalleryProps) {
         search={search}
         sort={sort}
         order={order}
-        filter={filter}
+        type={type}
+        energy={energy}
+        grade={grade}
+        approvedOnly={approvedOnly}
         from={from}
         totalResults={cardsData?.length || 0}
       />
       <CardsGalleryGridWrapper
         initialCards={cardsData}
-        filter={filter}
+        type={type}
+        energy={energy}
+        grade={grade}
+        approvedOnly={approvedOnly}
         sort={sort}
         order={order}
         from={from}

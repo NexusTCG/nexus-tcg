@@ -13,7 +13,10 @@ const CardsGalleryGrid = dynamic(
 
 type CardsGalleryGridWrapperProps = {
   initialCards: CardsDTO;
-  filter: string;
+  type: string;
+  energy: string;
+  grade: string;
+  approvedOnly: string;
   sort: string;
   order: "asc" | "desc";
   from: string;
@@ -21,7 +24,10 @@ type CardsGalleryGridWrapperProps = {
 
 export default function CardsGalleryGridWrapper({
   initialCards,
-  filter,
+  type,
+  energy,
+  grade,
+  approvedOnly,
   sort,
   order,
   from,
@@ -43,8 +49,17 @@ export default function CardsGalleryGridWrapper({
     });
 
     // Only add filter if it's not "all"
-    if (filter && filter !== "all") {
-      queryParams.set("filter", filter);
+    if (type && type !== "all") {
+      queryParams.set("type", type);
+    }
+    if (energy && energy !== "all") {
+      queryParams.set("energy", energy);
+    }
+    if (grade && grade !== "all") {
+      queryParams.set("grade", grade);
+    }
+    if (approvedOnly && approvedOnly !== "false") {
+      queryParams.set("approvedOnly", approvedOnly);
     }
 
     try {
@@ -80,7 +95,7 @@ export default function CardsGalleryGridWrapper({
   useEffect(() => {
     setCards(initialCards);
     setHasNextPage(true);
-  }, [initialCards, sort, order, filter]);
+  }, [initialCards, sort, order, type, energy, grade, approvedOnly]);
 
   return (
     <CardsGalleryGrid

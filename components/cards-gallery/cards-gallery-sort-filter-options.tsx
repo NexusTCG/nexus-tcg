@@ -10,6 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+// Custom components
+import CardsGalleryFilters from "@/components/cards-gallery/cards-gallery-filters";
 
 const VALID_SORT_OPTIONS = ["id", "name", "type", "grade"] as const;
 type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
@@ -17,7 +20,7 @@ type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
 const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
 type ValidOrderOption = (typeof VALID_ORDER_OPTIONS)[number];
 
-const VALID_FILTER_OPTIONS = [
+const VALID_FILTER_CARD_TYPE_OPTIONS = [
   "all",
   "agent",
   "event",
@@ -26,7 +29,29 @@ const VALID_FILTER_OPTIONS = [
   "hardware",
   "hardware_agent",
 ] as const;
-type ValidFilterOption = (typeof VALID_FILTER_OPTIONS)[number];
+type ValidFilterCardTypeOption =
+  (typeof VALID_FILTER_CARD_TYPE_OPTIONS)[number];
+
+const VALID_FILTER_ENERGY_OPTIONS = [
+  "all",
+  "light",
+  "storm",
+  "dark",
+  "chaos",
+  "growth",
+  "void",
+] as const;
+type ValidFilterEnergyOption = (typeof VALID_FILTER_ENERGY_OPTIONS)[number];
+
+const VALID_FILTER_GRADE_OPTIONS = [
+  "all",
+  "core",
+  "rare",
+  "epic",
+  "prime",
+  "legendary",
+] as const;
+type ValidFilterGradeOption = (typeof VALID_FILTER_GRADE_OPTIONS)[number];
 
 const VALID_FROM_OPTIONS = ["week", "month", "year", "all"] as const;
 type ValidFromOption = (typeof VALID_FROM_OPTIONS)[number];
@@ -34,17 +59,24 @@ type ValidFromOption = (typeof VALID_FROM_OPTIONS)[number];
 type CardsGallerySortFilterProps = {
   sort: string;
   order: string;
-  filter: string;
   from: string;
+  // Filters
+  type: string; // Card type
+  energy: string; // Energy
+  grade: string; // Grade
+  approvedOnly: string; // Approved only
 };
 
 export default function CardsGallerySortFilter({
   sort,
   order,
-  filter,
   from,
+  type,
+  energy,
+  grade,
+  approvedOnly,
 }: CardsGallerySortFilterProps) {
-  const router = useRouter();
+  // const router = useRouter();
   const searchParams = useSearchParams();
 
   function createQueryString(key: string, value: string) {
@@ -66,10 +98,28 @@ export default function CardsGallerySortFilter({
       value = "desc";
     }
 
-    // Validate filter
+    // Validate card type filter
     if (
-      key === "filter" &&
-      !VALID_FILTER_OPTIONS.includes(value as ValidFilterOption)
+      key === "type" &&
+      !VALID_FILTER_CARD_TYPE_OPTIONS.includes(
+        value as ValidFilterCardTypeOption
+      )
+    ) {
+      value = "all";
+    }
+
+    // Validate card energy filter
+    if (
+      key === "energy" &&
+      !VALID_FILTER_ENERGY_OPTIONS.includes(value as ValidFilterEnergyOption)
+    ) {
+      value = "all";
+    }
+
+    // Validate card grade filter
+    if (
+      key === "grade" &&
+      !VALID_FILTER_GRADE_OPTIONS.includes(value as ValidFilterGradeOption)
     ) {
       value = "all";
     }
@@ -80,6 +130,11 @@ export default function CardsGallerySortFilter({
       !VALID_FROM_OPTIONS.includes(value as ValidFromOption)
     ) {
       value = "week";
+    }
+
+    // Validate approved only
+    if (key === "approvedOnly" && value !== "true" && value !== "false") {
+      value = "false";
     }
 
     if (value) {
@@ -183,32 +238,12 @@ export default function CardsGallerySortFilter({
         <small className="text-muted-foreground text-xs whitespace-nowrap">
           Filter
         </small>
-        <Select
-          value={
-            VALID_FILTER_OPTIONS.includes(filter as ValidFilterOption)
-              ? filter
-              : "all"
-          }
-          onValueChange={(value: string) => updateSearchParams("filter", value)}
-        >
-          <SelectTrigger
-            className="
-              w-full
-              truncate
-            "
-          >
-            <SelectValue placeholder="Filter" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All types</SelectItem>
-            <SelectItem value="agent">Agent</SelectItem>
-            <SelectItem value="event">Event</SelectItem>
-            <SelectItem value="software">Software</SelectItem>
-            <SelectItem value="software_agent">Software Agent</SelectItem>
-            <SelectItem value="hardware">Hardware</SelectItem>
-            <SelectItem value="hardware_agent">Hardware Agent</SelectItem>
-          </SelectContent>
-        </Select>
+        <CardsGalleryFilters
+          type={type}
+          energy={energy}
+          grade={grade}
+          updateSearchParams={updateSearchParams}
+        />
       </div>
       <div
         id="from-container"
@@ -245,6 +280,28 @@ export default function CardsGallerySortFilter({
             <SelectItem value="all">All time</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div
+        id="approved-only-container"
+        className="
+          flex
+          flex-row
+          justify-start
+          items-center
+          gap-2
+          w-full
+        "
+      >
+        <small className="text-muted-foreground text-xs whitespace-nowrap">
+          Approved only
+        </small>
+        <Checkbox
+          id="approved"
+          checked={approvedOnly === "true"}
+          onCheckedChange={(checked) => {
+            updateSearchParams("approvedOnly", checked ? "true" : "false");
+          }}
+        />
       </div>
     </div>
   );

@@ -12,7 +12,10 @@ type CardsGalleryHeaderProps = {
   search: string;
   sort: string;
   order: string;
-  filter: string;
+  type: string;
+  energy: string;
+  grade: string;
+  approvedOnly: string;
   from: string;
   totalResults: number;
 };
@@ -21,7 +24,10 @@ export default function CardsGalleryHeader({
   search,
   sort,
   order,
-  filter,
+  type,
+  energy,
+  grade,
+  approvedOnly,
   from,
   totalResults,
 }: CardsGalleryHeaderProps) {
@@ -61,7 +67,10 @@ export default function CardsGalleryHeader({
         <CardsGallerySortFilter
           sort={sort}
           order={order}
-          filter={filter}
+          type={type}
+          energy={energy}
+          grade={grade}
+          approvedOnly={approvedOnly}
           from={from}
         />
       </div>

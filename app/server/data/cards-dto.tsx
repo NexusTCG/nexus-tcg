@@ -15,7 +15,9 @@ type FetchCardsOptions = {
   id?: number;
   search?: string;
   limit?: number;
-  filter?: string;
+  type?: string;
+  energy?: string;
+  grade?: string;
   order?:
     | {
         column: string;
@@ -24,7 +26,7 @@ type FetchCardsOptions = {
     | "random";
   from?: string;
   currentWeekOnly?: boolean;
-  approvedOnly?: boolean;
+  approvedOnly?: string;
 };
 
 export const getCardsDTO = cache(
@@ -89,12 +91,25 @@ export const getCardsDTO = cache(
       // TODO: Add search by card name
 
       // Filter for specific card type if specified
-      if (options.filter && options.filter !== "all") {
-        query = query.eq("initial_mode_cards.type", options.filter);
+      if (options.type && options.type !== "all") {
+        query = query.eq("initial_mode_cards.type", options.type);
+      }
+
+      // Filter for specific energy type if specified
+      if (options.energy && options.energy !== "all") {
+        query = query.gt(
+          `initial_mode_cards.energy_cost->>${options.energy}`,
+          0
+        );
+      }
+
+      // Filter for specific grade if specified
+      if (options.grade && options.grade !== "all") {
+        query = query.eq("initial_mode_cards.grade", options.grade);
       }
 
       // Filter for approved cards only if specified
-      if (options.approvedOnly) {
+      if (options.approvedOnly && options.approvedOnly === "true") {
         query = query.eq("approved", true);
       }
 

@@ -11,14 +11,20 @@ export default async function Cards({
   let search = (await searchParams).search;
   let sort = (await searchParams).sort;
   let order = (await searchParams).order;
-  let filter = (await searchParams).filter;
+  let type = (await searchParams).type;
+  let energy = (await searchParams).energy;
+  let grade = (await searchParams).grade;
+  let approvedOnly = (await searchParams).approvedOnly;
   let from = (await searchParams).from;
 
   // Convert search parameters to strings
   search = search?.toString() ?? "";
   sort = sort?.toString() ?? "id";
   order = order?.toString() ?? "asc";
-  filter = filter?.toString() ?? "all";
+  type = type?.toString() ?? "all";
+  energy = energy?.toString() ?? "all";
+  grade = grade?.toString() ?? "all";
+  approvedOnly = approvedOnly?.toString() ?? "false";
   from = from?.toString() ?? "all";
 
   return (
@@ -38,11 +44,14 @@ export default async function Cards({
       "
     >
       <CardsGallery
-        key={`${sort}-${order}-${filter}-${search}-${from}`}
+        key={`${sort}-${order}-${type}-${energy}-${grade}-${approvedOnly}-${from}`}
         search={search}
         sort={sort}
         order={order as "asc" | "desc"}
-        filter={filter}
+        type={type}
+        energy={energy}
+        grade={grade}
+        approvedOnly={approvedOnly}
         from={from}
       />
     </div>
