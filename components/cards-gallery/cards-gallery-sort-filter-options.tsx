@@ -180,7 +180,6 @@ export default function CardsGallerySortFilter({
           justify-start
           items-center
           gap-2
-          w-full
         "
       >
         <small className="text-muted-foreground text-xs whitespace-nowrap">
@@ -261,19 +260,14 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("from", value)}
         >
-          <SelectTrigger
-            className="
-              w-full
-              truncate
-            "
-          >
+          <SelectTrigger className="truncate">
             <SelectValue placeholder="All time" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="week">This week</SelectItem>
-            <SelectItem value="month">This month</SelectItem>
-            <SelectItem value="year">This year</SelectItem>
             <SelectItem value="all">All time</SelectItem>
+            <SelectItem value="year">This year</SelectItem>
+            <SelectItem value="month">This month</SelectItem>
+            <SelectItem value="week">This week</SelectItem>
           </SelectContent>
         </Select>
       </div>
