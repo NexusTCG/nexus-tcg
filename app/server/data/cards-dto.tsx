@@ -15,18 +15,22 @@ type FetchCardsOptions = {
   id?: number;
   search?: string;
   limit?: number;
+  // Filters
   type?: string;
   energy?: string;
   grade?: string;
+  // Sort and order
   order?:
     | {
         column: string;
         direction: "asc" | "desc";
       }
     | "random";
-  from?: string;
+  // From
+  from?: "week" | "month" | "year" | "all";
+  // Boolean options
   currentWeekOnly?: boolean;
-  approvedOnly?: string;
+  approvedOnly?: boolean;
 };
 
 export const getCardsDTO = cache(
@@ -107,9 +111,8 @@ export const getCardsDTO = cache(
       if (options.grade && options.grade !== "all") {
         query = query.eq("initial_mode_cards.grade", options.grade);
       }
-
       // Filter for approved cards only if specified
-      if (options.approvedOnly && options.approvedOnly === "true") {
+      if (options.approvedOnly) {
         query = query.eq("approved", true);
       }
 
