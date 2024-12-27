@@ -179,6 +179,7 @@ export default function CardsGallerySortFilter({
           flex-row
           justify-start
           items-center
+          min-w-[280px]
           gap-2
         "
       >
@@ -191,12 +192,7 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("sort", value)}
         >
-          <SelectTrigger
-            className="
-              w-full
-              truncate
-            "
-          >
+          <SelectTrigger className="w-[140px] truncate">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -214,7 +210,7 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("order", value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-[140px] truncate">
             <SelectValue placeholder="Order" />
           </SelectTrigger>
           <SelectContent>
@@ -231,7 +227,8 @@ export default function CardsGallerySortFilter({
           justify-start
           items-center
           gap-2
-          w-full
+          flex-1
+          min-w-0
         "
       >
         <CardsGalleryFilters
@@ -248,6 +245,7 @@ export default function CardsGallerySortFilter({
           flex-row
           justify-start
           items-center
+          min-w-[180px]
           gap-2
         "
       >
@@ -260,7 +258,7 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("from", value)}
         >
-          <SelectTrigger className="truncate">
+          <SelectTrigger className="w-[120px] truncate">
             <SelectValue placeholder="All time" />
           </SelectTrigger>
           <SelectContent>
