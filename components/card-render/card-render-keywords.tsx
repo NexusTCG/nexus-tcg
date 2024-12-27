@@ -46,8 +46,8 @@ export default function CardRenderKeywords({
     // Check if the keyword has text input or contains [N]
     const hasInput =
       Boolean(keyword.input) ||
-      keywordInfo.reminder?.includes("[") ||
-      /\bN\b/.test(keywordInfo.reminder || "");
+      keywordInfo.syntax?.includes("[") ||
+      /\bN\b/.test(keywordInfo.syntax || "");
 
     // Split the input text to find {abbreviations} or (parentheticals)
     const textToSplit = keyword.input || "";
@@ -115,12 +115,12 @@ export default function CardRenderKeywords({
   // Filter keywords into text input and standard keywords
   const textInputKeywords = keywords.filter((keyword) => {
     const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
-    return keywordInfo?.reminder?.includes("[");
+    return keywordInfo?.syntax?.includes("[");
   });
 
   const standardKeywords = keywords.filter((keyword) => {
     const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
-    return !keywordInfo?.reminder?.includes("[");
+    return !keywordInfo?.syntax?.includes("[");
   });
 
   return (

@@ -19,6 +19,7 @@ export type KeywordsDTO = {
   id?: number | null;
   created_at?: string | null;
   name: string | null;
+  syntax: string | null;
   reminder: string | null;
   type: "persistent" | "reactive" | "active" | null;
   tip: string | null;

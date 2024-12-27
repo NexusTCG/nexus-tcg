@@ -10,7 +10,7 @@ export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO[] | null> => {
   try {
     const { data, error } = await supabase
       .from("keywords")
-      .select("name, type, reminder, tip");
+      .select("name, type, syntax, reminder, tip");
 
     if (error) {
       console.error(`[Server] Supabase error: ${error.message}`);
@@ -25,6 +25,7 @@ export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO[] | null> => {
     const mappedData = data.map(
       (keyword): KeywordsDTO => ({
         name: keyword.name,
+        syntax: keyword.syntax,
         reminder: keyword.reminder,
         type: keyword.type,
         tip: keyword.tip,
