@@ -109,7 +109,7 @@ export const getCardsDTO = cache(
 
       // Filter for specific grade if specified
       if (options.grade && options.grade !== "all") {
-        query = query.eq("initial_mode_cards.grade", options.grade);
+        query = query.eq("grade", options.grade);
       }
       // Filter for approved cards only if specified
       if (options.approvedOnly) {
