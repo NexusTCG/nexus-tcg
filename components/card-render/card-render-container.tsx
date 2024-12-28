@@ -35,46 +35,43 @@ export default function CardRenderContainer({
   cardId,
 }: CardContainerProps) {
   function getCardFrameImage() {
-    let cardFrame = "default";
-
-    if (mode === "anomaly" || !energyCost) {
-      cardFrame = "anomaly";
-    }
-
-    const activeTypes = Object.entries(energyCost || {})
-      .filter(([type, value]) => value > 0)
-      .map(([type]) => type);
-
-    const nonVoidTypes = activeTypes.filter((type) => type !== "void");
-
-    if (nonVoidTypes.length === 0) {
-      cardFrame = "void";
-    }
-
-    if (nonVoidTypes.length === 1) {
-      cardFrame = `${nonVoidTypes[0]}`;
-    }
-
-    if (nonVoidTypes.length === 2) {
-      cardFrame = `${nonVoidTypes.sort().join("-")}`;
-    }
-
-    if (
-      nonVoidTypes.length >= 3 ||
-      (nonVoidTypes.length === 2 && activeTypes.includes("void"))
-    ) {
-      cardFrame = "multi";
-    }
-
+    // Handle texture
+    let texture = "";
     if (cardType.includes("hardware")) {
-      cardFrame = `${cardFrame}-hardware`;
+      texture = "hardware";
     } else if (cardType.includes("software")) {
-      cardFrame = `${cardFrame}-software`;
+      texture = "software";
     }
 
-    cardFrame = `${cardFrame}.jpg`;
+    // Handle anomaly mode
+    if (mode === "anomaly") {
+      return `anomaly${texture ? `-${texture}` : ""}.jpg`;
+    }
 
-    return cardFrame;
+    // Handle initial mode
+    let energyType = "default";
+    if (energyCost) {
+      const activeTypes = Object.entries(energyCost || {})
+        .filter(([type, value]) => value > 0)
+        .map(([type]) => type);
+
+      const nonVoidTypes = activeTypes.filter((type) => type !== "void");
+
+      if (nonVoidTypes.length === 0) {
+        energyType = "void"; // Void card frame
+      } else if (nonVoidTypes.length === 1) {
+        energyType = nonVoidTypes[0]; // Mono-energy card frame
+      } else if (nonVoidTypes.length === 2) {
+        energyType = nonVoidTypes.sort().join("-"); // Dual-energy card frame
+      } else if (
+        nonVoidTypes.length >= 3 ||
+        (nonVoidTypes.length === 2 && activeTypes.includes("void"))
+      ) {
+        energyType = "multi"; // Multi-energy card frame
+      }
+    }
+
+    return `${energyType}${texture ? `-${texture}` : ""}.jpg`;
   }
 
   const cardFrame = getCardFrameImage();
