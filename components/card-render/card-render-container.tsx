@@ -137,7 +137,7 @@ export default function CardRenderContainer({
                 <TooltipTrigger>
                   <Image
                     id={`grade-icon-${mode}`}
-                    src={`/icons/grade-icons/${grade.toLowerCase()}.svg`}
+                    src={`/icons/grade-icons/${grade.toLowerCase()}.png`}
                     alt={grade}
                     width={24}
                     height={24}

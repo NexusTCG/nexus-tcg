@@ -7,10 +7,10 @@ type CardRenderFooterProps = {
   isUncommon: boolean;
 };
 
-export default function CardRenderFooter({ 
-    username,
-    mode,
-    isUncommon,
+export default function CardRenderFooter({
+  username,
+  mode,
+  isUncommon,
 }: CardRenderFooterProps) {
   return (
     <div
@@ -39,13 +39,13 @@ export default function CardRenderFooter({
             w-full
             gap-0
           "
-        >
-          <span>© Nexus Games {new Date().getFullYear()}</span>
+      >
+        <span>© Nexus Games {new Date().getFullYear()}</span>
       </small>
       {mode === "initial" || (mode === "anomaly" && isUncommon) ? (
         <small
-        id="card-creator"
-        className="
+          id="card-creator"
+          className="
           flex
           flex-row
           justify-start
@@ -53,9 +53,9 @@ export default function CardRenderFooter({
           w-full
           gap-0.5
         "
-      >
-        <MdDesignServices className="w-[0.75rem] h-[0.75rem]" />
-        <span>{username}</span>
+        >
+          <MdDesignServices className="w-[0.75rem] h-[0.75rem]" />
+          <span>{username}</span>
         </small>
       ) : null}
       <span className="flex justify-end items-center w-full ">
@@ -63,4 +63,4 @@ export default function CardRenderFooter({
       </span>
     </div>
   );
-};
+}
