@@ -69,16 +69,13 @@ export default function CardRenderKeywords({
             <div className="inline items-baseline">
               <span
                 className={clsx("font-bold", {
-                  "mr-1": !hasInput,
                   "text-blue-700": keywordInfo.type === "persistent",
                   "text-amber-700": keywordInfo.type === "reactive",
                   "text-green-700": keywordInfo.type === "active",
                 })}
               >
                 {keyword.name}
-                {hasInput && (
-                  <span className="text-black font-medium mr-1">:</span>
-                )}
+                {hasInput && <span className="text-black font-medium">:</span>}
               </span>
               {hasInput && (
                 <span className="text-black font-medium">
