@@ -3,6 +3,7 @@ import React from "react";
 import { EnergyCost, EnergyType } from "@/app/lib/types/components";
 // Custom components
 import EnergyIcon from "@/components/card-creator/energy-icon";
+
 type CardRenderCostProps = {
   energyCost: EnergyCost;
 };
@@ -19,8 +20,9 @@ export default function CardRenderCost({ energyCost }: CardRenderCostProps) {
 
   function renderEnergyIcons(type: EnergyType, cost: number) {
     if (type === "void") {
-      if (cost === 0) return null;
-      return <EnergyIcon type="void" value={cost} />;
+      if (cost === 0) return null; // No void icon
+      if (cost === -1) return <EnergyIcon type="void" value={-1} />; // Void X icon
+      return <EnergyIcon type="void" value={cost} />; // Void icon
     }
     return Array(cost)
       .fill(null)
