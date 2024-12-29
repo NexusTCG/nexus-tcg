@@ -53,9 +53,6 @@ export const takeAndUploadScreenshotTask = task({
         }
       });
 
-      // Wait for 2 seconds to ensure initial render
-      await wait.for({ seconds: 2 });
-
       try {
         logger.info("Waiting for card element and grade icon to load...");
 
@@ -70,57 +67,38 @@ export const takeAndUploadScreenshotTask = task({
         await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
         logger.info("Grade icon element found");
 
-        // Wait longer for initial page load
-        await wait.for({ seconds: 2 });
-
-        // NEW: Force load the image by removing lazy loading and scrolling it into view
+        // Force load the image
         await page.evaluate((selector) => {
           const img = document.querySelector(selector) as HTMLImageElement;
           if (img) {
-            // Remove lazy loading
             img.loading = "eager";
-            // Force load by setting src again
-            const currentSrc = img.src;
-            img.src = "";
-            img.src = currentSrc;
-            // Scroll into view to trigger load
-            img.scrollIntoView();
+            img.style.visibility = "visible";
+            img.style.display = "block";
           }
         }, gradeIconSelector);
 
-        // Wait for image to actually load
-        await page.waitForFunction(
-          (selector) => {
-            const img = document.querySelector(selector) as HTMLImageElement;
-            return img && img.complete && img.naturalHeight > 0;
-          },
-          { timeout: 60000 },
-          gradeIconSelector,
-        );
+        // Wait longer for initial page load
+        await wait.for({ seconds: 2 });
 
-        logger.info("Grade icon fully loaded");
-
-        // Get final image state for verification
+        // Simpler check for image loading
         const imageState = await page.evaluate((selector) => {
           const img = document.querySelector(selector) as HTMLImageElement;
           return {
             exists: !!img,
             complete: img?.complete,
-            naturalHeight: img?.naturalHeight,
-            naturalWidth: img?.naturalWidth,
             src: img?.src,
             currentSrc: img?.currentSrc,
             loading: img?.loading,
+            display: img?.style.display,
+            visibility: img?.style.visibility,
           };
         }, gradeIconSelector);
 
-        logger.info("Final grade icon state:", imageState);
+        logger.info("Grade icon state:", imageState);
 
-        if (!imageState.naturalHeight || !imageState.naturalWidth) {
+        if (!imageState.exists || !imageState.complete) {
           throw new Error(
-            `Grade icon dimensions not available: ${
-              JSON.stringify(imageState)
-            }`,
+            `Grade icon not ready: ${JSON.stringify(imageState)}`,
           );
         }
       } catch (waitError) {
