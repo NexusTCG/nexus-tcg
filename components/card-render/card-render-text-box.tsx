@@ -73,7 +73,7 @@ export default function CardRenderTextBox({
     >
       {cardKeywords && cardKeywords.length > 0 && (
         <div className="flex-shrink-0">
-          <CardRenderKeywords keywords={cardKeywords} />
+          <CardRenderKeywords card={card} mode={mode} keywords={cardKeywords} />
         </div>
       )}
       <div className="flex-grow w-full overflow-hidden">

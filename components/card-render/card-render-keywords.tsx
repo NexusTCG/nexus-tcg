@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 // Utils
 import clsx from "clsx";
 // Types
-import { KeywordsDTO } from "@/app/lib/types/dto";
+import { CardDTO, KeywordsDTO } from "@/app/lib/types/dto";
 import { RenderedKeywordType } from "@/app/lib/types/components";
 // Components
 import {
@@ -18,10 +18,14 @@ import AbbreviationIcon from "@/components/card-render/abbreviation-icon";
 
 type CardRenderKeywordsProps = {
   keywords: RenderedKeywordType[];
+  card: CardDTO;
+  mode: "initial" | "anomaly";
 };
 
 export default function CardRenderKeywords({
   keywords,
+  card,
+  mode,
 }: CardRenderKeywordsProps) {
   const [keywordData, setKeywordData] = useState<KeywordsDTO[]>([]);
 
@@ -50,8 +54,13 @@ export default function CardRenderKeywords({
       /\bN\b/.test(keywordInfo.syntax || "");
 
     // Split the input text to find {abbreviations} or (parentheticals)
-    const textToSplit = keyword.input || "";
-    const inputSegments = textToSplit.split(/(\{[^}]+\}|\([^)]+\))/g);
+    // Replace ~ with card name in the input text
+    const processedInput =
+      keyword.input?.replace(
+        /~/g,
+        mode === "initial" ? card.initialMode.name : card.anomalyMode.name
+      ) || "";
+    const inputSegments = processedInput.split(/(\{[^}]+\}|\([^)]+\))/g);
 
     return (
       <TooltipProvider key={keyword.name}>
