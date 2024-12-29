@@ -75,7 +75,7 @@ export default function CardRenderKeywords({
                 })}
               >
                 {keyword.name}
-                {hasInput && <span className="text-black font-medium">:</span>}
+                {hasInput && <span className="text-black font-medium">: </span>}
               </span>
               {hasInput && (
                 <span className="text-black font-medium">
