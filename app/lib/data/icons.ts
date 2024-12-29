@@ -104,4 +104,7 @@ export const abbreviationIcons = {
   // Reach icons
   "RM": { path: "/icons/reach-icons/melee.svg", name: "Reach: Melee" },
   "RR": { path: "/icons/reach-icons/ranged.svg", name: "Reach: Ranged" },
+  // Lock icons
+  "LO": { path: "/icons/lock-icons/lock.svg", name: "Lock" },
+  "UL": { path: "/icons/lock-icons/unlock.svg", name: "Unlock" },
 };
