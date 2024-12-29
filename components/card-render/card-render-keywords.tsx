@@ -71,6 +71,11 @@ export default function CardRenderKeywords({
                   <span className="text-black font-medium mr-1">:</span>
                 )}
               </span>
+              {!hasInput && keywordInfo.reminder && (
+                <span className="italic font-light">
+                  ({keywordInfo.reminder})
+                </span>
+              )}
               {hasInput && (
                 <span className="text-black font-medium">
                   {inputSegments.map((segment, index) => {
