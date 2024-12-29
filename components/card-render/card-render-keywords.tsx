@@ -71,11 +71,6 @@ export default function CardRenderKeywords({
                   <span className="text-black font-medium mr-1">:</span>
                 )}
               </span>
-              {!hasInput && keywordInfo.reminder && (
-                <span className="italic font-light">
-                  ({keywordInfo.reminder})
-                </span>
-              )}
               {hasInput && (
                 <span className="text-black font-medium">
                   {inputSegments.map((segment, index) => {
@@ -99,6 +94,11 @@ export default function CardRenderKeywords({
                     // Regular text segment
                     return <span key={index}>{segment}</span>;
                   })}
+                </span>
+              )}
+              {keywordInfo.reminder && (
+                <span className="italic font-light">
+                  ({keywordInfo.reminder})
                 </span>
               )}
             </div>
