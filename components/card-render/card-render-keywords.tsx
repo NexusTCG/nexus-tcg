@@ -43,7 +43,7 @@ export default function CardRenderKeywords({
     fetchKeywordData();
   }, []);
 
-  function renderKeyword(keyword: RenderedKeywordType) {
+  function renderKeyword(keyword: RenderedKeywordType, showReminder: boolean) {
     const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
     if (!keywordInfo) return null;
 
@@ -105,8 +105,9 @@ export default function CardRenderKeywords({
                   })}
                 </span>
               )}
-              {keywordInfo.reminder && (
-                <span className="italic font-light ml-1">
+              {keywordInfo.reminder && showReminder && (
+                <span className="italic font-light">
+                  {" "}
                   ({keywordInfo.reminder})
                 </span>
               )}
@@ -141,19 +142,27 @@ export default function CardRenderKeywords({
     <div className="w-full flex flex-col gap-1">
       {standardKeywords.length > 0 && (
         <div className="flex flex-row flex-wrap gap-1">
-          {standardKeywords.map((keyword, index) => (
-            <React.Fragment key={keyword.name}>
-              {renderKeyword(keyword)}
-              {index < standardKeywords.length - 1 && (
-                <span className="mr-1">,</span>
-              )}
-            </React.Fragment>
-          ))}
+          {standardKeywords.length <= 2
+            ? // Render with reminder text when 2 or fewer
+              standardKeywords.map((keyword) => (
+                <React.Fragment key={keyword.name}>
+                  {renderKeyword(keyword, true)}
+                </React.Fragment>
+              ))
+            : // Render as comma-separated list without reminder text when more than 2
+              standardKeywords.map((keyword, index) => (
+                <React.Fragment key={keyword.name}>
+                  {renderKeyword(keyword, false)}
+                  {index < standardKeywords.length - 1 && (
+                    <span className="mr-1">,</span>
+                  )}
+                </React.Fragment>
+              ))}
         </div>
       )}
       {textInputKeywords.map((keyword) => (
         <div key={keyword.name} className="w-full">
-          {renderKeyword(keyword)}
+          {renderKeyword(keyword, true)}
         </div>
       ))}
     </div>
