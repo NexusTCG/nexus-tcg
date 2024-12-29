@@ -89,6 +89,7 @@ export const takeAndUploadScreenshotTask = task({
         throw waitError;
       }
 
+      // Get the element
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {
         throw new Error("Card element not found");
@@ -100,21 +101,46 @@ export const takeAndUploadScreenshotTask = task({
         throw new Error("Could not get element dimensions");
       }
 
+      // Get current card data to check existing render
+      const {
+        data: currentCard,
+        error: fetchError,
+      } = await supabaseAdmin
+        .from("nexus_cards")
+        .select("card_render, updated_at")
+        .eq("id", cardId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
       // Take screenshot of the element
       const screenshot = await element.screenshot({ type: "png" });
 
-      // Generate filename
-      const filename = isUpdate
-        ? `card-${cardId}-${Date.now()}.png`
-        : `card-${cardId}.png`;
+      // Generate filename with timestamp hash
+      const timestamp = Date.now();
+      const filename = `card-${cardId}-${timestamp}.png`;
 
-      // Upload to Supabase Storage
+      // Remove old render if it exists
+      if (currentCard?.card_render) {
+        const oldFilename = currentCard.card_render.split("/").pop();
+        if (oldFilename) {
+          await supabaseAdmin
+            .storage
+            .from("card-renders")
+            .remove([oldFilename])
+            .catch((error) =>
+              logger.warn("Failed to remove old render", { error })
+            );
+        }
+      }
+
+      // Upload new screenshot
       const { error: uploadError } = await supabaseAdmin
         .storage
         .from("card-renders")
         .upload(filename, screenshot, {
           contentType: "image/png",
-          upsert: true,
+          cacheControl: "no-cache, no-store, must-revalidate",
         });
 
       if (uploadError) throw uploadError;
@@ -135,6 +161,7 @@ export const takeAndUploadScreenshotTask = task({
 
       if (updateError) throw updateError;
 
+      // Close browser
       await browser.close();
 
       logger.info(
