@@ -59,58 +59,103 @@ export const takeAndUploadScreenshotTask = task({
       try {
         logger.info("Waiting for card element and grade icon to load...");
 
-        // Wait for both card container and grade icon
-        await Promise.all([
-          page.waitForSelector(`#card-render-container-${cardId}-initial`, {
-            timeout: 60000,
-          })
-            .then(() => logger.info("Card container found")),
-          page.waitForSelector(`#grade-icon-initial`, { timeout: 60000 })
-            .then(() => logger.info("Grade icon element found")),
-        ]);
-
-        // NEW: Wait for grade icon to be fully loaded
-        await page.evaluate(() => {
-          return new Promise((resolve) => {
-            const img = document.querySelector(
-              "#grade-icon-initial",
-            ) as HTMLImageElement;
-            if (img && !img.complete) {
-              img.onload = () => resolve(true);
-              img.onerror = () => resolve(false);
-            } else {
-              resolve(true);
-            }
-          });
+        // First wait for card container
+        await page.waitForSelector(`#card-render-container-${cardId}-initial`, {
+          timeout: 60000,
         });
+        logger.info("Card container found");
 
-        // NEW: Verify image loaded successfully
-        const imageState = await page.evaluate(() => {
-          const img = document.querySelector(
-            "#grade-icon-initial",
-          ) as HTMLImageElement;
+        // Then wait for grade icon with more detailed logging
+        const gradeIconSelector = "#grade-icon-initial";
+        await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
+        logger.info("Grade icon element found");
+
+        // Wait longer for initial page load
+        await wait.for({ seconds: 2 });
+
+        // NEW: Force load the image by removing lazy loading and scrolling it into view
+        await page.evaluate((selector) => {
+          const img = document.querySelector(selector) as HTMLImageElement;
+          if (img) {
+            // Remove lazy loading
+            img.loading = "eager";
+            // Force load by setting src again
+            const currentSrc = img.src;
+            img.src = "";
+            img.src = currentSrc;
+            // Scroll into view to trigger load
+            img.scrollIntoView();
+          }
+        }, gradeIconSelector);
+
+        // Wait for image to actually load
+        await page.waitForFunction(
+          (selector) => {
+            const img = document.querySelector(selector) as HTMLImageElement;
+            return img && img.complete && img.naturalHeight > 0;
+          },
+          { timeout: 60000 },
+          gradeIconSelector,
+        );
+
+        logger.info("Grade icon fully loaded");
+
+        // Get final image state for verification
+        const imageState = await page.evaluate((selector) => {
+          const img = document.querySelector(selector) as HTMLImageElement;
           return {
             exists: !!img,
             complete: img?.complete,
             naturalHeight: img?.naturalHeight,
-            src: img?.src || "no-src",
+            naturalWidth: img?.naturalWidth,
+            src: img?.src,
+            currentSrc: img?.currentSrc,
+            loading: img?.loading,
           };
-        });
-        logger.info("Grade icon state:", imageState);
+        }, gradeIconSelector);
 
-        if (
-          !imageState.exists || !imageState.complete ||
-          !imageState.naturalHeight
-        ) {
-          throw new Error("Grade icon failed to load properly");
+        logger.info("Final grade icon state:", imageState);
+
+        if (!imageState.naturalHeight || !imageState.naturalWidth) {
+          throw new Error(
+            `Grade icon dimensions not available: ${
+              JSON.stringify(imageState)
+            }`,
+          );
         }
       } catch (waitError) {
-        const pageContent = await page.content();
-        logger.error("Element wait failed. Current page state:", {
+        // Get more context about the page state
+        const diagnostics = await Promise.all([
+          page.content(),
+          page.url(),
+          page.title(),
+          page.evaluate(() => ({
+            viewportSize: {
+              width: window.innerWidth,
+              height: window.innerHeight,
+            },
+            documentState: document.readyState,
+            allImages: Array.from(document.images).map((img) => ({
+              id: img.id,
+              src: img.src,
+              complete: img.complete,
+            })),
+          })),
+        ]).catch((e) => logger.error("Error getting diagnostics:", e));
+
+        logger.error("Element wait failed. Detailed state:", {
           error: waitError,
-          html: pageContent.substring(0, 1000),
+          url: diagnostics?.[1],
+          title: diagnostics?.[2],
+          pageState: diagnostics?.[3],
+          html: diagnostics?.[0]?.substring(0, 1000),
         });
-        throw waitError;
+
+        throw new Error(
+          `Grade icon loading failed: ${
+            (waitError as Error).message
+          }\nPage URL: ${diagnostics?.[1]}`,
+        );
       }
 
       // Get the element

@@ -138,6 +138,7 @@ export default function CardRenderContainer({
                     alt={grade}
                     width={24}
                     height={24}
+                    loading="eager"
                   />
                 </TooltipTrigger>
                 <TooltipContent side="top">
