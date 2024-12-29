@@ -35,10 +35,8 @@ export const takeAndUploadScreenshotTask = task({
         { waitUntil: "networkidle0", timeout: 60000 },
       );
 
-      // Wait for initial render with logging
-      logger.info("Waiting for elements to load...");
-
       // Wait for card element and hide unwanted elements
+      logger.info("Waiting for elements to load...");
       await page.evaluate(() => {
         // Hide cookie banner
         const cookieBanner = document.querySelector(
@@ -59,6 +57,7 @@ export const takeAndUploadScreenshotTask = task({
       await wait.for({ seconds: 2 });
 
       try {
+        logger.info("Waiting for card element and grade icon to load...");
         await Promise.all([
           page.waitForSelector(`#card-render-container-${cardId}-initial`, {
             timeout: 60000,
@@ -90,18 +89,21 @@ export const takeAndUploadScreenshotTask = task({
       }
 
       // Get the element
+      logger.info("Waiting for card element to load...");
       const element = await page.$(`#card-render-container-${cardId}-initial`);
       if (!element) {
         throw new Error("Card element not found");
       }
 
       // Get the element's dimensions
+      logger.info("Getting element dimensions...");
       const box = await element.boundingBox();
       if (!box) {
         throw new Error("Could not get element dimensions");
       }
 
       // Get current card data to check existing render
+      logger.info("Fetching current card data...");
       const {
         data: currentCard,
         error: fetchError,
@@ -114,14 +116,17 @@ export const takeAndUploadScreenshotTask = task({
       if (fetchError) throw fetchError;
 
       // Take screenshot of the element
+      logger.info("Taking screenshot...");
       const screenshot = await element.screenshot({ type: "png" });
 
       // Generate filename with timestamp hash
+      logger.info("Generating filename...");
       const timestamp = Date.now();
       const filename = `card-${cardId}-${timestamp}.png`;
 
       // Remove old render if it exists
       if (currentCard?.card_render) {
+        logger.info("Removing old render...");
         const oldFilename = currentCard.card_render.split("/").pop();
         if (oldFilename) {
           await supabaseAdmin
@@ -131,10 +136,13 @@ export const takeAndUploadScreenshotTask = task({
             .catch((error) =>
               logger.warn("Failed to remove old render", { error })
             );
+
+          logger.info("Old render removed successfully");
         }
       }
 
       // Upload new screenshot
+      logger.info("Uploading new screenshot...");
       const { error: uploadError } = await supabaseAdmin
         .storage
         .from("card-renders")
@@ -145,13 +153,19 @@ export const takeAndUploadScreenshotTask = task({
 
       if (uploadError) throw uploadError;
 
+      logger.info("Screenshot uploaded successfully");
+
       // Get public URL
+      logger.info("Getting public URL...");
       const { data: { publicUrl } } = await supabaseAdmin
         .storage
         .from("card-renders")
         .getPublicUrl(filename);
 
+      logger.info("Public URL:", { publicUrl });
+
       // Update card record with render URL
+      logger.info("Updating card record with render URL...");
       const { error: updateError } = await supabaseAdmin
         .from("nexus_cards")
         .update({
@@ -161,7 +175,10 @@ export const takeAndUploadScreenshotTask = task({
 
       if (updateError) throw updateError;
 
+      logger.info("Card record updated successfully");
+
       // Close browser
+      logger.info("Closing browser...");
       await browser.close();
 
       logger.info(
