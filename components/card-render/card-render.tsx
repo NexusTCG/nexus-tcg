@@ -128,7 +128,7 @@ export default function CardRender({ card, mode, isActive }: CardRenderProps) {
             </div>
           </div>
         </div>
-        {cardType === "agent" && (
+        {cardType.includes("agent") && (
           <div className="absolute bottom-0 left-0 z-10">
             <CardRenderStats
               attack={card.initialMode.attack || 0}
