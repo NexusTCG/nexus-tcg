@@ -106,7 +106,7 @@ export default function CardRenderKeywords({
                 </span>
               )}
               {keywordInfo.reminder && (
-                <span className="italic font-light">
+                <span className="italic font-light ml-1">
                   ({keywordInfo.reminder})
                 </span>
               )}
