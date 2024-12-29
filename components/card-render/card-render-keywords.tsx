@@ -62,8 +62,8 @@ export default function CardRenderKeywords({
                 className={clsx("font-bold", {
                   "mr-1": !hasInput,
                   "text-blue-700": keywordInfo.type === "persistent",
-                  "text-green-700": keywordInfo.type === "reactive",
-                  "text-yellow-700": keywordInfo.type === "active",
+                  "text-amber-700": keywordInfo.type === "reactive",
+                  "text-green-700": keywordInfo.type === "active",
                 })}
               >
                 {keyword.name}
