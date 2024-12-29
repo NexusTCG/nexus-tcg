@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 // Utils
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
 // Server
@@ -14,16 +15,23 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
-export const revalidate = 3600;
-
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
-
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;
-
   console.log("[Server] Fetching from URL:", fetchUrl);
 
-  const res = await fetch(fetchUrl, { next: { revalidate: 3600 } });
+  // Check if request is from puppeteer
+  const requestHeaders = headers();
+  const userAgent = requestHeaders.get("user-agent");
+  const isPuppeteer = userAgent?.includes("HeadlessChrome");
+
+  console.log("[Server] Request is from puppeteer:", isPuppeteer);
+
+  // Fetch card data with conditional caching
+  const res = await fetch(fetchUrl, {
+    cache: isPuppeteer ? "no-store" : "force-cache",
+    next: isPuppeteer ? { revalidate: 0 } : { revalidate: 3600 },
+  });
 
   if (!res.ok) {
     console.error("[Server] Fetch failed:", res.status, res.statusText);
@@ -62,6 +70,7 @@ export default async function CardSlug(props: {
     redirect(`/cards/${params.slug}?mode=initial`);
   }
 
+  // Fetch user and card data
   const user = await getUserProfileDTO();
   const card = await fetchCard(params.slug);
 
