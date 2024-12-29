@@ -15,6 +15,18 @@ import CardRender from "@/components/card-render/card-render";
 import ClientWrapper from "@/components/card-render/client-wrapper";
 import CardRenderArtDirection from "@/components/card-render/card-render-art-direction";
 
+// Preloading card grade icons for Puppeteer
+export const metadata = {
+  other: {
+    preload: [
+      { href: "/icons/grade-icons/core.png", as: "image" },
+      { href: "/icons/grade-icons/rare.png", as: "image" },
+      { href: "/icons/grade-icons/epic.png", as: "image" },
+      { href: "/icons/grade-icons/prime.png", as: "image" },
+    ],
+  },
+};
+
 async function fetchCard(slug: string): Promise<CardDTO | null> {
   const baseUrl = getBaseUrl();
   const fetchUrl = `${baseUrl}/api/data/fetch-cards?id=${slug}`;

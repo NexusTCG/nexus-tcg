@@ -1,38 +1,40 @@
-import React from 'react';
+import React from "react";
 // Types
-import { EnergyCost, EnergyType } from '@/app/lib/types/components';
+import { EnergyCost, EnergyType } from "@/app/lib/types/components";
 // Custom components
 import EnergyIcon from "@/components/card-creator/energy-icon";
 type CardRenderCostProps = {
   energyCost: EnergyCost;
 };
 
-export default function CardRenderCost({ 
-  energyCost 
-}: CardRenderCostProps) {
+export default function CardRenderCost({ energyCost }: CardRenderCostProps) {
   const energyTypes: EnergyType[] = [
-    'void',
-    'light', 
-    'storm', 
-    'dark', 
-    'chaos', 
-    'growth'
+    "void",
+    "light",
+    "storm",
+    "dark",
+    "chaos",
+    "growth",
   ];
 
   function renderEnergyIcons(type: EnergyType, cost: number) {
-    if (type === 'void') {
+    if (type === "void") {
       if (cost === 0) return null;
       return <EnergyIcon type="void" value={cost} />;
     }
-    return Array(cost).fill(null).map((_, index) => (
-      <EnergyIcon key={`${type}-${index}`} type={type} />
-    ));
+    return Array(cost)
+      .fill(null)
+      .map((_, index) => (
+        <div key={`${type}-${index}`} className={`z-${index * 10}`}>
+          <EnergyIcon type={type} />
+        </div>
+      ));
   }
 
   function renderOrderedEnergyIcons() {
-    return energyTypes.map(type => {
+    return energyTypes.map((type) => {
       const cost = energyCost[type] || 0;
-      if (cost > 0 || (type === 'void' && cost !== 0)) {
+      if (cost > 0 || (type === "void" && cost !== 0)) {
         return (
           <React.Fragment key={type}>
             {renderEnergyIcons(type, cost)}
