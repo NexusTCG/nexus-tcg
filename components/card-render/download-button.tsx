@@ -85,7 +85,7 @@ export function DownloadButton({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ cardId: cardId.toString(), mode }),
+          body: JSON.stringify({ record: { id: cardId.toString(), mode } }),
         });
 
         if (!response.ok) {

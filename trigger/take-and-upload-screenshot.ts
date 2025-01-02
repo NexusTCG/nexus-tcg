@@ -4,8 +4,14 @@ import { supabaseAdmin } from "@/app/utils/supabase/admin";
 
 export const takeAndUploadScreenshotTask = task({
   id: "take-and-upload-screenshot",
-  run: async (payload: { cardId: string; isUpdate?: boolean }) => {
-    const { cardId, isUpdate } = payload;
+  run: async (
+    payload: {
+      cardId: string;
+      mode?: "initial" | "anomaly";
+      isUpdate?: boolean;
+    },
+  ) => {
+    const { cardId, mode, isUpdate } = payload;
     logger.info(
       `Starting screenshot task for ${isUpdate ? "updated" : "new"} card`,
       { cardId },
@@ -31,7 +37,9 @@ export const takeAndUploadScreenshotTask = task({
 
       // Navigate to the card page
       await page.goto(
-        `${siteUrl}/cards/${cardId}?mode=initial`,
+        `${siteUrl}/cards/${cardId}?mode=${
+          mode === "initial" ? "initial" : "anomaly"
+        }`,
         { waitUntil: "networkidle0", timeout: 60000 },
       );
 
@@ -57,13 +65,20 @@ export const takeAndUploadScreenshotTask = task({
         logger.info("Waiting for card element and grade icon to load...");
 
         // First wait for card container
-        await page.waitForSelector(`#card-render-container-${cardId}-initial`, {
-          timeout: 60000,
-        });
+        await page.waitForSelector(
+          `#card-render-container-${cardId}-${
+            mode === "initial" ? "initial" : "anomaly"
+          }`,
+          {
+            timeout: 60000,
+          },
+        );
         logger.info("Card container found");
 
         // Then wait for grade icon with more detailed logging
-        const gradeIconSelector = "#grade-icon-initial";
+        const gradeIconSelector = `#grade-icon-${
+          mode === "initial" ? "initial" : "anomaly"
+        }`;
         await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
         logger.info("Grade icon element found");
 
@@ -138,7 +153,11 @@ export const takeAndUploadScreenshotTask = task({
 
       // Get the element
       logger.info("Getting card element...");
-      const element = await page.$(`#card-render-container-${cardId}-initial`);
+      const element = await page.$(
+        `#card-render-container-${cardId}-${
+          mode === "initial" ? "initial" : "anomaly"
+        }`,
+      );
       if (!element) {
         throw new Error("Card element not found");
       }

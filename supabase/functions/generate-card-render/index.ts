@@ -8,11 +8,13 @@ serve(async (req) => {
   try {
     const { record, isUpdate } = await req.json();
     const cardId = record.id;
+    const mode = record.mode;
 
     await tasks.trigger<typeof takeAndUploadScreenshotTask>(
       "take-and-upload-screenshot",
       {
         cardId,
+        mode,
         isUpdate: !!isUpdate,
       },
     );
