@@ -1,6 +1,7 @@
 import React from "react";
 // Utils
 import clsx from "clsx";
+import Image from "next/image";
 // Actions
 import { calculateBgColor } from "@/app/utils/actions/actions";
 // Types
@@ -9,6 +10,8 @@ import { EnergyCost } from "@/app/lib/types/components";
 // Custom components
 import CardRenderCost from "@/components/card-render/card-render-cost";
 import CardRenderSpeed from "@/components/card-render/card-render-speed";
+// Icons
+import mythicIcon from "@/public/icons/mythic.svg";
 
 type CardRenderHeaderProps = {
   card: CardDTO;
@@ -22,6 +25,10 @@ export default function CardRenderHeader({
   const cardEnergyCost: EnergyCost = card.initialMode.energy_cost as EnergyCost;
   const cardSpeed = card.initialMode.speed;
   const isUncommonAnomaly = card.anomalyMode.uncommon;
+  const isMythic =
+    activeMode === "initial"
+      ? card.initialMode.mythic
+      : card.anomalyMode.mythic;
 
   const bgColorClass50 =
     activeMode === "anomaly" ? null : calculateBgColor(cardEnergyCost, 50)[0];
@@ -62,7 +69,7 @@ export default function CardRenderHeader({
         </div>
       )}
       <div
-        id="card-name-type-container"
+        id="card-mythic-name-type-container"
         className="
           flex 
           flex-col 
@@ -72,12 +79,33 @@ export default function CardRenderHeader({
           h-full
         "
       >
-        <div className="text-md">
-          {activeMode === "initial"
-            ? card.initialMode.name
-            : isUncommonAnomaly
-            ? card.anomalyMode.name
-            : "Common Anomaly"}
+        <div
+          id="card-mythic-name-container"
+          className={clsx(
+            "grid items-center w-full h-full",
+            isUncommonAnomaly ? "grid-cols-[1fr]" : "grid-cols-[24px_1fr]"
+          )}
+        >
+          {/* Mythic Toggle */}
+          {isMythic ||
+            (isMythic && isUncommonAnomaly && (
+              <div className="flex justify-center items-center">
+                <Image
+                  src={mythicIcon}
+                  alt="Mythic Icon"
+                  width={20}
+                  height={24}
+                  className="pl-1 pr-0.5"
+                />
+              </div>
+            ))}
+          <div className="text-md">
+            {activeMode === "initial"
+              ? card.initialMode.name
+              : isUncommonAnomaly
+              ? card.anomalyMode.name
+              : "Common Anomaly"}
+          </div>
         </div>
         <div
           id="card-type-container"

@@ -41,7 +41,9 @@ export default function MythicToggle({ activeMode }: MythicToggleProps) {
 
     setValue(`${activeMode}Mode.mythic`, !isMythic);
     toast(
-      `${activeMode} mode ${!isMythic ? "is now" : "is no longer"} mythic!`
+      `${activeMode.charAt(0).toUpperCase() + activeMode.slice(1)} mode ${
+        !isMythic ? "is now" : "is no longer"
+      } mythic!`
     );
   }
 
@@ -77,10 +79,8 @@ export default function MythicToggle({ activeMode }: MythicToggleProps) {
               <TooltipContent>
                 <p>
                   {isMythic
-                    ? `This card's ${activeMode} mode is mythic.
-                      Click to remove mythic.`
-                    : `This card's ${activeMode} mode is not mythic.
-                      Click to make mythic.`}
+                    ? `This card's ${activeMode} mode is mythic. Click to remove mythic.`
+                    : `This card's ${activeMode} mode is not mythic. Click to make mythic.`}
                 </p>
               </TooltipContent>
             </Tooltip>
