@@ -41,13 +41,6 @@ export default function CardRenderTextBox({
       ? card.anomalyMode.lore
       : null;
 
-  // DEBUGGING
-  console.log("mode:", mode);
-  console.log("card type:", card.initialMode.type);
-  console.log("cardKeywords:", cardKeywords);
-  console.log("cardText:", cardText);
-  console.log("cardLoreText:", cardLoreText);
-
   const bgColorClass50 =
     mode === "anomaly"
       ? null
@@ -65,8 +58,8 @@ export default function CardRenderTextBox({
       id="card-form-text-container"
       style={{ fontSize: "0.85rem" }}
       className={clsx(
-        "flex flex-col justify-start items-start",
-        "w-full h-full px-2 pt-1.5 pb-2.5 gap-1.5",
+        "flex flex-col justify-between items-start",
+        "w-full h-full px-2 pt-1.5 pb-2.5 gap-1",
         "border border-b-2 resize-none text-black",
         bgColorClass50 || "bg-neutral-50"
       )}
@@ -84,7 +77,7 @@ export default function CardRenderTextBox({
               .filter(Boolean);
 
             return (
-              <div key={paragraphIndex} className="mb-2">
+              <div key={paragraphIndex} className="mb-1">
                 {segments.map((segment, segmentIndex) => {
                   // If this is a quoted segment (starts and ends with ")
                   if (segment.startsWith('"') && segment.endsWith('"')) {
@@ -142,6 +135,7 @@ export default function CardRenderTextBox({
           )}
           style={{
             minHeight: "36px",
+            borderRadius: "0.25rem",
           }}
         >
           <p>{cardLoreText}</p>
