@@ -81,16 +81,18 @@ export default function CardRenderHeader({
       >
         <div
           id="card-mythic-name-container"
-          className={clsx(
-            "grid items-center w-full h-full",
-            activeMode === "anomaly" && !isUncommonAnomaly
-              ? "grid-cols-[1fr]"
-              : "grid-cols-[24px_1fr]"
-          )}
+          className="
+            flex
+            items-center
+            w-full
+            h-full
+            gap-1
+            min-h-[24px]
+          "
         >
           {/* Mythic Toggle */}
           {isMythic && (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center flex-shrink-0">
               <Image
                 src={mythicIcon}
                 alt="Mythic Icon"
@@ -99,7 +101,7 @@ export default function CardRenderHeader({
               />
             </div>
           )}
-          <div className="text-md">
+          <div className="text-md flex-grow">
             {activeMode === "initial"
               ? card.initialMode.name
               : isUncommonAnomaly
