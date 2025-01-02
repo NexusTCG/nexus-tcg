@@ -129,7 +129,12 @@ export default function CardRenderHeader({
             card.initialMode.type_sub.length > 0 && (
               <>
                 <span className="opacity-80 text-xs font-normal mx-1">•</span>
-                {card.initialMode.type_sub.join(" ")}
+                {card.initialMode.type_sub
+                  .map(
+                    (word) =>
+                      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                  )
+                  .join(" ")}
               </>
             )}
         </div>
