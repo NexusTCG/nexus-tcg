@@ -23,6 +23,7 @@ export default function CardRenderTextBox({
     mode === "initial" && !card.initialMode.type.includes("event")
       ? card.initialMode.keywords
       : null;
+
   const cardText = (() => {
     // Replace ~ with card name
     if (mode === "initial") {
@@ -31,9 +32,9 @@ export default function CardRenderTextBox({
     if (card.anomalyMode.uncommon) {
       return card.anomalyMode.text?.replace(/~/g, card.anomalyMode.name) ?? "";
     }
-
     return "Once during each of your turns, a common anomaly in your hand can be manifested into any of the five common anomalies. Light, Storm, Dark, Chaos, or Growth.";
   })();
+
   const cardLoreText =
     mode === "initial"
       ? card.initialMode.lore
@@ -53,6 +54,12 @@ export default function CardRenderTextBox({
   // Split card text into paragraphs
   const paragraphs = cardText.split(/\n+/).filter(Boolean);
 
+  // Render the keywords below the text if the card is a "Software Modification"
+  const renderBelowText =
+    mode === "initial" &&
+    card.initialMode.type === "software" &&
+    card.initialMode.type_sub?.includes("Modification");
+
   return (
     <div
       id="card-form-text-container"
@@ -64,69 +71,94 @@ export default function CardRenderTextBox({
         bgColorClass50 || "bg-neutral-50"
       )}
     >
-      {cardKeywords && cardKeywords.length > 0 && (
-        <div className="flex-shrink-0">
-          <CardRenderKeywords card={card} mode={mode} keywords={cardKeywords} />
-        </div>
-      )}
-      <div className="flex-grow w-full overflow-hidden">
-        <div className="inline">
-          {paragraphs.map((paragraph, paragraphIndex) => {
-            const segments = paragraph
-              .split(/("(?:[^"\\]|\\.)*")/g)
-              .filter(Boolean);
+      <div
+        id="card-keywords-text-container"
+        className={clsx(
+          "flex flex-col justify-start items-start w-full",
+          renderBelowText ? "gap-0" : "gap-1"
+        )}
+      >
+        {/* If the card's subtype is not "Modification", render the keywords above the text */}
+        {cardKeywords && !renderBelowText && (
+          <div className="flex-shrink-0">
+            <CardRenderKeywords
+              card={card}
+              mode={mode}
+              keywords={cardKeywords}
+            />
+          </div>
+        )}
+        {/* Render the card text */}
+        <div className="flex-grow w-full overflow-hidden font-medium">
+          <div className="inline">
+            {paragraphs.map((paragraph, paragraphIndex) => {
+              const segments = paragraph
+                .split(/("(?:[^"\\]|\\.)*")/g)
+                .filter(Boolean);
 
-            return (
-              <div key={paragraphIndex} className="mb-1">
-                {segments.map((segment, segmentIndex) => {
-                  // If this is a quoted segment (starts and ends with ")
-                  if (segment.startsWith('"') && segment.endsWith('"')) {
-                    // Process the quoted text as a single unit
-                    return <span key={segmentIndex}>{segment}</span>;
-                  }
-
-                  // For non-quoted text, process for abbreviations and parentheticals
-                  const subSegments = segment.split(/(\{[^}]+\}|\([^)]+\))/g);
-                  return subSegments.map((subSegment, subIndex) => {
-                    // If it is an icon abbreviation, render the icon
-                    const iconMatch = subSegment.match(/^\{([^}]+)\}$/);
-                    if (iconMatch) {
-                      const iconKey = iconMatch[1];
-                      return (
-                        <AbbreviationIcon
-                          key={`${segmentIndex}-${subIndex}`}
-                          iconKey={iconKey}
-                        />
-                      );
+              return (
+                <div key={paragraphIndex} className="mb-1">
+                  {segments.map((segment, segmentIndex) => {
+                    // If this is a quoted segment (starts and ends with ")
+                    if (segment.startsWith('"') && segment.endsWith('"')) {
+                      // Process the quoted text as a single unit
+                      return <span key={segmentIndex}>{segment}</span>;
                     }
 
-                    // If it is parenthetical text, render the parenthetical text
-                    const parentheticalMatch =
-                      subSegment.match(/^\(([^)]+)\)$/);
-                    if (parentheticalMatch) {
+                    // For non-quoted text, process for abbreviations and parentheticals
+                    const subSegments = segment.split(/(\{[^}]+\}|\([^)]+\))/g);
+                    return subSegments.map((subSegment, subIndex) => {
+                      // If it is an icon abbreviation, render the icon
+                      const iconMatch = subSegment.match(/^\{([^}]+)\}$/);
+                      if (iconMatch) {
+                        const iconKey = iconMatch[1];
+                        return (
+                          <AbbreviationIcon
+                            key={`${segmentIndex}-${subIndex}`}
+                            iconKey={iconKey}
+                          />
+                        );
+                      }
+
+                      // If it is parenthetical text, render the parenthetical text
+                      const parentheticalMatch =
+                        subSegment.match(/^\(([^)]+)\)$/);
+                      if (parentheticalMatch) {
+                        return (
+                          <span
+                            key={`${segmentIndex}-${subIndex}`}
+                            className="italic font-normal"
+                          >
+                            ({parentheticalMatch[1]})
+                          </span>
+                        );
+                      }
+
+                      // Regular text segment
                       return (
-                        <span
-                          key={`${segmentIndex}-${subIndex}`}
-                          className="italic font-light"
-                        >
-                          ({parentheticalMatch[1]})
+                        <span key={`${segmentIndex}-${subIndex}`}>
+                          {subSegment}
                         </span>
                       );
-                    }
-
-                    // Regular text segment
-                    return (
-                      <span key={`${segmentIndex}-${subIndex}`}>
-                        {subSegment}
-                      </span>
-                    );
-                  });
-                })}
-              </div>
-            );
-          })}
+                    });
+                  })}
+                </div>
+              );
+            })}
+          </div>
         </div>
+        {/* If the card subtype is "Modification", render the keywords below the text */}
+        {cardKeywords && renderBelowText && (
+          <div className="flex-shrink-0">
+            <CardRenderKeywords
+              card={card}
+              mode={mode}
+              keywords={cardKeywords}
+            />
+          </div>
+        )}
       </div>
+      {/* Render the card lore text */}
       {cardLoreText && (
         <div
           className={clsx(

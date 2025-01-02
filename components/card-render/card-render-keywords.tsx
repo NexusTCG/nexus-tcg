@@ -103,9 +103,9 @@ export default function CardRenderKeywords({
                 </span>
               )}
               {keywordInfo.reminder && showReminder && (
-                <span className="italic font-light">
+                <span className="italic font-normal">
                   {" "}
-                  ({keywordInfo.reminder})
+                  ({keywordInfo.reminder}).
                 </span>
               )}
             </div>
