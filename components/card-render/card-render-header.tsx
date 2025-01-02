@@ -26,9 +26,9 @@ export default function CardRenderHeader({
   const cardSpeed = card.initialMode.speed;
   const isUncommonAnomaly = card.anomalyMode.uncommon;
   const isMythic =
-    activeMode === "initial"
-      ? card.initialMode.mythic
-      : card.anomalyMode.mythic;
+    activeMode === "anomaly"
+      ? card.anomalyMode.mythic && isUncommonAnomaly
+      : card.initialMode.mythic;
 
   const bgColorClass50 =
     activeMode === "anomaly" ? null : calculateBgColor(cardEnergyCost, 50)[0];
@@ -83,22 +83,22 @@ export default function CardRenderHeader({
           id="card-mythic-name-container"
           className={clsx(
             "grid items-center w-full h-full",
-            isUncommonAnomaly ? "grid-cols-[1fr]" : "grid-cols-[24px_1fr]"
+            activeMode === "anomaly" && !isUncommonAnomaly
+              ? "grid-cols-[1fr]"
+              : "grid-cols-[24px_1fr]"
           )}
         >
           {/* Mythic Toggle */}
-          {isMythic ||
-            (isMythic && isUncommonAnomaly && (
-              <div className="flex justify-center items-center">
-                <Image
-                  src={mythicIcon}
-                  alt="Mythic Icon"
-                  width={20}
-                  height={24}
-                  className="pl-1 pr-0.5"
-                />
-              </div>
-            ))}
+          {isMythic && (
+            <div className="flex justify-center items-center">
+              <Image
+                src={mythicIcon}
+                alt="Mythic Icon"
+                width={20}
+                height={24}
+              />
+            </div>
+          )}
           <div className="text-md">
             {activeMode === "initial"
               ? card.initialMode.name
