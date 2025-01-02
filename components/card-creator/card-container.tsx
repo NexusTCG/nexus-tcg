@@ -122,6 +122,7 @@ export default function CardContainer({ children }: CardContainerProps) {
           items-center
           h-full
           w-full
+          min-w-full
           rounded-md
           overflow-hidden
         "

@@ -30,6 +30,8 @@ import core from "@/public/icons/grade-icons/core.svg";
 import rare from "@/public/icons/grade-icons/rare.svg";
 import epic from "@/public/icons/grade-icons/epic.svg";
 import prime from "@/public/icons/grade-icons/prime.svg";
+// Mythic icon
+import mythic from "@/public/icons/mythic.svg";
 
 export const energyIcons = {
   light,
@@ -66,6 +68,8 @@ export const gradeIcons = [
   { name: "epic", icon: epic },
   { name: "prime", icon: prime },
 ];
+
+export const mythicIcon = mythic;
 
 export const abbreviationIcons = {
   // Energy icons
