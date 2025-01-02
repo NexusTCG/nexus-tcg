@@ -71,7 +71,7 @@ export const CardFormSchema = z.object({
     })).default([]),
     lore: z.string().nullable().optional(),
     prompt_art: z.string().optional(),
-    art_options: z.array(z.string()).optional(),
+    art_options: z.array(z.string()).optional(), // Temporarily optional
     art_direction_options: z.array(ArtDirectionOptionSchema),
     art_selected: z.number().default(0),
     energy_value: z.number().default(0),
