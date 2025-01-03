@@ -52,6 +52,31 @@ export const takeAndUploadScreenshotTask = task({
         },
       );
 
+      // Add this after page.goto
+      await page.evaluate(() => {
+        return Promise.all(
+          Array.from(document.images)
+            .filter((img) => !img.complete)
+            .map((img) =>
+              new Promise((resolve) => {
+                img.onload = img.onerror = resolve;
+              })
+            ),
+        );
+      });
+
+      // Wait a bit longer to ensure all images are rendered
+      await wait.for({ seconds: 1 });
+
+      // Force all images to be visible and loaded
+      await page.evaluate(() => {
+        document.querySelectorAll("img").forEach((img) => {
+          img.style.visibility = "visible";
+          img.style.display = "inline-block";
+          img.loading = "eager";
+        });
+      });
+
       // Log page dimensions
       const dimensions = await page.evaluate(() => ({
         devicePixelRatio: window.devicePixelRatio,
