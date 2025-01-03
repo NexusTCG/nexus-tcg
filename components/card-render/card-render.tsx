@@ -43,7 +43,6 @@ function getCardArt(card: CardDTO, mode: "initial" | "anomaly") {
 }
 
 export default function CardRender({ card, mode, isActive }: CardRenderProps) {
-  const cardData = mode === "initial" ? card.initialMode : card.anomalyMode;
   const cardName =
     mode === "initial"
       ? card.initialMode.name
@@ -56,12 +55,6 @@ export default function CardRender({ card, mode, isActive }: CardRenderProps) {
       : card.anomalyMode.uncommon
       ? "Uncommon Anomaly"
       : "Common Anomaly";
-  // const cardArt = mode === "initial"
-  //   ? card.initialMode.art_options?.[card.initialMode.art_selected]
-  //   : card.anomalyMode.uncommon
-  //     ? card.anomalyMode.art_options?.[card.anomalyMode.art_selected] ||
-  //       "/images/default-anomaly-art.webp"
-  //     : "/images/default-anomaly-art.webp";
   const cardArt = getCardArt(card, mode);
 
   const bgColorClass500 =

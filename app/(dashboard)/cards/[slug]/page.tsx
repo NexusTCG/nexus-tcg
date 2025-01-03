@@ -41,7 +41,7 @@ async function fetchCard(slug: string): Promise<CardDTO | null> {
 
   // Fetch card data with conditional caching
   const res = await fetch(fetchUrl, {
-    cache: isPuppeteer ? "no-store" : "force-cache",
+    // cache: isPuppeteer ? "no-store" : "force-cache",
     next: isPuppeteer ? { revalidate: 0 } : { revalidate: 3600 },
   });
 

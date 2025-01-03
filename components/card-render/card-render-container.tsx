@@ -80,16 +80,18 @@ export default function CardRenderContainer({
   return (
     <div
       id={`card-render-container-${cardId}-${mode}`}
-      style={{ borderRadius: "16px" }}
+      style={{
+        borderRadius: "16px",
+        width: "400px",
+        height: "560px",
+        position: "relative",
+        overflow: "hidden",
+      }}
       className="
-        relative
         flex
         flex-col
         items-center
-        w-[400px]
-        h-[560px]
         bg-black
-        overflow-hidden
         pt-3
         px-3
         shadow-lg

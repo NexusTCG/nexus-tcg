@@ -1,5 +1,5 @@
 import { logger, task, wait } from "@trigger.dev/sdk/v3";
-import puppeteer from "puppeteer";
+import puppeteer, { PuppeteerLifeCycleEvent } from "puppeteer";
 import { supabaseAdmin } from "@/app/utils/supabase/admin";
 
 export const takeAndUploadScreenshotTask = task({
@@ -40,7 +40,10 @@ export const takeAndUploadScreenshotTask = task({
         `${siteUrl}/cards/${cardId}?mode=${
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
-        { waitUntil: "networkidle0", timeout: 60000 },
+        {
+          waitUntil: ["networkidle0", "load"] as PuppeteerLifeCycleEvent[],
+          timeout: 60000,
+        },
       );
 
       // Wait for card element and hide unwanted elements
@@ -76,9 +79,7 @@ export const takeAndUploadScreenshotTask = task({
         logger.info("Card container found");
 
         // Then wait for grade icon with more detailed logging
-        const gradeIconSelector = `#grade-icon-${
-          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
-        }`;
+        const gradeIconSelector = "#grade-icon-initial";
         await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
         logger.info("Grade icon element found");
 
@@ -158,8 +159,35 @@ export const takeAndUploadScreenshotTask = task({
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
       );
+
       if (!element) {
         throw new Error("Card element not found");
+      }
+
+      // Get bounding box
+      logger.info("Getting bounding box...");
+      const box = await element.boundingBox();
+      if (!box) {
+        logger.error("Bounding box not found");
+        throw new Error("Bounding box not found");
+      }
+
+      // Take screenshot
+      logger.info("Taking screenshot...");
+      const screenshot = await element.screenshot({
+        type: "png",
+        clip: {
+          x: box.x,
+          y: box.y,
+          width: 400, // Scales up to 4x by deviceScaleFactor
+          height: 560, // Scales up to 4x by deviceScaleFactor
+        },
+        omitBackground: true,
+      });
+
+      if (!screenshot) {
+        logger.error("Screenshot not found");
+        throw new Error("Screenshot not found");
       }
 
       // Get current card data
@@ -169,11 +197,12 @@ export const takeAndUploadScreenshotTask = task({
         .eq("id", cardId)
         .single();
 
-      if (fetchError) throw fetchError;
-
-      // Take screenshot
-      logger.info("Taking screenshot...");
-      const screenshot = await element.screenshot({ type: "png" });
+      if (fetchError) {
+        logger.error("Failed to fetch current card data", {
+          error: fetchError,
+        });
+        throw fetchError;
+      }
 
       // Generate filename
       const timestamp = Date.now();

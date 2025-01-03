@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 // Utils
 import Image from "next/image";
@@ -45,8 +47,14 @@ export default function CardRenderArt({
           alt={`${cardName} by ${username}`}
           data-testid="card-art-image"
           fill
+          priority
+          quality={100}
+          onLoad={(img) => {
+            (img.target as HTMLImageElement).style.visibility = "visible";
+          }}
           style={{
             objectFit: "cover",
+            visibility: "hidden",
           }}
         />
       </div>
