@@ -39,6 +39,7 @@ export default function AbbreviationIcon({ iconKey }: { iconKey: string }) {
                 alt={icon.name}
                 width={18}
                 height={18}
+                loading="eager"
                 className="inline-block"
               />
             )}

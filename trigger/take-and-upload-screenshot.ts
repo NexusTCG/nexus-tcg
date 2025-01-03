@@ -56,7 +56,21 @@ export const takeAndUploadScreenshotTask = task({
         },
       );
 
-      // Add this after page.goto
+      // Scroll to bottom and back up
+      logger.info("Scrolling to bottom of page to trigger lazy loading.");
+      await page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+        return new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      logger.info("Scrolling back up.");
+      await page.evaluate(() => {
+        window.scrollTo(0, 0);
+        return new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      // Wait for all images to load
+      logger.info("Waiting for all images to load.");
       await page.evaluate(() => {
         return Promise.all(
           Array.from(document.images)
@@ -70,9 +84,10 @@ export const takeAndUploadScreenshotTask = task({
       });
 
       // Wait a bit longer to ensure all images are rendered
-      await wait.for({ seconds: 1 });
+      await wait.for({ seconds: 2 });
 
       // Force all images to be visible and loaded
+      logger.info("Forcing visibility and loading images.");
       await page.evaluate(() => {
         document.querySelectorAll("img").forEach((img) => {
           img.style.visibility = "visible";
@@ -185,28 +200,19 @@ export const takeAndUploadScreenshotTask = task({
           throw new Error("Card element is not visible");
         }
 
-        // Get the element
-        logger.info("Getting card element...");
+        // Get the element and scroll into view before screenshot
+        logger.info("Getting card element and scrolling it into view.");
         const element = await page.$(cardSelector);
+        if (element) {
+          await element.scrollIntoView();
+          await wait.for({ seconds: 1 });
+        }
 
         if (element) {
           logger.info("Card element found");
         } else {
           throw new Error("Card element not found");
         }
-
-        // Get the bounding box
-        // const box = await element.boundingBox();
-        // if (box) {
-        //   logger.info("Element bounding box:", {
-        //     x: box.x,
-        //     y: box.y,
-        //     width: box.width,
-        //     height: box.height
-        //   });
-        // } else {
-        //   throw new Error("Could not get element bounding box");
-        // }
 
         // Get current card data
         const { data: currentCard, error: fetchError } = await supabaseAdmin

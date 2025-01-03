@@ -134,11 +134,13 @@ export default function CardRenderContainer({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <img
+                  <Image
                     id={`grade-icon-${mode}`}
                     src={`/icons/grade-icons/${grade.toLowerCase()}.png`}
                     alt={grade}
-                    style={{ width: "24px", height: "24px" }}
+                    width={24}
+                    height={24}
+                    loading="eager"
                   />
                 </TooltipTrigger>
                 <TooltipContent side="top">
