@@ -43,6 +43,17 @@ export default function CardRenderKeywords({
     fetchKeywordData();
   }, []);
 
+  function renderTextSegment(text: string) {
+    // Split for abbreviations and process them
+    return text.split(/(\{[^}]+\})/g).map((part, index) => {
+      const iconMatch = part.match(/^\{([^}]+)\}$/);
+      if (iconMatch) {
+        return <AbbreviationIcon key={index} iconKey={iconMatch[1]} />;
+      }
+      return <span key={index}>{part}</span>;
+    });
+  }
+
   function renderKeyword(keyword: RenderedKeywordType, showReminder: boolean) {
     const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
     if (!keywordInfo) return null;
@@ -53,14 +64,12 @@ export default function CardRenderKeywords({
       keywordInfo.syntax?.includes("[") ||
       /\bN\b/.test(keywordInfo.syntax || "");
 
-    // Split the input text to find {abbreviations} or (parentheticals)
     // Replace ~ with card name in the input text
     const processedInput =
       keyword.input?.replace(
         /~/g,
         mode === "initial" ? card.initialMode.name : card.anomalyMode.name
       ) || "";
-    const inputSegments = processedInput.split(/(\{[^}]+\}|\([^)]+\))/g);
 
     return (
       <TooltipProvider key={keyword.name}>
@@ -79,27 +88,41 @@ export default function CardRenderKeywords({
               </span>
               {hasInput && (
                 <span className="text-black font-medium">
-                  {inputSegments.map((segment, index) => {
-                    // If it is an icon abbreviation, render the icon
-                    const iconMatch = segment.match(/^\{([^}]+)\}$/);
-                    if (iconMatch) {
-                      const iconKey = iconMatch[1];
-                      return <AbbreviationIcon key={index} iconKey={iconKey} />;
-                    }
+                  {processedInput
+                    .split(/("(?:[^"\\]|\\.)*")/g)
+                    .filter(Boolean)
+                    .map((segment, segmentIndex) => {
+                      // If this is a quoted segment
+                      if (segment.startsWith('"') && segment.endsWith('"')) {
+                        return <span key={segmentIndex}>{segment}</span>;
+                      }
 
-                    // If it is a parenthetical text, render the parenthetical text
-                    const parentheticalMatch = segment.match(/^\(([^)]+)\)$/);
-                    if (parentheticalMatch) {
-                      return (
-                        <span key={index} className="italic font-light">
-                          ({parentheticalMatch[1]})
-                        </span>
-                      );
-                    }
+                      // For non-quoted text, process for parentheticals first
+                      return segment
+                        .split(/(\([^)]+\))/g)
+                        .map((subSegment, subIndex) => {
+                          // If it's a parenthetical
+                          const parentheticalMatch =
+                            subSegment.match(/^\(([^)]+)\)$/);
+                          if (parentheticalMatch) {
+                            return (
+                              <span
+                                key={`${segmentIndex}-${subIndex}`}
+                                className="italic font-normal"
+                              >
+                                ({renderTextSegment(parentheticalMatch[1])})
+                              </span>
+                            );
+                          }
 
-                    // Regular text segment
-                    return <span key={index}>{segment}</span>;
-                  })}
+                          // Regular text (may still contain abbreviations)
+                          return (
+                            <span key={`${segmentIndex}-${subIndex}`}>
+                              {renderTextSegment(subSegment)}
+                            </span>
+                          );
+                        });
+                    })}
                 </span>
               )}
               {keywordInfo.reminder && showReminder && (
