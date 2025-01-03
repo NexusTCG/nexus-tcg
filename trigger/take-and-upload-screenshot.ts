@@ -34,8 +34,14 @@ export const takeAndUploadScreenshotTask = task({
         height: 2400,
         deviceScaleFactor: 4, // Increased from 2 to match html-to-image quality
       });
+      logger.info("Set viewport size to 2400x2400");
 
       // Navigate to the card page
+      logger.info(
+        `Navigating to ${siteUrl}/cards/${cardId}?mode=${
+          mode === "anomaly" ? "anomaly" : "initial"
+        }`,
+      );
       await page.goto(
         `${siteUrl}/cards/${cardId}?mode=${
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
@@ -45,6 +51,20 @@ export const takeAndUploadScreenshotTask = task({
           timeout: 60000,
         },
       );
+
+      // Log page dimensions
+      const dimensions = await page.evaluate(() => ({
+        devicePixelRatio: window.devicePixelRatio,
+        visualViewport: {
+          width: window.visualViewport?.width,
+          height: window.visualViewport?.height,
+        },
+        documentElement: {
+          clientWidth: document.documentElement.clientWidth,
+          clientHeight: document.documentElement.clientHeight,
+        },
+      }));
+      logger.info("Page dimensions:", dimensions);
 
       // Wait for card element and hide unwanted elements
       logger.info("Waiting for elements to load...");
@@ -67,21 +87,29 @@ export const takeAndUploadScreenshotTask = task({
       try {
         logger.info("Waiting for card element and grade icon to load...");
 
-        // First wait for card container
-        await page.waitForSelector(
-          `#card-render-container-${cardId}-${
-            mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
-          }`,
-          {
-            timeout: 60000,
-          },
-        );
-        logger.info("Card container found");
+        // Wait for card container with explicit visibility check
+        const cardSelector = `#card-render-container-${cardId}-${
+          mode === "anomaly" ? "anomaly" : "initial"
+        }`;
+        logger.info(`Waiting for card element: ${cardSelector}`);
+
+        await page.waitForSelector(cardSelector, {
+          visible: true,
+          timeout: 60000,
+        });
+        if (cardSelector) logger.info("Card container found");
 
         // Then wait for grade icon with more detailed logging
-        const gradeIconSelector = "#grade-icon-initial";
-        await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
-        logger.info("Grade icon element found");
+        const gradeIconSelector = `#grade-icon-${
+          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
+        }`;
+        logger.info(`Waiting for grade icon element: ${gradeIconSelector}`);
+
+        await page.waitForSelector(gradeIconSelector, {
+          visible: true,
+          timeout: 60000,
+        });
+        if (gradeIconSelector) logger.info("Grade icon element found");
 
         // Force load the image
         await page.evaluate((selector) => {
@@ -94,29 +122,158 @@ export const takeAndUploadScreenshotTask = task({
         }, gradeIconSelector);
 
         // Wait longer for initial page load
-        await wait.for({ seconds: 2 });
+        await wait.for({ seconds: 5 });
 
-        // Simpler check for image loading
-        const imageState = await page.evaluate((selector) => {
-          const img = document.querySelector(selector) as HTMLImageElement;
+        // Check element visibility and dimensions
+        const elementInfo = await page.evaluate((selector) => {
+          const el = document.querySelector(selector);
+          if (!el) return null;
+          const rect = el.getBoundingClientRect();
+          const styles = window.getComputedStyle(el);
           return {
-            exists: !!img,
-            complete: img?.complete,
-            src: img?.src,
-            currentSrc: img?.currentSrc,
-            loading: img?.loading,
-            display: img?.style.display,
-            visibility: img?.style.visibility,
+            dimensions: {
+              width: rect.width,
+              height: rect.height,
+              top: rect.top,
+              left: rect.left,
+            },
+            styles: {
+              display: styles.display,
+              visibility: styles.visibility,
+              opacity: styles.opacity,
+              position: styles.position,
+              zIndex: styles.zIndex,
+            },
+            isVisible: rect.width > 0 &&
+              rect.height > 0 &&
+              styles.display !== "none" &&
+              styles.visibility !== "hidden",
           };
-        }, gradeIconSelector);
+        }, cardSelector);
+        if (elementInfo) logger.info("Card element info:", elementInfo);
 
-        logger.info("Grade icon state:", imageState);
-
-        if (!imageState.exists || !imageState.complete) {
-          throw new Error(
-            `Grade icon not ready: ${JSON.stringify(imageState)}`,
-          );
+        if (!elementInfo?.isVisible) {
+          throw new Error("Card element is not visible");
         }
+
+        // Get the element
+        logger.info("Getting card element...");
+        const element = await page.$(cardSelector);
+
+        if (element) {
+          logger.info("Card element found");
+        } else {
+          throw new Error("Card element not found");
+        }
+
+        // Get the bounding box
+        // const box = await element.boundingBox();
+        // if (box) {
+        //   logger.info("Element bounding box:", {
+        //     x: box.x,
+        //     y: box.y,
+        //     width: box.width,
+        //     height: box.height
+        //   });
+        // } else {
+        //   throw new Error("Could not get element bounding box");
+        // }
+
+        // Get current card data
+        const { data: currentCard, error: fetchError } = await supabaseAdmin
+          .from("nexus_cards")
+          .select("card_render")
+          .eq("id", cardId)
+          .single();
+
+        if (currentCard) {
+          logger.info("Current card data:", currentCard);
+        } else if (fetchError) {
+          throw new Error("Current card data not found", { cause: fetchError });
+        }
+
+        // Take screenshot
+        logger.info("Taking screenshot...");
+        const screenshot = await element.screenshot({
+          type: "png",
+          omitBackground: true,
+        });
+
+        // Generate filename
+        const timestamp = Date.now();
+        const filename = `card-${cardId}-${timestamp}.png`;
+
+        // Remove old render if it exists
+        if (currentCard?.card_render) {
+          logger.info("Removing old render...");
+          const oldFilename = currentCard.card_render.split("/").pop();
+          if (oldFilename) {
+            await supabaseAdmin
+              .storage
+              .from("card-renders")
+              .remove([oldFilename])
+              .catch((error) =>
+                logger.warn("Failed to remove old render", { error })
+              );
+          }
+        }
+
+        // Upload new screenshot
+        logger.info("Uploading new screenshot...");
+        const { error: uploadError } = await supabaseAdmin
+          .storage
+          .from("card-renders")
+          .upload(filename, screenshot, {
+            contentType: "image/png",
+            cacheControl: "no-cache, no-store, must-revalidate",
+          });
+
+        if (uploadError) {
+          throw new Error("Failed to upload screenshot", {
+            cause: uploadError,
+          });
+        } else {
+          logger.info("Screenshot uploaded successfully");
+        }
+
+        // Get public URL
+        logger.info("Getting public URL...");
+        const { data: { publicUrl } } = await supabaseAdmin
+          .storage
+          .from("card-renders")
+          .getPublicUrl(filename);
+
+        // Update card record
+        logger.info("Updating card record...");
+        const { error: updateError } = await supabaseAdmin
+          .from("nexus_cards")
+          .update({
+            card_render: publicUrl,
+          })
+          .eq("id", cardId);
+
+        if (updateError) {
+          throw new Error("Failed to update card record", {
+            cause: updateError,
+          });
+        } else {
+          logger.info("Card record updated successfully");
+        }
+
+        // Close browser
+        await browser.close();
+
+        logger.info("Screenshot task completed successfully", {
+          cardId,
+          publicUrl,
+        });
+
+        return {
+          success: true,
+          cardId,
+          publicUrl,
+          isUpdate,
+        };
       } catch (waitError) {
         // Get more context about the page state
         const diagnostics = await Promise.all([
@@ -146,129 +303,11 @@ export const takeAndUploadScreenshotTask = task({
         });
 
         throw new Error(
-          `Grade icon loading failed: ${
-            (waitError as Error).message
-          }\nPage URL: ${diagnostics?.[1]}`,
+          `Element loading failed: ${(waitError as Error).message}\nPage URL: ${
+            diagnostics?.[1]
+          }`,
         );
       }
-
-      // Get the element
-      logger.info("Getting card element...");
-      const element = await page.$(
-        `#card-render-container-${cardId}-${
-          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
-        }`,
-      );
-
-      if (!element) {
-        throw new Error("Card element not found");
-      }
-
-      // Get bounding box
-      logger.info("Getting bounding box...");
-      const box = await element.boundingBox();
-      if (!box) {
-        logger.error("Bounding box not found");
-        throw new Error("Bounding box not found");
-      }
-
-      // Take screenshot
-      logger.info("Taking screenshot...");
-      const screenshot = await element.screenshot({
-        type: "png",
-        clip: {
-          x: box.x,
-          y: box.y,
-          width: 400, // Scales up to 4x by deviceScaleFactor
-          height: 560, // Scales up to 4x by deviceScaleFactor
-        },
-        omitBackground: true,
-      });
-
-      if (!screenshot) {
-        logger.error("Screenshot not found");
-        throw new Error("Screenshot not found");
-      }
-
-      // Get current card data
-      const { data: currentCard, error: fetchError } = await supabaseAdmin
-        .from("nexus_cards")
-        .select("card_render")
-        .eq("id", cardId)
-        .single();
-
-      if (fetchError) {
-        logger.error("Failed to fetch current card data", {
-          error: fetchError,
-        });
-        throw fetchError;
-      }
-
-      // Generate filename
-      const timestamp = Date.now();
-      const filename = `card-${cardId}-${timestamp}.png`;
-
-      // Remove old render if it exists
-      if (currentCard?.card_render) {
-        logger.info("Removing old render...");
-        const oldFilename = currentCard.card_render.split("/").pop();
-        if (oldFilename) {
-          await supabaseAdmin
-            .storage
-            .from("card-renders")
-            .remove([oldFilename])
-            .catch((error) =>
-              logger.warn("Failed to remove old render", { error })
-            );
-        }
-      }
-
-      // Upload new screenshot
-      logger.info("Uploading new screenshot...");
-      const { error: uploadError } = await supabaseAdmin
-        .storage
-        .from("card-renders")
-        .upload(filename, screenshot, {
-          contentType: "image/png",
-          cacheControl: "no-cache, no-store, must-revalidate",
-        });
-
-      if (uploadError) throw uploadError;
-
-      logger.info("Screenshot uploaded successfully");
-
-      // Get public URL
-      logger.info("Getting public URL...");
-      const { data: { publicUrl } } = await supabaseAdmin
-        .storage
-        .from("card-renders")
-        .getPublicUrl(filename);
-
-      // Update card record
-      logger.info("Updating card record...");
-      const { error: updateError } = await supabaseAdmin
-        .from("nexus_cards")
-        .update({
-          card_render: publicUrl,
-        })
-        .eq("id", cardId);
-
-      if (updateError) throw updateError;
-
-      // Close browser
-      await browser.close();
-
-      logger.info("Screenshot task completed successfully", {
-        cardId,
-        publicUrl,
-      });
-
-      return {
-        success: true,
-        cardId,
-        publicUrl,
-        isUpdate,
-      };
     } catch (error) {
       logger.error("Error in screenshot task", { error });
       throw error;
