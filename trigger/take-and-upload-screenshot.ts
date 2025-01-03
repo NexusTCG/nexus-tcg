@@ -19,7 +19,7 @@ export const takeAndUploadScreenshotTask = task({
 
     // TODO: Update to custom URL
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://nexus-tcg.vercel.app/";
+      "https://nexus-tcg.vercel.app";
 
     try {
       // Launch browser and take screenshot
