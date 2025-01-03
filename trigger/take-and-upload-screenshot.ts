@@ -38,7 +38,7 @@ export const takeAndUploadScreenshotTask = task({
       // Navigate to the card page
       await page.goto(
         `${siteUrl}/cards/${cardId}?mode=${
-          mode === "initial" ? "initial" : "anomaly"
+          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
         { waitUntil: "networkidle0", timeout: 60000 },
       );
@@ -67,7 +67,7 @@ export const takeAndUploadScreenshotTask = task({
         // First wait for card container
         await page.waitForSelector(
           `#card-render-container-${cardId}-${
-            mode === "initial" ? "initial" : "anomaly"
+            mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
           }`,
           {
             timeout: 60000,
@@ -77,7 +77,7 @@ export const takeAndUploadScreenshotTask = task({
 
         // Then wait for grade icon with more detailed logging
         const gradeIconSelector = `#grade-icon-${
-          mode === "initial" ? "initial" : "anomaly"
+          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`;
         await page.waitForSelector(gradeIconSelector, { timeout: 60000 });
         logger.info("Grade icon element found");
@@ -155,7 +155,7 @@ export const takeAndUploadScreenshotTask = task({
       logger.info("Getting card element...");
       const element = await page.$(
         `#card-render-container-${cardId}-${
-          mode === "initial" ? "initial" : "anomaly"
+          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
       );
       if (!element) {
