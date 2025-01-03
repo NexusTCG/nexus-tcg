@@ -47,7 +47,11 @@ export const takeAndUploadScreenshotTask = task({
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
         {
-          waitUntil: ["networkidle0", "load"] as PuppeteerLifeCycleEvent[],
+          waitUntil: [
+            "networkidle0",
+            "load",
+            "domcontentloaded",
+          ] as PuppeteerLifeCycleEvent[],
           timeout: 60000,
         },
       );
