@@ -158,9 +158,54 @@ export const takeAndUploadScreenshotTask = task({
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
       );
+
       if (!element) {
+        logger.error("Card element not found");
         throw new Error("Card element not found");
       }
+
+      // Wait for the element to be stable and properly positioned
+      await page.waitForFunction(
+        (selector) => {
+          const element = document.querySelector(selector);
+          if (!element) return false;
+          const rect = element.getBoundingClientRect();
+          // Ensure element has proper dimensions and is not positioned negatively
+          return rect.width === 400 && rect.height === 560 && rect.x >= 0;
+        },
+        { timeout: 5000 },
+        `#card-render-container-${cardId}-${
+          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
+        }`,
+      );
+
+      // Center the element in viewport
+      await element.evaluate((el) => {
+        el.scrollIntoView({ block: "center", inline: "center" });
+      });
+
+      // Get precise element dimensions
+      const box = await element.boundingBox();
+      if (!box) {
+        logger.error("Could not get element dimensions");
+        throw new Error("Could not get element dimensions");
+      }
+
+      // Take screenshot
+      logger.info("Taking screenshot...");
+      const screenshot = await element.screenshot({
+        type: "png",
+        clip: {
+          x: Math.max(0, box.x),
+          y: Math.max(0, box.y),
+          width: 400, // Scales up to 1600px by deviceScaleFactor: 4
+          height: 560, // Scales up to 2240px by deviceScaleFactor: 4
+        },
+      });
+
+      // Generate filename
+      const timestamp = Date.now();
+      const filename = `card-${cardId}-${timestamp}.png`;
 
       // Get current card data
       const { data: currentCard, error: fetchError } = await supabaseAdmin
@@ -169,15 +214,10 @@ export const takeAndUploadScreenshotTask = task({
         .eq("id", cardId)
         .single();
 
-      if (fetchError) throw fetchError;
-
-      // Take screenshot
-      logger.info("Taking screenshot...");
-      const screenshot = await element.screenshot({ type: "png" });
-
-      // Generate filename
-      const timestamp = Date.now();
-      const filename = `card-${cardId}-${timestamp}.png`;
+      if (fetchError) {
+        logger.error("Error fetching card data", { error: fetchError });
+        throw fetchError;
+      }
 
       // Remove old render if it exists
       if (currentCard?.card_render) {
