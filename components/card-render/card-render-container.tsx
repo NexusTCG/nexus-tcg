@@ -134,20 +134,26 @@ export default function CardRenderContainer({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Image
-                    id={`grade-icon-${mode}`}
-                    src={`/icons/grade-icons/${grade.toLowerCase()}.png`}
-                    alt={grade}
-                    width={24}
-                    height={24}
-                    loading="eager"
-                    priority
-                    data-testid={`grade-icon-${grade}`}
+                  <div
                     style={{
-                      visibility: "visible",
-                      display: "block",
+                      position: "relative",
+                      width: "24px",
+                      height: "24px",
                     }}
-                  />
+                  >
+                    <Image
+                      id={`grade-icon-${mode}`}
+                      src={`/icons/grade-icons/${grade.toLowerCase()}.png`}
+                      alt={grade}
+                      fill
+                      loading="eager"
+                      priority
+                      data-testid={`grade-icon-${grade}`}
+                      style={{
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent side="top">
                   <p>{grade.charAt(0).toUpperCase() + grade.slice(1)}</p>

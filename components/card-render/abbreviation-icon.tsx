@@ -26,8 +26,14 @@ export default function AbbreviationIcon({ iconKey }: { iconKey: string }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className="inline-block align-middle transition-all duration-100"
-            style={{ marginLeft: "1px", marginRight: "1px" }}
+            style={{
+              position: "relative",
+              width: "18px",
+              height: "18px",
+              display: "inline-block",
+              margin: "0 1px",
+              verticalAlign: "middle",
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -37,13 +43,11 @@ export default function AbbreviationIcon({ iconKey }: { iconKey: string }) {
               <Image
                 src={icon.path}
                 alt={icon.name}
-                width={18}
-                height={18}
+                fill
                 loading="eager"
                 data-testid={`abbreviation-icon-${iconKey}`}
                 style={{
-                  display: "inline-block",
-                  visibility: "visible",
+                  objectFit: "contain",
                 }}
               />
             )}
