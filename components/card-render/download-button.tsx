@@ -32,16 +32,13 @@ export function DownloadButton({
 
       const { data } = supabase.storage
         .from("card-renders")
-        .getPublicUrl(filePath);
+        .getPublicUrl(filePath, {
+          download: filename,
+        });
 
       if (!data.publicUrl) {
         throw new Error("Could not get public URL");
       }
-
-      const link = document.createElement("a");
-      link.href = data.publicUrl;
-      link.download = filename;
-      link.click();
 
       posthog.capture("card_downloaded", {
         distinctId: cardId,
