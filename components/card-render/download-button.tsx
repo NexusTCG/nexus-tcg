@@ -28,29 +28,28 @@ export function DownloadButton({
 
   async function downloadImage(path: string, filename: string) {
     try {
-      const { data, error } = await supabase.storage
-        .from("card-renders")
-        .download(path);
+      const { data } = supabase.storage.from("card-renders").getPublicUrl(path);
 
-      if (error) {
-        throw error;
-      } else if (!data) {
-        throw new Error("No data returned from Supabase storage");
+      if (!data.publicUrl) {
+        throw new Error("Could not get public URL");
       }
 
-      const url = URL.createObjectURL(data);
       const link = document.createElement("a");
-      link.href = url;
+      link.href = data.publicUrl;
       link.download = filename;
       link.click();
-      URL.revokeObjectURL(url);
 
       posthog.capture("card_downloaded", {
         distinctId: cardId,
         success: true,
       });
 
-      toast("Your card has been downloaded.");
+      posthog.capture("card_downloaded", {
+        distinctId: cardId,
+        success: true,
+      });
+
+      toast.success("Your card has been downloaded!");
     } catch (error) {
       posthog.capture("card_downloaded", {
         distinctId: cardId,
@@ -59,7 +58,7 @@ export function DownloadButton({
       });
 
       console.error("Error downloading image:", error);
-      toast("Failed to download the image. Please try again.");
+      toast.error("Failed to download the image. Please try again!");
     }
   }
 
