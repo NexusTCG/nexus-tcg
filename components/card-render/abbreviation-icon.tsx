@@ -32,10 +32,13 @@ export default function AbbreviationIcon({ iconKey }: { iconKey: string }) {
             }}
           >
             <Image
-              src={icon.path}
+              src={icon.icon}
               alt={icon.name}
               fill
               loading="eager"
+              onLoad={(img) => {
+                (img.target as HTMLImageElement).style.visibility = "visible";
+              }}
               data-testid={`abbreviation-icon-${iconKey}`}
               style={{
                 objectFit: "contain",

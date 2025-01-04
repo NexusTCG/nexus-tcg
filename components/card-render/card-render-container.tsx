@@ -3,6 +3,8 @@ import React from "react";
 import Image from "next/image";
 // Types
 import { EnergyCost } from "@/app/lib/types/components";
+// Data
+import { gradeIcons } from "@/app/lib/data/icons";
 // Components
 import {
   Tooltip,
@@ -34,6 +36,11 @@ export default function CardRenderContainer({
   energyCost,
   cardId,
 }: CardContainerProps) {
+  const gradeIcon = gradeIcons.find(g => g.name === grade.toLowerCase())?.icon;
+  if (!gradeIcon) {
+    console.error(`Grade icon not found for grade: ${grade}`);
+  }
+
   function getCardFrameImage() {
     // Handle texture
     let texture = "";
@@ -143,11 +150,14 @@ export default function CardRenderContainer({
                   >
                     <Image
                       id={`grade-icon-${mode}`}
-                      src={`/icons/grade-icons/${grade.toLowerCase()}.png`}
+                      src={gradeIcon}
                       alt={grade}
                       fill
                       loading="eager"
                       priority
+                      onLoad={(img) => {
+                        (img.target as HTMLImageElement).style.visibility = "visible";
+                      }}
                       data-testid={`grade-icon-${grade}`}
                       style={{
                         objectFit: "contain",

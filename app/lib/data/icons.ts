@@ -32,6 +32,12 @@ import epic from "@/public/icons/grade-icons/epic.svg";
 import prime from "@/public/icons/grade-icons/prime.svg";
 // Mythic icon
 import mythic from "@/public/icons/mythic.svg";
+// Reach icons
+import melee from "@/public/icons/reach-icons/melee.svg";
+import ranged from "@/public/icons/reach-icons/ranged.svg";
+// Lock icons
+import lock from "@/public/icons/lock.svg";
+import unlock from "@/public/icons/unlock.svg";
 
 export const energyIcons = {
   light,
@@ -73,42 +79,42 @@ export const mythicIcon = mythic;
 
 export const abbreviationIcons = {
   // Energy icons
-  "L": { path: "/icons/energy-icons/light.svg", name: "Energy: Light" },
-  "S": { path: "/icons/energy-icons/storm.svg", name: "Energy: Storm" },
-  "D": { path: "/icons/energy-icons/dark.svg", name: "Energy: Dark" },
-  "C": { path: "/icons/energy-icons/chaos.svg", name: "Energy: Chaos" },
-  "G": { path: "/icons/energy-icons/growth.svg", name: "Energy: Growth" },
+  L: { icon: light, name: "Energy: Light" },
+  S: { icon: storm, name: "Energy: Storm" },
+  D: { icon: dark, name: "Energy: Dark" },
+  C: { icon: chaos, name: "Energy: Chaos" },
+  G: { icon: growth, name: "Energy: Growth" },
   // Void energy icons
-  "X": { path: "/icons/energy-icons/void-x.svg", name: "Energy: Void X" },
-  "0": { path: "/icons/energy-icons/void-0.svg", name: "Energy: Void 0" },
-  "1": { path: "/icons/energy-icons/void-1.svg", name: "Energy: Void 1" },
-  "2": { path: "/icons/energy-icons/void-2.svg", name: "Energy: Void 2" },
-  "3": { path: "/icons/energy-icons/void-3.svg", name: "Energy: Void 3" },
-  "4": { path: "/icons/energy-icons/void-4.svg", name: "Energy: Void 4" },
-  "5": { path: "/icons/energy-icons/void-5.svg", name: "Energy: Void 5" },
-  "6": { path: "/icons/energy-icons/void-6.svg", name: "Energy: Void 6" },
-  "7": { path: "/icons/energy-icons/void-7.svg", name: "Energy: Void 7" },
-  "8": { path: "/icons/energy-icons/void-8.svg", name: "Energy: Void 8" },
-  "9": { path: "/icons/energy-icons/void-9.svg", name: "Energy: Void 9" },
-  "10": { path: "/icons/energy-icons/void-10.svg", name: "Energy: Void 10" },
-  "11": { path: "/icons/energy-icons/void-11.svg", name: "Energy: Void 11" },
-  "12": { path: "/icons/energy-icons/void-12.svg", name: "Energy: Void 12" },
-  "13": { path: "/icons/energy-icons/void-13.svg", name: "Energy: Void 13" },
-  "14": { path: "/icons/energy-icons/void-14.svg", name: "Energy: Void 14" },
-  "15": { path: "/icons/energy-icons/void-15.svg", name: "Energy: Void 15" },
+  "X": { icon: voidx, name: "Energy: Void X" },
+  "0": { icon: void0, name: "Energy: Void 0" },
+  "1": { icon: void1, name: "Energy: Void 1" },
+  "2": { icon: void2, name: "Energy: Void 2" },
+  "3": { icon: void3, name: "Energy: Void 3" },
+  "4": { icon: void4, name: "Energy: Void 4" },
+  "5": { icon: void5, name: "Energy: Void 5" },
+  "6": { icon: void6, name: "Energy: Void 6" },
+  "7": { icon: void7, name: "Energy: Void 7" },
+  "8": { icon: void8, name: "Energy: Void 8" },
+  "9": { icon: void9, name: "Energy: Void 9" },
+  "10": { icon: void10, name: "Energy: Void 10" },
+  "11": { icon: void11, name: "Energy: Void 11" },
+  "12": { icon: void12, name: "Energy: Void 12" },
+  "13": { icon: void13, name: "Energy: Void 13" },
+  "14": { icon: void14, name: "Energy: Void 14" },
+  "15": { icon: void15, name: "Energy: Void 15" },
   // Speed icons
-  "S1": { path: "/icons/speed-icons/speed-1.svg", name: "Speed: 1" },
-  "S2": { path: "/icons/speed-icons/speed-2.svg", name: "Speed: 2" },
-  "S3": { path: "/icons/speed-icons/speed-3.svg", name: "Speed: 3" },
+  "S1": { icon: speed1, name: "Speed: 1" },
+  "S2": { icon: speed2, name: "Speed: 2" },
+  "S3": { icon: speed3, name: "Speed: 3" },
   // Grade icons
-  "GC": { path: "/icons/grade-icons/core.svg", name: "Grade: Core" },
-  "GR": { path: "/icons/grade-icons/rare.svg", name: "Grade: Rare" },
-  "GE": { path: "/icons/grade-icons/epic.svg", name: "Grade: Epic" },
-  "GP": { path: "/icons/grade-icons/prime.svg", name: "Grade: Prime" },
+  "GC": { icon: core, name: "Grade: Core" },
+  "GR": { icon: rare, name: "Grade: Rare" },
+  "GE": { icon: epic, name: "Grade: Epic" },
+  "GP": { icon: prime, name: "Grade: Prime" },
   // Reach icons
-  "RM": { path: "/icons/reach-icons/melee.svg", name: "Reach: Melee" },
-  "RR": { path: "/icons/reach-icons/ranged.svg", name: "Reach: Ranged" },
+  "RM": { icon: melee, name: "Reach: Melee" },
+  "RR": { icon: ranged, name: "Reach: Ranged" },
   // Lock icons
-  "LO": { path: "/icons/lock-icons/lock.svg", name: "Lock" },
-  "UL": { path: "/icons/lock-icons/unlock.svg", name: "Unlock" },
+  "LO": { icon: lock, name: "Lock" },
+  "UL": { icon: unlock, name: "Unlock" },
 };
