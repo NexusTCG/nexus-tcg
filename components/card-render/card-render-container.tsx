@@ -1,6 +1,4 @@
 import React from "react";
-// Utils
-import Image from "next/image";
 // Types
 import { EnergyCost } from "@/app/lib/types/components";
 // Components

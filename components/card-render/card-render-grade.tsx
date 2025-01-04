@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 // Utils
 import Image from "next/image";
@@ -34,12 +32,10 @@ export default function CardRenderGrade({ mode, grade }: CardRenderGradeProps) {
         fill
         loading="eager"
         priority
-        onLoad={(img) => {
-          (img.target as HTMLImageElement).style.visibility = "visible";
-        }}
         data-testid={`grade-icon-${grade}`}
         style={{
           objectFit: "contain",
+          visibility: "visible",
         }}
       />
     </div>
