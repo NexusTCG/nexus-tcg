@@ -32,7 +32,11 @@ export function DownloadButton({
         .from("card-renders")
         .download(path);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      } else if (!data) {
+        throw new Error("No data returned from Supabase storage");
+      }
 
       const url = URL.createObjectURL(data);
       const link = document.createElement("a");
@@ -59,20 +63,23 @@ export function DownloadButton({
     }
   }
 
-  const handleDownload = async () => {
+  async function handleDownload() {
     setIsPending(true);
     try {
       // Fetch card render URL from Supabase
       const { data, error } = await supabase
-        .from("cards")
+        .from("nexus_cards")
         .select("card_render")
         .eq("id", cardId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      } else if (!data.card_render) {
+        throw new Error("Card render not found");
+      }
 
-      const renderIndex = mode === "initial" ? 0 : 1;
-      const renderUrl = data.card_render?.[renderIndex];
+      const renderUrl = data.card_render;
 
       if (renderUrl) {
         // Download existing render
@@ -107,7 +114,7 @@ export function DownloadButton({
       setIsPending(false);
       setDownloaded(true);
     }
-  };
+  }
 
   async function generateImageFromDOM() {
     setIsPending(true);
