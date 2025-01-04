@@ -36,8 +36,8 @@ import mythic from "@/public/icons/mythic.svg";
 import melee from "@/public/icons/reach-icons/melee.svg";
 import ranged from "@/public/icons/reach-icons/ranged.svg";
 // Lock icons
-import lock from "@/public/icons/lock.svg";
-import unlock from "@/public/icons/unlock.svg";
+import lock from "@/public/icons/lock-icons/lock.svg";
+import unlock from "@/public/icons/lock-icons/unlock.svg";
 
 export const energyIcons = {
   light,
