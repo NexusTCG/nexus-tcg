@@ -38,12 +38,12 @@ export const takeAndUploadScreenshotTask = task({
 
       // Navigate to the card page
       logger.info(
-        `Navigating to ${siteUrl}/cards/${cardId}?mode=${
+        `Navigating to ${siteUrl}cards/${cardId}?mode=${
           mode === "anomaly" ? "anomaly" : "initial"
         }`,
       );
       await page.goto(
-        `${siteUrl}/cards/${cardId}?mode=${
+        `${siteUrl}cards/${cardId}?mode=${
           mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
         }`,
         {
@@ -158,7 +158,7 @@ export const takeAndUploadScreenshotTask = task({
       try {
         logger.info("Waiting for card element and grade icon to load...");
 
-        // Wait for card container with explicit visibility check
+        // Wait for card container
         const cardSelector = `#card-render-container-${cardId}-${
           mode === "anomaly" ? "anomaly" : "initial"
         }`;
@@ -170,7 +170,15 @@ export const takeAndUploadScreenshotTask = task({
         });
         if (cardSelector) logger.info("Card container found");
 
-        // Then wait for grade icon with more detailed logging
+        // Check if abbreviation icons exist
+        const hasAbbreviationIcons = await page.evaluate(() => {
+          return !!document.querySelector(
+            '[data-testid^="abbreviation-icon-"]',
+          );
+        });
+        if (hasAbbreviationIcons) logger.info("Abbreviation icons found");
+
+        // Wait for grade icon
         const gradeIconSelector = `[data-testid^="grade-icon-"]`;
         logger.info(`Waiting for grade icon element: ${gradeIconSelector}`);
 
@@ -180,17 +188,24 @@ export const takeAndUploadScreenshotTask = task({
         });
         if (gradeIconSelector) logger.info("Grade icon element found");
 
-        // Wait for abbreviation icons
-        const abbreviationIconSelector = '[data-testid^="abbreviation-icon-"]';
-        logger.info(
-          `Waiting for abbreviation icons: ${abbreviationIconSelector}`,
-        );
+        // Wait for abbreviation icons if they exist
+        if (hasAbbreviationIcons) {
+          const abbreviationIconSelector =
+            '[data-testid^="abbreviation-icon-"]';
+          logger.info(
+            `Waiting for abbreviation icons: ${abbreviationIconSelector}`,
+          );
 
-        await page.waitForSelector(abbreviationIconSelector, {
-          visible: true,
-          timeout: 60000,
-        });
-        logger.info("Abbreviation icons found");
+          await page.waitForSelector(abbreviationIconSelector, {
+            visible: true,
+            timeout: 60000,
+          });
+          logger.info("Abbreviation icons found");
+        } else {
+          logger.info(
+            "No abbreviation icons found on this card, skipping wait",
+          );
+        }
 
         // Get the element and scroll into view before screenshot
         logger.info("Getting card element and scrolling it into view.");
