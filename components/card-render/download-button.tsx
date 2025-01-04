@@ -28,7 +28,11 @@ export function DownloadButton({
 
   async function downloadImage(path: string, filename: string) {
     try {
-      const { data } = supabase.storage.from("card-renders").getPublicUrl(path);
+      const filePath = path.split("/card-renders/")[1];
+
+      const { data } = supabase.storage
+        .from("card-renders")
+        .getPublicUrl(filePath);
 
       if (!data.publicUrl) {
         throw new Error("Could not get public URL");
