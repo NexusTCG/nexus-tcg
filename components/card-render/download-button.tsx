@@ -29,7 +29,7 @@ export function DownloadButton({
   async function downloadImage(path: string, filename: string) {
     try {
       const filePath = path.split("/card-renders/")[1];
-      const filePathWithDownload = `${filePath}?download=${filename}`;
+      const filePathWithDownload = `${filePath}?download=${filename}.png`;
 
       const { data } = supabase.storage
         .from("card-renders")
