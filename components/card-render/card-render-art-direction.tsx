@@ -28,7 +28,7 @@ export default function CardRenderArtDirection({
   ) {
     console.warn("Unexpected art_direction_options type received");
     return null;
-  }
+  } // art_direction_options could be a string not an array
 
   const options = artDirectionOptions as string[];
   if (options.length < 1) return null;

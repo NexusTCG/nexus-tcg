@@ -33,8 +33,10 @@ export function DownloadButton({
       const { data } = supabase.storage
         .from("card-renders")
         .getPublicUrl(filePath, {
-          download: filename,
+          download: true,
         });
+
+      console.log("data", data);
 
       if (!data.publicUrl) {
         throw new Error("Could not get public URL");
@@ -79,7 +81,6 @@ export function DownloadButton({
       if (renderUrl) {
         // Download existing render
         await downloadImage(renderUrl, `card-${cardId}-${mode}.png`);
-        toast("Your card has been downloaded.");
       } else {
         // Call API route to trigger Supabase Edge Function to generate card render
         const response = await fetch("/api/data/generate-card-render", {
