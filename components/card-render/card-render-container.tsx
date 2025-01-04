@@ -141,6 +141,12 @@ export default function CardRenderContainer({
                     width={24}
                     height={24}
                     loading="eager"
+                    priority
+                    data-testid={`grade-icon-${grade}`}
+                    style={{
+                      visibility: "visible",
+                      display: "block",
+                    }}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="top">

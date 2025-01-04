@@ -56,7 +56,7 @@ export const takeAndUploadScreenshotTask = task({
         },
       );
 
-      // Scroll to bottom and back up
+      // Scroll to bottom and back up to trigger lazy loading
       logger.info("Scrolling to bottom of page to trigger lazy loading.");
       await page.evaluate(() => {
         window.scrollTo(0, document.body.scrollHeight);
@@ -69,7 +69,7 @@ export const takeAndUploadScreenshotTask = task({
         return new Promise((resolve) => setTimeout(resolve, 100));
       });
 
-      // Wait for all images to load
+      // Wait for all images to load initially
       logger.info("Waiting for all images to load.");
       await page.evaluate(() => {
         return Promise.all(
@@ -83,32 +83,59 @@ export const takeAndUploadScreenshotTask = task({
         );
       });
 
-      // Wait a bit longer to ensure all images are rendered
-      await wait.for({ seconds: 2 });
-
       // Force all images to be visible and loaded
       logger.info("Forcing visibility and loading images.");
       await page.evaluate(() => {
-        document.querySelectorAll("img").forEach((img) => {
+        // Force all images to be visible immediately
+        const images = document.querySelectorAll("img");
+        images.forEach((img) => {
           img.style.visibility = "visible";
           img.style.display = "inline-block";
-          img.loading = "eager";
+          img.removeAttribute("loading");
+          // Force load
+          if (!img.complete) {
+            img.src = img.src;
+          }
         });
+
+        // Specifically target abbreviation icons and grade icons
+        const abbreviationIcons = document.querySelectorAll(
+          '[data-testid^="abbreviation-icon-"]',
+        );
+        const gradeIcon = document.querySelector(
+          `[data-testid^="grade-icon-"]`,
+        );
+
+        abbreviationIcons.forEach((icon) => {
+          const img = icon as HTMLImageElement;
+          img.style.visibility = "visible";
+          img.style.display = "inline-block";
+        });
+
+        if (gradeIcon) {
+          (gradeIcon as HTMLImageElement).style.visibility = "visible";
+          (gradeIcon as HTMLImageElement).style.display = "block";
+        }
       });
 
-      // Log page dimensions
-      const dimensions = await page.evaluate(() => ({
-        devicePixelRatio: window.devicePixelRatio,
-        visualViewport: {
-          width: window.visualViewport?.width,
-          height: window.visualViewport?.height,
-        },
-        documentElement: {
-          clientWidth: document.documentElement.clientWidth,
-          clientHeight: document.documentElement.clientHeight,
-        },
-      }));
-      logger.info("Page dimensions:", dimensions);
+      // Wait to ensure all images are rendered
+      await wait.for({ seconds: 3 });
+
+      // Explicit check for icon loading
+      await page.evaluate(() => {
+        return new Promise((resolve) => {
+          const checkImages = () => {
+            const images = Array.from(document.images);
+            const allLoaded = images.every((img) => img.complete);
+            if (allLoaded) {
+              resolve(null);
+            } else {
+              setTimeout(checkImages, 100);
+            }
+          };
+          checkImages();
+        });
+      });
 
       // Wait for card element and hide unwanted elements
       logger.info("Waiting for elements to load...");
@@ -144,9 +171,7 @@ export const takeAndUploadScreenshotTask = task({
         if (cardSelector) logger.info("Card container found");
 
         // Then wait for grade icon with more detailed logging
-        const gradeIconSelector = `#grade-icon-${
-          mode === "anomaly" ? "anomaly" : "initial" // Default to initial mode
-        }`;
+        const gradeIconSelector = `[data-testid^="grade-icon-"]`;
         logger.info(`Waiting for grade icon element: ${gradeIconSelector}`);
 
         await page.waitForSelector(gradeIconSelector, {
@@ -155,50 +180,17 @@ export const takeAndUploadScreenshotTask = task({
         });
         if (gradeIconSelector) logger.info("Grade icon element found");
 
-        // Force load the image
-        await page.evaluate((selector) => {
-          const img = document.querySelector(selector) as HTMLImageElement;
-          if (img) {
-            img.loading = "eager";
-            img.style.visibility = "visible";
-            img.style.display = "block";
-          }
-        }, gradeIconSelector);
+        // Wait for abbreviation icons
+        const abbreviationIconSelector = '[data-testid^="abbreviation-icon-"]';
+        logger.info(
+          `Waiting for abbreviation icons: ${abbreviationIconSelector}`,
+        );
 
-        // Wait longer for initial page load
-        await wait.for({ seconds: 2 });
-
-        // Check element visibility and dimensions
-        const elementInfo = await page.evaluate((selector) => {
-          const el = document.querySelector(selector);
-          if (!el) return null;
-          const rect = el.getBoundingClientRect();
-          const styles = window.getComputedStyle(el);
-          return {
-            dimensions: {
-              width: rect.width,
-              height: rect.height,
-              top: rect.top,
-              left: rect.left,
-            },
-            styles: {
-              display: styles.display,
-              visibility: styles.visibility,
-              opacity: styles.opacity,
-              position: styles.position,
-              zIndex: styles.zIndex,
-            },
-            isVisible: rect.width > 0 &&
-              rect.height > 0 &&
-              styles.display !== "none" &&
-              styles.visibility !== "hidden",
-          };
-        }, cardSelector);
-        if (elementInfo) logger.info("Card element info:", elementInfo);
-
-        if (!elementInfo?.isVisible) {
-          throw new Error("Card element is not visible");
-        }
+        await page.waitForSelector(abbreviationIconSelector, {
+          visible: true,
+          timeout: 60000,
+        });
+        logger.info("Abbreviation icons found");
 
         // Get the element and scroll into view before screenshot
         logger.info("Getting card element and scrolling it into view.");

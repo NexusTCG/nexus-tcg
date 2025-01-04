@@ -40,7 +40,11 @@ export default function AbbreviationIcon({ iconKey }: { iconKey: string }) {
                 width={18}
                 height={18}
                 loading="eager"
-                className="inline-block"
+                data-testid={`abbreviation-icon-${iconKey}`}
+                style={{
+                  display: "inline-block",
+                  visibility: "visible",
+                }}
               />
             )}
           </span>
