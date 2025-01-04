@@ -3,8 +3,6 @@ import React from "react";
 import Image from "next/image";
 // Types
 import { EnergyCost } from "@/app/lib/types/components";
-// Data
-import { gradeIcons } from "@/app/lib/data/icons";
 // Components
 import {
   Tooltip,
@@ -14,6 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 // Custom components
 import CardRenderFooter from "@/components/card-render/card-render-footer";
+import CardRenderGrade from "@/components/card-render/card-render-grade";
 
 type CardContainerProps = {
   children: React.ReactNode;
@@ -36,11 +35,6 @@ export default function CardRenderContainer({
   energyCost,
   cardId,
 }: CardContainerProps) {
-  const gradeIcon = gradeIcons.find(g => g.name === grade.toLowerCase())?.icon;
-  if (!gradeIcon) {
-    console.error(`Grade icon not found for grade: ${grade}`);
-  }
-
   function getCardFrameImage() {
     // Handle texture
     let texture = "";
@@ -141,29 +135,7 @@ export default function CardRenderContainer({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "24px",
-                      height: "24px",
-                    }}
-                  >
-                    <Image
-                      id={`grade-icon-${mode}`}
-                      src={gradeIcon}
-                      alt={grade}
-                      fill
-                      loading="eager"
-                      priority
-                      onLoad={(img) => {
-                        (img.target as HTMLImageElement).style.visibility = "visible";
-                      }}
-                      data-testid={`grade-icon-${grade}`}
-                      style={{
-                        objectFit: "contain",
-                      }}
-                    />
-                  </div>
+                  <CardRenderGrade mode={mode} grade={grade} />
                 </TooltipTrigger>
                 <TooltipContent side="top">
                   <p>{grade.charAt(0).toUpperCase() + grade.slice(1)}</p>
