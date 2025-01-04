@@ -36,20 +36,12 @@ export function DownloadButton({
           download: filename,
         });
 
-      console.log("data", data.publicUrl);
-
       if (!data.publicUrl) {
         throw new Error("Could not get public URL");
       }
 
       // Download the image
-      // const link = document.createElement('a');
-      // link.href = data.publicUrl;
-      // link.target = '_blank';
-      // link.rel = 'noopener noreferrer';
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
+      window.open(data.publicUrl, "_blank", "noopener,noreferrer");
 
       posthog.capture("card_downloaded", {
         distinctId: cardId,
