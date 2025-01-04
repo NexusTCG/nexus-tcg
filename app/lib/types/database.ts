@@ -54,7 +54,7 @@ export type InitialCardType = {
   defense?: number;
   reach?: boolean;
   art_selected: number;
-  art_direction_options?: ArtDirectionOption[];
+  art_direction_options?: ArtDirectionOption[] | string[];
   keywords?: { name: string; input: string }[];
   art_options?: string;
 };
@@ -70,7 +70,7 @@ export type AnomalyCardType = {
   lore?: string;
   prompt_art?: string;
   art_selected: number;
-  art_direction_options?: ArtDirectionOption[];
+  art_direction_options?: ArtDirectionOption[] | string[];
   art_options?: string;
 };
 

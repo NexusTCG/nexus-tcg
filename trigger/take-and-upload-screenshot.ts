@@ -166,7 +166,7 @@ export const takeAndUploadScreenshotTask = task({
         }, gradeIconSelector);
 
         // Wait longer for initial page load
-        await wait.for({ seconds: 5 });
+        await wait.for({ seconds: 2 });
 
         // Check element visibility and dimensions
         const elementInfo = await page.evaluate((selector) => {

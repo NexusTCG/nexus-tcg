@@ -1,16 +1,7 @@
 import React from "react";
-// Utils
-import { cn } from "@/lib/utils";
 // Types
 import { CardDTO } from "@/app/lib/types/dto";
-import {
-  InitialCardType,
-  AnomalyCardType,
-  ArtDirectionOption,
-} from "@/app/lib/types/database";
-import { ArtPromptOptionsType } from "@/app/lib/types/components";
-// Data
-import { artPromptOptions } from "@/app/lib/data/components";
+import { InitialCardType, AnomalyCardType } from "@/app/lib/types/database";
 // Components
 import { Badge } from "@/components/ui/badge";
 
@@ -28,39 +19,19 @@ export default function CardRenderArtDirection({
       | InitialCardType
       | AnomalyCardType
   )?.art_direction_options;
-
-  // console.log(`Art Direction Options (${activeMode} mode):`, artDirectionOptions);
-
   if (!artDirectionOptions) return null;
 
-  let options: ArtDirectionOption[] = [];
-
-  try {
-    if (typeof artDirectionOptions === "string") {
-      options = JSON.parse(artDirectionOptions);
-    } else if (Array.isArray(artDirectionOptions)) {
-      options = artDirectionOptions;
-    } else if (typeof artDirectionOptions === "object") {
-      options = Object.entries(artDirectionOptions).map(
-        ([section, option]) => ({
-          section,
-          option: Number(option),
-        })
-      );
-    }
-  } catch (e) {
-    console.error("Failed to parse art_direction_options:", e);
+  // Validate art_direction_options is a string[]
+  if (
+    !Array.isArray(artDirectionOptions) ||
+    typeof artDirectionOptions[0] === "object"
+  ) {
+    console.warn("Unexpected art_direction_options type received");
     return null;
   }
 
-  // console.log('Parsed options:', options);
-
-  if (
-    options.length === 0 ||
-    options.length === undefined ||
-    options.length === null
-  )
-    return null;
+  const options = artDirectionOptions as string[];
+  if (!options.length) return null;
 
   return (
     <div
@@ -87,26 +58,11 @@ export default function CardRenderArtDirection({
           gap-2
         "
       >
-        {options.map((option: ArtDirectionOption, index: number) => {
-          const sectionOptions =
-            artPromptOptions[option.section as keyof ArtPromptOptionsType]
-              ?.options;
-          const optionName = sectionOptions?.find(
-            (opt) => opt.id === option.option
-          )?.option;
-          return optionName ? (
-            <Badge
-              key={index}
-              variant="secondary"
-              className={cn(
-                "font-light",
-                "transition-none hover:bg-secondary hover:text-secondary-foreground"
-              )}
-            >
-              {optionName}
-            </Badge>
-          ) : null;
-        })}
+        {options.map((option: string, index: number) => (
+          <Badge key={index} variant="secondary">
+            {option}
+          </Badge>
+        ))}
       </div>
     </div>
   );
