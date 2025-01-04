@@ -40,15 +40,32 @@ export function DownloadButton({
         throw new Error("Could not get public URL");
       }
 
-      // Download the image
-      window.open(data.publicUrl, "_blank", "noopener,noreferrer");
+      try {
+        // Fetch the file and trigger download
+        const response = await fetch(data.publicUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
 
-      posthog.capture("card_downloaded", {
-        distinctId: cardId,
-        success: true,
-      });
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
 
-      toast.success("Your card has been downloaded!");
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        // Capture download event
+        posthog.capture("card_downloaded", {
+          distinctId: cardId,
+          success: true,
+        });
+
+        toast.success("Your card has been downloaded!");
+      } catch (error) {
+        throw new Error("Failed to download the image. Please try again!");
+      }
     } catch (error) {
       posthog.capture("card_downloaded", {
         distinctId: cardId,
