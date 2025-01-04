@@ -29,12 +29,11 @@ export function DownloadButton({
   async function downloadImage(path: string, filename: string) {
     try {
       const filePath = path.split("/card-renders/")[1];
+      const filePathWithDownload = `${filePath}?download=${filename}`;
 
       const { data } = supabase.storage
         .from("card-renders")
-        .getPublicUrl(filePath, {
-          download: true,
-        });
+        .getPublicUrl(filePathWithDownload);
 
       console.log("data", data);
 
