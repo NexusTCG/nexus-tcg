@@ -140,9 +140,7 @@ export default async function CardSlug(props: {
           </Suspense>
         </ClientWrapper>
       </div>
-      <Suspense fallback={null}>
-        <CardRenderArtDirection card={card} activeMode={activeMode} />
-      </Suspense>
+      <CardRenderArtDirection card={card} activeMode={activeMode} />
     </div>
   );
 }

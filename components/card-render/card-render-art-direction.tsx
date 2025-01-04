@@ -31,7 +31,7 @@ export default function CardRenderArtDirection({
   }
 
   const options = artDirectionOptions as string[];
-  if (!options.length) return null;
+  if (options.length < 1) return null;
 
   return (
     <div
