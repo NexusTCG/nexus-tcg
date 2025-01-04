@@ -48,11 +48,6 @@ export function DownloadButton({
         success: true,
       });
 
-      posthog.capture("card_downloaded", {
-        distinctId: cardId,
-        success: true,
-      });
-
       toast.success("Your card has been downloaded!");
     } catch (error) {
       posthog.capture("card_downloaded", {
