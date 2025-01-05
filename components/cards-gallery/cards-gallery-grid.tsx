@@ -55,9 +55,8 @@ export default function CardsGalleryGrid({
       id="cards-gallery-grid-container"
       className="
         w-full
-        h-[calc(100vh-200px)]
-        bg-zinc-800
-        p-4
+        flex-1
+        px-4
         z-10
       "
     >

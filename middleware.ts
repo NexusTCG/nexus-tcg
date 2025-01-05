@@ -19,6 +19,11 @@ export async function middleware(request: NextRequest) {
   // Check user session
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Set current path for /cards route layout
+  if (path === "/cards") {
+    response.headers.set("x-current-path", path);
+  }
+
   // Redirect authenticated users to home or create profile
   if (user && (path === "/" || path.includes("/login"))) {
     const { data: profile } = await supabase

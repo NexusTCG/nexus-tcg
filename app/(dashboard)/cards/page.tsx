@@ -1,4 +1,7 @@
 import React from "react";
+// Utils
+import { headers } from "next/headers";
+import clsx from "clsx";
 // Custom components
 import CardsGallery from "@/components/cards-gallery/cards-gallery";
 
@@ -27,21 +30,22 @@ export default async function Cards({
   approvedOnly = approvedOnly?.toString() ?? "false";
   from = from?.toString() ?? "all";
 
+  // Check if current path is /cards route
+  const headersList = headers();
+  const currentPath = headersList.get("x-current-path") || "";
+  const isCardsRoute = currentPath === "/cards";
+
+  if (isCardsRoute) {
+    console.log("Cards Page: Current path is /cards route");
+  }
+
   return (
     <div
       id="cards-page-container"
-      className="
-        flex
-        flex-col
-        justify-start
-        items-start
-        w-full
-        px-0
-        sm:px-4
-        md:px-8
-        py-4
-        gap-8
-      "
+      className={clsx(
+        "flex flex-col justify-start items-start w-full px-0",
+        !isCardsRoute && "sm:px-4 md:px-8 py-4"
+      )}
     >
       <CardsGallery
         key={`${sort}-${order}-${type}-${energy}-${grade}-${approvedOnly}-${from}`}

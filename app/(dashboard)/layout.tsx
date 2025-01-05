@@ -1,6 +1,9 @@
 export const dynamic = "force-dynamic";
 
 import React from "react";
+// Utils
+import { headers } from "next/headers";
+import clsx from "clsx";
 // Server
 import { getCurrentUserId } from "@/app/server/auth";
 import { getUserProfileDTO } from "@/app/server/data/user-dto";
@@ -31,16 +34,22 @@ export default async function DashboardLayout({
     console.error("Error fetching user data:", error);
   }
 
+  // Check if current path is /cards route
+  const headersList = headers();
+  const currentPath = headersList.get("x-current-path") || "";
+  const isCardsRoute = currentPath === "/cards";
+
+  if (isCardsRoute) {
+    console.log("Dashboard Layout: Current path is /cards route");
+  }
+
   return (
     <div
       id="dashboard-layout-container"
-      className="
-        flex
-        flex-col
-        sm:flex-row
-        w-full
-        min-h-screen
-      "
+      className={clsx(
+        "flex flex-col sm:flex-row w-full",
+        !isCardsRoute && "min-h-screen"
+      )}
     >
       <div className="hidden sm:block">
         <Sidebar currentUserId={currentUserId} userProfile={userProfile} />
@@ -53,13 +62,10 @@ export default async function DashboardLayout({
       </div>
       <div
         id="dashboard-content-container"
-        className="
-          flex-1
-          w-full
-          overflow-x-hidden
-          sm:p-4
-          p-0
-        "
+        className={clsx(
+          "flex-1 w-full overflow-x-hidden p-0",
+          !isCardsRoute && "sm:p-4"
+        )}
       >
         {children}
       </div>

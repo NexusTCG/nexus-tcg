@@ -41,9 +41,9 @@ export default function CardsGalleryHeader({
         items-start
         w-full
         p-4
-        gap-4
         border-b
         border-zinc-700
+        bg-background
       "
     >
       {/* <CardsGallerySearchbar

@@ -37,8 +37,6 @@ export default function CardsGalleryCell({
   style,
   data,
 }: CardsGalleryCellProps) {
-  // This component is responsible for rendering a cell in the cards gallery grid
-
   const { cards, columnCount, columnWidth, rowHeight, gap, thumbnailSize } =
     data;
 

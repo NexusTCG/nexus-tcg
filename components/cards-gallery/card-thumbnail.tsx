@@ -93,9 +93,9 @@ export default function CardThumbnail({
             src={cardRender}
             alt={cardName || "Card"}
             fill
-            className="object-cover"
+            className="object-cover rounded-lg"
             onLoad={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)} // Handle load errors
+            onError={() => setIsLoading(false)}
           />
         )}
       </Link>
