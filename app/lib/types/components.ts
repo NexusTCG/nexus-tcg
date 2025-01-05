@@ -1,4 +1,12 @@
 import { socialPlatforms } from "@/app/lib/data/data";
+import {
+  VALID_FILTER_CARD_TYPE_OPTIONS,
+  VALID_FILTER_ENERGY_OPTIONS,
+  VALID_FILTER_GRADE_OPTIONS,
+  VALID_FROM_OPTIONS,
+  VALID_ORDER_OPTIONS,
+  VALID_SORT_OPTIONS,
+} from "@/app/lib/data/components";
 
 // --> ENERGY & SPEED <-- //
 
@@ -113,3 +121,14 @@ export const TIER_CONFIG = {
 } as const;
 
 export type TierName = keyof typeof TIER_CONFIG;
+
+// Card Gallery Query Params
+export type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
+export type ValidOrderOption = (typeof VALID_ORDER_OPTIONS)[number];
+export type ValidFilterCardTypeOption =
+  (typeof VALID_FILTER_CARD_TYPE_OPTIONS)[number];
+export type ValidFilterEnergyOption =
+  (typeof VALID_FILTER_ENERGY_OPTIONS)[number];
+export type ValidFilterGradeOption =
+  (typeof VALID_FILTER_GRADE_OPTIONS)[number];
+export type ValidFromOption = (typeof VALID_FROM_OPTIONS)[number];

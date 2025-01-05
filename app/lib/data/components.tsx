@@ -855,3 +855,34 @@ export const artPromptOptions: ArtPromptOptionsType = {
     ].sort((a, b) => a.option.localeCompare(b.option)),
   },
 };
+
+// Card Gallery Query Params
+export const VALID_SORT_OPTIONS = ["id", "name", "type", "grade"] as const;
+export const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
+export const VALID_FILTER_CARD_TYPE_OPTIONS = [
+  "all",
+  "agent",
+  "event",
+  "software",
+  "software_agent",
+  "hardware",
+  "hardware_agent",
+] as const;
+export const VALID_FILTER_ENERGY_OPTIONS = [
+  "all",
+  "light",
+  "storm",
+  "dark",
+  "chaos",
+  "growth",
+  "void",
+] as const;
+export const VALID_FILTER_GRADE_OPTIONS = [
+  "all",
+  "core",
+  "rare",
+  "epic",
+  "prime",
+  "legendary",
+] as const;
+export const VALID_FROM_OPTIONS = ["week", "month", "year", "all"] as const;

@@ -2,65 +2,39 @@
 
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-// Components
+// Utils
+import dynamic from "next/dynamic";
+// Data
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+  VALID_SORT_OPTIONS,
+  VALID_ORDER_OPTIONS,
+  VALID_FILTER_CARD_TYPE_OPTIONS,
+  VALID_FILTER_ENERGY_OPTIONS,
+  VALID_FILTER_GRADE_OPTIONS,
+  VALID_FROM_OPTIONS,
+} from "@/app/lib/data/components";
+// Validation
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  ValidSortOption,
+  ValidOrderOption,
+  ValidFilterCardTypeOption,
+  ValidFilterEnergyOption,
+  ValidFilterGradeOption,
+  ValidFromOption,
+} from "@/app/lib/types/components";
 // Custom components
-import CardsGalleryFilters from "@/components/cards-gallery/cards-gallery-filters";
-
-const VALID_SORT_OPTIONS = ["id", "name", "type", "grade"] as const;
-type ValidSortOption = (typeof VALID_SORT_OPTIONS)[number];
-
-const VALID_ORDER_OPTIONS = ["asc", "desc"] as const;
-type ValidOrderOption = (typeof VALID_ORDER_OPTIONS)[number];
-
-const VALID_FILTER_CARD_TYPE_OPTIONS = [
-  "all",
-  "agent",
-  "event",
-  "software",
-  "software_agent",
-  "hardware",
-  "hardware_agent",
-] as const;
-type ValidFilterCardTypeOption =
-  (typeof VALID_FILTER_CARD_TYPE_OPTIONS)[number];
-
-const VALID_FILTER_ENERGY_OPTIONS = [
-  "all",
-  "light",
-  "storm",
-  "dark",
-  "chaos",
-  "growth",
-  "void",
-] as const;
-type ValidFilterEnergyOption = (typeof VALID_FILTER_ENERGY_OPTIONS)[number];
-
-const VALID_FILTER_GRADE_OPTIONS = [
-  "all",
-  "core",
-  "rare",
-  "epic",
-  "prime",
-  "legendary",
-] as const;
-type ValidFilterGradeOption = (typeof VALID_FILTER_GRADE_OPTIONS)[number];
-
-const VALID_FROM_OPTIONS = ["week", "month", "year", "all"] as const;
-type ValidFromOption = (typeof VALID_FROM_OPTIONS)[number];
+const CardsGalleryApprovedCheckbox = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-approved-checkbox")
+);
+const CardsGallerySortOptions = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-sort-options")
+);
+const CardsGalleryFromOptions = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-from-options")
+);
+const CardsGalleryFilters = dynamic(
+  () => import("@/components/cards-gallery/cards-gallery-filters")
+);
 
 type CardsGallerySortFilterProps = {
   sort: string;
@@ -168,112 +142,19 @@ export default function CardsGallerySortFilter({
 
   return (
     <>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <div
-              id="approved-only-container"
-              className="
-                flex
-                flex-row
-                justify-start
-                items-center
-                gap-2
-              "
-            >
-              <small className="text-muted-foreground text-xs whitespace-nowrap">
-                Approved
-              </small>
-              <Checkbox
-                id="approved"
-                checked={approvedOnly === "true"}
-                onCheckedChange={(checked) => {
-                  updateSearchParams(
-                    "approvedOnly",
-                    checked ? "true" : "false"
-                  );
-                }}
-              />
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>Only show approved cards.</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <div
-        id="sort-direction-container"
-        className="
-          flex
-          items-center
-          gap-2
-        "
-      >
-        <small className="text-muted-foreground text-xs whitespace-nowrap">
-          Sort
-        </small>
-        <Select
-          value={
-            VALID_SORT_OPTIONS.includes(sort as ValidSortOption) ? sort : "id"
-          }
-          onValueChange={(value: string) => updateSearchParams("sort", value)}
-        >
-          <SelectTrigger className="w-full min-w-[120px] truncate">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent className="w-full min-w-[120px]">
-            <SelectItem value="id">Created</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="type">Type</SelectItem>
-            <SelectItem value="grade">Grade</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          value={
-            VALID_ORDER_OPTIONS.includes(order as ValidOrderOption)
-              ? order
-              : "desc"
-          }
-          onValueChange={(value: string) => updateSearchParams("order", value)}
-        >
-          <SelectTrigger className="w-full min-w-[120px] truncate">
-            <SelectValue placeholder="Order" />
-          </SelectTrigger>
-          <SelectContent className="w-full min-w-[120px]">
-            <SelectItem value="asc">Asc</SelectItem>
-            <SelectItem value="desc">Desc</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div
-        id="from-container"
-        className="
-          flex items-center gap-2
-        "
-      >
-        <small className="text-muted-foreground text-xs whitespace-nowrap">
-          From
-        </small>
-        <Select
-          value={
-            VALID_FROM_OPTIONS.includes(from as ValidFromOption) ? from : "all"
-          }
-          onValueChange={(value: string) => updateSearchParams("from", value)}
-        >
-          <SelectTrigger className="w-full min-w-[120px] truncate">
-            <SelectValue placeholder="All time" />
-          </SelectTrigger>
-          <SelectContent className="w-full min-w-[120px]">
-            <SelectItem value="all">All time</SelectItem>
-            <SelectItem value="year">This year</SelectItem>
-            <SelectItem value="month">This month</SelectItem>
-            <SelectItem value="week">This week</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
+      <CardsGalleryApprovedCheckbox
+        approvedOnly={approvedOnly}
+        updateSearchParams={updateSearchParams}
+      />
+      <CardsGallerySortOptions
+        sort={sort}
+        order={order}
+        updateSearchParams={updateSearchParams}
+      />
+      <CardsGalleryFromOptions
+        from={from}
+        updateSearchParams={updateSearchParams}
+      />
       <CardsGalleryFilters
         type={type}
         energy={energy}
