@@ -86,9 +86,8 @@ CardsGalleryProps) {
         items-start 
         w-full 
         h-screen
-        sm:border
         overflow-hidden
-        bg-zinc-900
+        bg-zinc-800
       "
     >
       <CardsGalleryHeader
