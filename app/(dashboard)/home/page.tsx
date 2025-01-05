@@ -54,6 +54,16 @@ export default async function Home() {
         >
           <QuickLearn />
           <WeeklyTrends />
+          {/* Discord Widget */}
+          <iframe
+            src="https://discord.com/widget?id=1136652718929362985&theme=dark"
+            width="100%"
+            height="480"
+            allowTransparency={true}
+            frameBorder={0}
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+            style={{ borderRadius: "6px" }}
+          ></iframe>
         </div>
       </div>
     </div>

@@ -2,19 +2,14 @@ import React from "react";
 // Utils
 import Image from "next/image";
 // Components
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+// Icons
 import { MdOpenInNew } from "react-icons/md";
 
 export default function SteamWidget() {
