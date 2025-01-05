@@ -1,5 +1,13 @@
 import React from "react";
+// Utils
 import dynamic from "next/dynamic";
+// Components
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 // Custom components
 // const CardsGallerySearchbar = dynamic(
 //   () => import("@/components/cards-gallery/cards-gallery-searchbar")
@@ -55,15 +63,26 @@ export default function CardsGalleryHeader({
         className="
           flex
           flex-row
-          justify-start
+          flex-wrap
           items-center
           w-full
-          gap-4
+          gap-x-4
+          gap-y-2
         "
       >
-        <small className="text-xs whitespace-nowrap">
-          {totalResults} <span className="text-muted-foreground">results</span>
-        </small>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <small className="text-xs whitespace-nowrap">
+                <span className="text-muted-foreground">Cards:</span>{" "}
+                {totalResults}
+              </small>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Showing {totalResults} cards.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <CardsGallerySortFilter
           sort={sort}
           order={order}

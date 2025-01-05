@@ -11,6 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 // Custom components
 import CardsGalleryFilters from "@/components/cards-gallery/cards-gallery-filters";
 
@@ -161,25 +167,46 @@ export default function CardsGallerySortFilter({
   }
 
   return (
-    <div
-      id="cards-gallery-sort-filter-options"
-      className="
-        flex
-        flex-row
-        justify-between
-        items-center
-        w-full
-        gap-4
-      "
-    >
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div
+              id="approved-only-container"
+              className="
+                flex
+                flex-row
+                justify-start
+                items-center
+                gap-2
+              "
+            >
+              <small className="text-muted-foreground text-xs whitespace-nowrap">
+                Approved
+              </small>
+              <Checkbox
+                id="approved"
+                checked={approvedOnly === "true"}
+                onCheckedChange={(checked) => {
+                  updateSearchParams(
+                    "approvedOnly",
+                    checked ? "true" : "false"
+                  );
+                }}
+              />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>Only show approved cards.</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       <div
         id="sort-direction-container"
         className="
           flex
-          flex-row
-          justify-start
           items-center
-          min-w-[280px]
           gap-2
         "
       >
@@ -192,10 +219,10 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("sort", value)}
         >
-          <SelectTrigger className="w-[140px] truncate">
+          <SelectTrigger className="w-full min-w-[120px] truncate">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full min-w-[120px]">
             <SelectItem value="id">Created</SelectItem>
             <SelectItem value="name">Name</SelectItem>
             <SelectItem value="type">Type</SelectItem>
@@ -210,43 +237,20 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("order", value)}
         >
-          <SelectTrigger className="w-[140px] truncate">
+          <SelectTrigger className="w-full min-w-[120px] truncate">
             <SelectValue placeholder="Order" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full min-w-[120px]">
             <SelectItem value="asc">Asc</SelectItem>
             <SelectItem value="desc">Desc</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div
-        id="filter-container"
-        className="
-          flex
-          flex-row
-          justify-start
-          items-center
-          gap-2
-          flex-1
-          min-w-0
-        "
-      >
-        <CardsGalleryFilters
-          type={type}
-          energy={energy}
-          grade={grade}
-          updateSearchParams={updateSearchParams}
-        />
-      </div>
+
       <div
         id="from-container"
         className="
-          flex
-          flex-row
-          justify-start
-          items-center
-          min-w-[180px]
-          gap-2
+          flex items-center gap-2
         "
       >
         <small className="text-muted-foreground text-xs whitespace-nowrap">
@@ -258,10 +262,10 @@ export default function CardsGallerySortFilter({
           }
           onValueChange={(value: string) => updateSearchParams("from", value)}
         >
-          <SelectTrigger className="w-[120px] truncate">
+          <SelectTrigger className="w-full min-w-[120px] truncate">
             <SelectValue placeholder="All time" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full min-w-[120px]">
             <SelectItem value="all">All time</SelectItem>
             <SelectItem value="year">This year</SelectItem>
             <SelectItem value="month">This month</SelectItem>
@@ -269,27 +273,13 @@ export default function CardsGallerySortFilter({
           </SelectContent>
         </Select>
       </div>
-      <div
-        id="approved-only-container"
-        className="
-          flex
-          flex-row
-          justify-start
-          items-center
-          gap-2
-        "
-      >
-        <small className="text-muted-foreground text-xs whitespace-nowrap">
-          Approved only
-        </small>
-        <Checkbox
-          id="approved"
-          checked={approvedOnly === "true"}
-          onCheckedChange={(checked) => {
-            updateSearchParams("approvedOnly", checked ? "true" : "false");
-          }}
-        />
-      </div>
-    </div>
+
+      <CardsGalleryFilters
+        type={type}
+        energy={energy}
+        grade={grade}
+        updateSearchParams={updateSearchParams}
+      />
+    </>
   );
 }

@@ -88,7 +88,7 @@ CardsGalleryProps) {
         h-screen
         sm:border
         overflow-hidden
-        bg-zinc-800
+        bg-zinc-900
       "
     >
       <CardsGalleryHeader
