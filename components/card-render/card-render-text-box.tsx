@@ -15,6 +15,7 @@ import CardRenderKeywords from "@/components/card-render/card-render-keywords";
 import AbbreviationIcon from "@/components/card-render/abbreviation-icon";
 
 const MAX_COMBINED_TEXT_LENGTH = 300;
+const ONE_LINE_CHAR_LIMIT = 45;
 
 type CardRenderTextBoxProps = {
   card: CardDTO;
@@ -76,38 +77,48 @@ export default function CardRenderTextBox({
       return { truncateContent: false, shouldShowLore: true };
     }
 
-    const keywordsReminderText = cardKeywords
-      .map((keyword) => {
-        const reminderText =
-          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
-            ?.reminder || "";
-        return reminderText;
-      })
-      .join("");
+    // If 2+ keywords, text > 2 lines, and lore <= 1 line, truncate keywords
+    const shouldTruncateForLength =
+      cardKeywords.length > 1 &&
+      cardText.length > ONE_LINE_CHAR_LIMIT * 2 &&
+      (cardLoreText?.length ?? 0) <= ONE_LINE_CHAR_LIMIT;
 
-    const keywordsNameText = cardKeywords
-      .map((keyword) => {
-        const nameText =
-          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
-            ?.name || "";
-        return nameText;
-      })
-      .join("");
+    if (!shouldTruncateForLength) {
+      const keywordsReminderText = cardKeywords
+        .map((keyword) => {
+          const reminderText =
+            keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+              ?.reminder || "";
+          return reminderText;
+        })
+        .join("");
 
-    const totalLengthWithNameReminders =
-      cardText.length + keywordsNameText.length + keywordsReminderText.length;
+      const keywordsNameText = cardKeywords
+        .map((keyword) => {
+          const nameText =
+            keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+              ?.name || "";
+          return nameText;
+        })
+        .join("");
 
-    const totalLengthWithoutReminders =
-      cardText.length + keywordsNameText.length;
+      const totalLengthWithNameReminders =
+        cardText.length + keywordsNameText.length + keywordsReminderText.length;
 
-    const shouldTruncate =
-      totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
-    const showLore =
-      !shouldTruncate ||
-      totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
+      const totalLengthWithoutReminders =
+        cardText.length + keywordsNameText.length;
 
-    return { truncateContent: shouldTruncate, shouldShowLore: showLore };
-  }, [cardKeywords, keywordData, cardText]);
+      const shouldTruncate =
+        totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
+      const showLore =
+        !shouldTruncate ||
+        totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
+
+      return { truncateContent: shouldTruncate, shouldShowLore: showLore };
+    } else {
+      return { truncateContent: true, shouldShowLore: true };
+    }
+  }, [cardKeywords, keywordData, cardText, cardLoreText]);
 
   // Update the showLore shouldShowLore changes
   useEffect(() => {
