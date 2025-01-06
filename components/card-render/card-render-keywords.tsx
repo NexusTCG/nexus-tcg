@@ -172,7 +172,7 @@ export default function CardRenderKeywords({
             <React.Fragment key={keyword.name}>
               {renderKeyword(keyword, !truncateKeywords)}
               {truncateKeywords && index < standardKeywords.length - 1 && (
-                <span className="mr-1">,</span>
+                <span>, </span>
               )}
             </React.Fragment>
           ))}
