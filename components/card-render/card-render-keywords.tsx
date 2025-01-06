@@ -20,12 +20,14 @@ type CardRenderKeywordsProps = {
   keywords: RenderedKeywordType[];
   card: CardDTO;
   mode: "initial" | "anomaly";
+  truncateKeywords: boolean;
 };
 
 export default function CardRenderKeywords({
   keywords,
   card,
   mode,
+  truncateKeywords,
 }: CardRenderKeywordsProps) {
   const [keywordData, setKeywordData] = useState<KeywordsDTO>([]);
 
@@ -174,7 +176,7 @@ export default function CardRenderKeywords({
             : // Render as comma-separated list without reminder text when more than 2
               standardKeywords.map((keyword, index) => (
                 <React.Fragment key={keyword.name}>
-                  {renderKeyword(keyword, false)}
+                  {renderKeyword(keyword, !truncateKeywords)}
                   {index < standardKeywords.length - 1 && (
                     <span className="mr-1">,</span>
                   )}
@@ -184,7 +186,7 @@ export default function CardRenderKeywords({
       )}
       {textInputKeywords.map((keyword) => (
         <div key={keyword.name} className="w-full">
-          {renderKeyword(keyword, true)}
+          {renderKeyword(keyword, !truncateKeywords)}
         </div>
       ))}
     </div>

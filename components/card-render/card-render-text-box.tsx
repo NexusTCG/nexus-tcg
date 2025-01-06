@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 // Utils
 import clsx from "clsx";
 import { calculateBgColor } from "@/app/utils/actions/actions";
@@ -6,9 +8,13 @@ import { calculateBgColor } from "@/app/utils/actions/actions";
 import { CardDTO } from "@/app/lib/types/dto";
 import { EnergyCost } from "@/app/lib/types/components";
 import { RenderedKeywordsType } from "@/app/lib/types/components";
+// Validation
+import { KeywordDTO, KeywordsDTO } from "@/app/lib/types/dto";
 // Custom components
 import CardRenderKeywords from "@/components/card-render/card-render-keywords";
 import AbbreviationIcon from "@/components/card-render/abbreviation-icon";
+
+const MAX_COMBINED_TEXT_LENGTH = 300;
 
 type CardRenderTextBoxProps = {
   card: CardDTO;
@@ -19,6 +25,9 @@ export default function CardRenderTextBox({
   card,
   mode,
 }: CardRenderTextBoxProps) {
+  const [keywordData, setKeywordData] = useState<KeywordsDTO | null>(null);
+  const [showLore, setShowLore] = useState<boolean>(true);
+
   const cardKeywords: RenderedKeywordsType =
     mode === "initial" ? card.initialMode.keywords : null;
 
@@ -61,6 +70,66 @@ export default function CardRenderTextBox({
       (card.initialMode.type === "hardware" &&
         card.initialMode.type_sub?.includes("Gear")));
 
+  // Calculate total text length
+  function shouldTruncate() {
+    if (!cardKeywords || !keywordData) return false;
+
+    const keywordsReminderText = cardKeywords
+      ?.map((keyword) => {
+        const reminderText =
+          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+            ?.reminder || "";
+        return `${reminderText}`;
+      })
+      .join("");
+
+    const keywordsNameText = cardKeywords
+      ?.map((keyword) => {
+        const nameText =
+          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+            ?.name || "";
+        return `${nameText}`;
+      })
+      .join("");
+
+    const totalLengthWithNameReminders =
+      cardText.length + keywordsNameText.length + keywordsReminderText.length;
+
+    const totalLengthWithoutReminders =
+      cardText.length + keywordsNameText.length;
+
+    if (totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH) {
+      setShowLore(totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH);
+      return true;
+    }
+
+    setShowLore(true);
+    return false;
+  }
+
+  const truncateContent = shouldTruncate();
+
+  // Fetch keyword data to get reminder text
+  useEffect(() => {
+    async function fetchKeywords() {
+      if (keywordData) return;
+
+      try {
+        const response = await fetch("/api/data/fetch-keywords");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch keywords");
+        }
+
+        const data: KeywordsDTO = await response.json();
+        setKeywordData(data);
+      } catch (error) {
+        console.error("Error fetching keywords:", error);
+      }
+    }
+    fetchKeywords();
+  }, []);
+
   return (
     <div
       id="card-form-text-container"
@@ -86,6 +155,7 @@ export default function CardRenderTextBox({
               card={card}
               mode={mode}
               keywords={cardKeywords}
+              truncateKeywords={truncateContent}
             />
           </div>
         )}
@@ -155,12 +225,13 @@ export default function CardRenderTextBox({
               card={card}
               mode={mode}
               keywords={cardKeywords}
+              truncateKeywords={truncateContent}
             />
           </div>
         )}
       </div>
       {/* Render the card lore text */}
-      {cardLoreText && (
+      {cardLoreText && showLore && (
         <div
           className={clsx(
             "w-full text-black text-xs italic font-normal py-1 px-1.5",
