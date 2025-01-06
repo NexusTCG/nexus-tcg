@@ -71,8 +71,9 @@ export default function CardRenderTextBox({
       (card.initialMode.type === "hardware" &&
         card.initialMode.type_sub?.includes("Gear")));
 
-  // Memoize the truncation logic
+  // Memoized truncation logic
   const { truncateContent, shouldShowLore } = useMemo(() => {
+    // 1. Calculate estimated lines for all scenarios
     const estimatedLines = paragraphs.reduce((totalLines, paragraph) => {
       const paragraphLines = Math.max(
         1,
@@ -81,21 +82,23 @@ export default function CardRenderTextBox({
       return totalLines + paragraphLines;
     }, 0);
 
+    // 2. Handle cards with no keywords
     if (!cardKeywords || !keywordData) {
       return {
-        truncateContent: false,
-        shouldShowLore: estimatedLines <= 5,
+        truncateContent: false, // No keywords to truncate
+        shouldShowLore: estimatedLines <= 5, // Show lore if text is short
       };
     }
 
+    // 3. Handle long text cards (regardless of keywords)
     if (estimatedLines > 5) {
-      return { truncateContent: true, shouldShowLore: false };
+      return {
+        truncateContent: false, // Don't truncate keywords
+        shouldShowLore: false, // Hide lore due to long text
+      };
     }
 
-    // Truncate keywords if ALL these conditions are met:
-    // 1. Has 2+ keywords
-    // 2. Card text is > 2 lines but < 4 lines
-    // 3. Has lore text that's > 1 line
+    // 4. Handle cards with multiple keywords and medium-length text
     if (
       cardKeywords.length >= 2 &&
       cardText.length > ONE_LINE_CHAR_LIMIT * 2 &&
@@ -103,9 +106,13 @@ export default function CardRenderTextBox({
       cardLoreText &&
       cardLoreText.length > ONE_LINE_CHAR_LIMIT
     ) {
-      return { truncateContent: true, shouldShowLore: true };
+      return {
+        truncateContent: true, // Truncate keywords to save space
+        shouldShowLore: true, // Show lore since text is short
+      };
     }
 
+    // 5. Default case - calculate based on total combined text length
     const keywordsReminderText = cardKeywords
       .map((keyword) => {
         const reminderText =
@@ -124,14 +131,19 @@ export default function CardRenderTextBox({
       })
       .join("");
 
+    // Calculate total length with name and reminder text
     const totalLengthWithNameReminders =
       cardText.length + keywordsNameText.length + keywordsReminderText.length;
 
+    // Calculate total length without reminder text
     const totalLengthWithoutReminders =
       cardText.length + keywordsNameText.length;
 
+    // Truncate keywords if the total length is too long
     const shouldTruncate =
       totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
+
+    // Show lore if we don't truncate keywords or if the text is short
     const showLore =
       !shouldTruncate ||
       totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
