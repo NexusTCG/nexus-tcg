@@ -36,6 +36,15 @@ import Keyword from "@/components/card-creator/keyword";
 // Icons
 import { Check } from "lucide-react";
 
+const EVENT_KEYWORDS = [
+  "chain",
+  "bond",
+  "global",
+  "lightspeed",
+  "transfer",
+  "virus",
+];
+
 type KeywordSelectProps = {
   cardGrade: "core" | "uncommon" | "rare" | "prime";
   truncateKeywords: boolean;
@@ -55,6 +64,7 @@ export default function KeywordSelect({
   });
 
   const selectedKeywords = watch("initialMode.keywords");
+  const cardType = watch("initialMode.type");
 
   const maxKeywords = {
     core: 2,
@@ -234,7 +244,19 @@ export default function KeywordSelect({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild className="w-full">
-                  <span className="h-[24px] flex justify-start items-center hover:bg-neutral-200 rounded-sm w-full p-1 hover:text-neutral-800">
+                  <span
+                    className="
+                      h-[24px] 
+                      flex 
+                      justify-start 
+                      items-center 
+                      hover:bg-neutral-200 
+                      rounded-sm 
+                      w-full 
+                      p-1 
+                      hover:text-neutral-800
+                    "
+                  >
                     Select keywords...
                   </span>
                 </TooltipTrigger>
@@ -251,7 +273,18 @@ export default function KeywordSelect({
           <CommandInput placeholder="Search keywords..." />
           <CommandList>
             <CommandEmpty>No keyword found.</CommandEmpty>
-            {["persistent", "reactive", "active"].map((type) => (
+            {["persistent", "reactive", "active"].map((type) => {
+              const filteredKeywords = keywords?.filter(
+                (keyword: KeywordsDTO) => {
+                  if (cardType === "event") {
+                    return EVENT_KEYWORDS.includes(keyword.name || "");
+                  }
+                  return keyword.type === type;
+                }
+              );
+
+              if (!filteredKeywords?.length) return null;
+
               <CommandGroup
                 key={type}
                 heading={type.charAt(0).toUpperCase() + type.slice(1)}
@@ -311,8 +344,8 @@ export default function KeywordSelect({
                       );
                     })}
                 </>
-              </CommandGroup>
-            ))}
+              </CommandGroup>;
+            })}
           </CommandList>
         </Command>
       </PopoverContent>

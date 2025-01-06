@@ -20,9 +20,7 @@ export default function CardRenderTextBox({
   mode,
 }: CardRenderTextBoxProps) {
   const cardKeywords: RenderedKeywordsType =
-    mode === "initial" && !card.initialMode.type.includes("event")
-      ? card.initialMode.keywords
-      : null;
+    mode === "initial" ? card.initialMode.keywords : null;
 
   const cardText = (() => {
     // Replace ~ with card name
@@ -32,7 +30,7 @@ export default function CardRenderTextBox({
     if (card.anomalyMode.uncommon) {
       return card.anomalyMode.text?.replace(/~/g, card.anomalyMode.name) ?? "";
     }
-    return "Once during each of your turns, a common anomaly in your hand can be manifested into any of the five common anomalies. Light, Storm, Dark, Chaos, or Growth.";
+    return "Destructed into any of the five common anomalies. Light, Storm, Dark, Chaos, or Growth.";
   })();
 
   const cardLoreText =
@@ -54,11 +52,14 @@ export default function CardRenderTextBox({
   // Split card text into paragraphs
   const paragraphs = cardText.split(/\n+/).filter(Boolean);
 
-  // Render the keywords below the text if the card is a "Software Modification"
+  // Render the keywords below the text if the card
+  // is a "Software Modification" or "Hardware Gear"
   const renderBelowText =
     mode === "initial" &&
-    card.initialMode.type === "software" &&
-    card.initialMode.type_sub?.includes("Modification");
+    ((card.initialMode.type === "software" &&
+      card.initialMode.type_sub?.includes("Modification")) ||
+      (card.initialMode.type === "hardware" &&
+        card.initialMode.type_sub?.includes("Gear")));
 
   return (
     <div
@@ -78,7 +79,7 @@ export default function CardRenderTextBox({
           renderBelowText ? "gap-0" : "gap-1"
         )}
       >
-        {/* If the card's subtype is not "Modification", render the keywords above the text */}
+        {/* If the card's subtype is not "Modification" or "Gear", render the keywords above the text */}
         {cardKeywords && !renderBelowText && (
           <div className="flex-shrink-0">
             <CardRenderKeywords
