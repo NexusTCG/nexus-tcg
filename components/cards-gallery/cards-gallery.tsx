@@ -82,10 +82,10 @@ CardsGalleryProps) {
       className="
         flex 
         flex-col 
-        justify-center 
+        justify-start 
         items-start 
         w-full 
-        h-screen
+        min-h-screen
         overflow-hidden
         bg-zinc-800
       "
@@ -101,16 +101,28 @@ CardsGalleryProps) {
         from={from}
         totalResults={cardsData?.length || 0}
       />
-      <CardsGalleryGridWrapper
-        initialCards={cardsData}
-        type={type}
-        energy={energy}
-        grade={grade}
-        approvedOnly={approvedOnly}
-        sort={sort}
-        order={order}
-        from={from}
-      />
+      {cardsData?.length > 0 ? (
+        <CardsGalleryGridWrapper
+          initialCards={cardsData}
+          type={type}
+          energy={energy}
+          grade={grade}
+          approvedOnly={approvedOnly}
+          sort={sort}
+          order={order}
+          from={from}
+        />
+      ) : (
+        <div
+          className="
+            w-full
+            flex-1
+            px-4
+            z-10
+            relative
+          "
+        ></div>
+      )}
     </div>
   );
 }

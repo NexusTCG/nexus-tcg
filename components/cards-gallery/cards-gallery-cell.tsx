@@ -3,15 +3,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 // Types
 import { CardDTO, CardsDTO } from "@/app/lib/types/dto";
-// Dynamic import
-// const CardThumbnail = dynamic(
-//   () => import("@/components/cards-gallery/card-thumbnail"),
-//   {
-//     loading: () => (
-//       <div className="w-[240px] h-[336px] bg-gray-200 animate-pulse rounded-lg"></div>
-//     ),
-//   }
-// );
+// Custom components
 const CardThumbnail = dynamic(
   () => import("@/components/cards-gallery/card-thumbnail"),
   { ssr: false }
@@ -56,6 +48,9 @@ export default function CardsGalleryCell({
         top: `${parseInt(style.top as string) + gap / 2}px`,
         width: `${columnWidth}px`,
         height: `${rowHeight}px`,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <CardThumbnail

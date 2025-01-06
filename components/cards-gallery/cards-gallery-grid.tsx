@@ -58,68 +58,88 @@ export default function CardsGalleryGrid({
         flex-1
         px-4
         z-10
+        relative
       "
     >
-      <AutoSizer>
-        {({ height, width }) => {
-          const columnCount = Math.max(
-            1,
-            Math.floor((width + gap) / (columnWidth + gap))
-          );
-          const rowCount = Math.ceil(itemCount / columnCount);
+      <div
+        id="auto-sizer-container"
+        className="absolute inset-0 overflow-hidden"
+      >
+        <AutoSizer>
+          {({ height, width }) => {
+            const adjustedWidth = width - 32;
+            const columnCount = Math.max(
+              1,
+              Math.floor((adjustedWidth + gap) / (columnWidth + gap))
+            );
+            const rowCount = Math.ceil(itemCount / columnCount);
 
-          return (
-            <InfiniteLoader
-              ref={infiniteLoaderRef}
-              isItemLoaded={isItemLoaded}
-              itemCount={itemCount}
-              loadMoreItems={loadMoreItems}
-            >
-              {({ onItemsRendered, ref }) => (
-                <Grid
-                  columnCount={columnCount}
-                  columnWidth={columnWidth + gap}
-                  height={height}
-                  rowCount={rowCount}
-                  rowHeight={rowHeight + gap}
-                  width={width}
-                  onItemsRendered={({
-                    visibleColumnStartIndex,
-                    visibleColumnStopIndex,
-                    visibleRowStartIndex,
-                    visibleRowStopIndex,
-                  }) => {
-                    const startIndex =
-                      visibleRowStartIndex * columnCount +
-                      visibleColumnStartIndex;
-                    const stopIndex =
-                      visibleRowStopIndex * columnCount +
-                      visibleColumnStopIndex;
-                    onItemsRendered({
-                      overscanStartIndex: startIndex,
-                      overscanStopIndex: stopIndex,
-                      visibleStartIndex: visibleColumnStartIndex,
-                      visibleStopIndex: visibleColumnStopIndex,
-                    });
-                    loadMoreCards(startIndex, stopIndex);
-                  }}
-                  ref={ref}
-                  itemData={{
-                    cards,
-                    columnCount,
-                    columnWidth,
-                    rowHeight,
-                    gap,
-                    thumbnailSize,
-                  }}
-                >
-                  {CardsGalleryCell}
-                </Grid>
-              )}
-            </InfiniteLoader>
-          );
-        }}
-      </AutoSizer>
+            const gridActualWidth = columnCount * (columnWidth + gap);
+
+            return (
+              <InfiniteLoader
+                ref={infiniteLoaderRef}
+                isItemLoaded={isItemLoaded}
+                itemCount={itemCount}
+                loadMoreItems={loadMoreItems}
+              >
+                {({ onItemsRendered, ref }) => (
+                  <div
+                    style={{
+                      width: adjustedWidth,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Grid
+                      columnCount={columnCount}
+                      columnWidth={columnWidth + gap}
+                      height={height}
+                      rowCount={rowCount}
+                      rowHeight={rowHeight + gap}
+                      width={gridActualWidth}
+                      onItemsRendered={({
+                        visibleColumnStartIndex,
+                        visibleColumnStopIndex,
+                        visibleRowStartIndex,
+                        visibleRowStopIndex,
+                      }) => {
+                        const startIndex =
+                          visibleRowStartIndex * columnCount +
+                          visibleColumnStartIndex;
+                        const stopIndex =
+                          visibleRowStopIndex * columnCount +
+                          visibleColumnStopIndex;
+                        onItemsRendered({
+                          overscanStartIndex: startIndex,
+                          overscanStopIndex: stopIndex,
+                          visibleStartIndex: visibleColumnStartIndex,
+                          visibleStopIndex: visibleColumnStopIndex,
+                        });
+                        loadMoreCards(startIndex, stopIndex);
+                      }}
+                      ref={ref}
+                      itemData={{
+                        cards,
+                        columnCount,
+                        columnWidth,
+                        rowHeight,
+                        gap,
+                        thumbnailSize,
+                      }}
+                      style={{
+                        overflowX: "hidden",
+                      }}
+                    >
+                      {CardsGalleryCell}
+                    </Grid>
+                  </div>
+                )}
+              </InfiniteLoader>
+            );
+          }}
+        </AutoSizer>
+      </div>
     </div>
   );
 }
