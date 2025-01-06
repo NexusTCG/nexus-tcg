@@ -66,8 +66,8 @@ export default function CardsGallerySortOptions({
           <SelectValue placeholder="Order" />
         </SelectTrigger>
         <SelectContent className="w-full min-w-[120px]">
-          <SelectItem value="asc">Asc</SelectItem>
           <SelectItem value="desc">Desc</SelectItem>
+          <SelectItem value="asc">Asc</SelectItem>
         </SelectContent>
       </Select>
     </div>

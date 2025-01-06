@@ -23,7 +23,7 @@ export default async function Cards({
   // Convert search parameters to strings
   search = search?.toString() ?? "";
   sort = sort?.toString() ?? "id";
-  order = order?.toString() ?? "asc";
+  order = order?.toString() ?? "desc";
   type = type?.toString() ?? "all";
   energy = energy?.toString() ?? "all";
   grade = grade?.toString() ?? "all";
