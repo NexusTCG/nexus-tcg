@@ -77,47 +77,51 @@ export default function CardRenderTextBox({
       return { truncateContent: false, shouldShowLore: true };
     }
 
-    // If 2+ keywords, text > 2 lines, and lore <= 1 line, truncate keywords
-    const shouldTruncateForLength =
-      cardKeywords.length > 1 &&
+    // Truncate keywords if ALL these conditions are met:
+    // 1. Has 2+ keywords
+    // 2. Card text is > 2 lines but < 4 lines
+    // 3. Has lore text that's > 1 line
+    if (
+      cardKeywords.length >= 2 &&
       cardText.length > ONE_LINE_CHAR_LIMIT * 2 &&
-      (cardLoreText?.length ?? 0) <= ONE_LINE_CHAR_LIMIT;
-
-    if (!shouldTruncateForLength) {
-      const keywordsReminderText = cardKeywords
-        .map((keyword) => {
-          const reminderText =
-            keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
-              ?.reminder || "";
-          return reminderText;
-        })
-        .join("");
-
-      const keywordsNameText = cardKeywords
-        .map((keyword) => {
-          const nameText =
-            keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
-              ?.name || "";
-          return nameText;
-        })
-        .join("");
-
-      const totalLengthWithNameReminders =
-        cardText.length + keywordsNameText.length + keywordsReminderText.length;
-
-      const totalLengthWithoutReminders =
-        cardText.length + keywordsNameText.length;
-
-      const shouldTruncate =
-        totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
-      const showLore =
-        !shouldTruncate ||
-        totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
-
-      return { truncateContent: shouldTruncate, shouldShowLore: showLore };
-    } else {
+      cardText.length < ONE_LINE_CHAR_LIMIT * 4 &&
+      cardLoreText &&
+      cardLoreText.length > ONE_LINE_CHAR_LIMIT
+    ) {
       return { truncateContent: true, shouldShowLore: true };
     }
+
+    const keywordsReminderText = cardKeywords
+      .map((keyword) => {
+        const reminderText =
+          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+            ?.reminder || "";
+        return reminderText;
+      })
+      .join("");
+
+    const keywordsNameText = cardKeywords
+      .map((keyword) => {
+        const nameText =
+          keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
+            ?.name || "";
+        return nameText;
+      })
+      .join("");
+
+    const totalLengthWithNameReminders =
+      cardText.length + keywordsNameText.length + keywordsReminderText.length;
+
+    const totalLengthWithoutReminders =
+      cardText.length + keywordsNameText.length;
+
+    const shouldTruncate =
+      totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
+    const showLore =
+      !shouldTruncate ||
+      totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
+
+    return { truncateContent: shouldTruncate, shouldShowLore: showLore };
   }, [cardKeywords, keywordData, cardText, cardLoreText]);
 
   // Update the showLore shouldShowLore changes
