@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 // Utils
 import clsx from "clsx";
 import { calculateBgColor } from "@/app/utils/actions/actions";
@@ -70,25 +70,27 @@ export default function CardRenderTextBox({
       (card.initialMode.type === "hardware" &&
         card.initialMode.type_sub?.includes("Gear")));
 
-  // Calculate total text length
-  function shouldTruncate() {
-    if (!cardKeywords || !keywordData) return false;
+  // Memoize the truncation logic
+  const { truncateContent, shouldShowLore } = useMemo(() => {
+    if (!cardKeywords || !keywordData) {
+      return { truncateContent: false, shouldShowLore: true };
+    }
 
     const keywordsReminderText = cardKeywords
-      ?.map((keyword) => {
+      .map((keyword) => {
         const reminderText =
           keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
             ?.reminder || "";
-        return `${reminderText}`;
+        return reminderText;
       })
       .join("");
 
     const keywordsNameText = cardKeywords
-      ?.map((keyword) => {
+      .map((keyword) => {
         const nameText =
           keywordData?.find((kw: KeywordDTO) => kw.name === keyword.name)
             ?.name || "";
-        return `${nameText}`;
+        return nameText;
       })
       .join("");
 
@@ -98,16 +100,19 @@ export default function CardRenderTextBox({
     const totalLengthWithoutReminders =
       cardText.length + keywordsNameText.length;
 
-    if (totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH) {
-      setShowLore(totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH);
-      return true;
-    }
+    const shouldTruncate =
+      totalLengthWithNameReminders > MAX_COMBINED_TEXT_LENGTH;
+    const showLore =
+      !shouldTruncate ||
+      totalLengthWithoutReminders <= MAX_COMBINED_TEXT_LENGTH;
 
-    setShowLore(true);
-    return false;
-  }
+    return { truncateContent: shouldTruncate, shouldShowLore: showLore };
+  }, [cardKeywords, keywordData, cardText]);
 
-  const truncateContent = shouldTruncate();
+  // Update the showLore shouldShowLore changes
+  useEffect(() => {
+    setShowLore(shouldShowLore);
+  }, [shouldShowLore]);
 
   // Fetch keyword data to get reminder text
   useEffect(() => {
