@@ -127,9 +127,9 @@ export default function CardsGalleryGrid({
                         gap,
                         thumbnailSize,
                       }}
-                      // style={{
-                      //   overflowX: "hidden",
-                      // }}
+                      style={{
+                        overflowX: "hidden",
+                      }}
                     >
                       {CardsGalleryCell}
                     </Grid>
