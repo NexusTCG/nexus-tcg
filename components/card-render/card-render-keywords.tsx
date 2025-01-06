@@ -31,20 +31,6 @@ export default function CardRenderKeywords({
 }: CardRenderKeywordsProps) {
   const [keywordData, setKeywordData] = useState<KeywordsDTO>([]);
 
-  useEffect(() => {
-    async function fetchKeywordData() {
-      try {
-        const response = await fetch("/api/data/fetch-keywords");
-        if (!response.ok) throw new Error("Failed to fetch keywords");
-        const data = await response.json();
-        setKeywordData(data);
-      } catch (error) {
-        console.error("Error fetching keywords:", error);
-      }
-    }
-    fetchKeywordData();
-  }, []);
-
   function renderTextSegment(text: string) {
     // Split for abbreviations and process them
     return text.split(/(\{[^}]+\})/g).map((part, index) => {
@@ -162,26 +148,34 @@ export default function CardRenderKeywords({
     return !keywordInfo?.syntax?.includes("[");
   });
 
+  // Fetch keyword data to get reminder text
+  useEffect(() => {
+    if (keywordData.length > 0) return;
+    async function fetchKeywordData() {
+      try {
+        const response = await fetch("/api/data/fetch-keywords");
+        if (!response.ok) throw new Error("Failed to fetch keywords");
+        const data = await response.json();
+        setKeywordData(data);
+      } catch (error) {
+        console.error("Error fetching keywords:", error);
+      }
+    }
+    fetchKeywordData();
+  }, []);
+
   return (
     <div className="w-full flex flex-col gap-1">
       {standardKeywords.length > 0 && (
         <div className="flex flex-row flex-wrap gap-1">
-          {standardKeywords.length <= 2
-            ? // Render with reminder text when 2 or fewer
-              standardKeywords.map((keyword) => (
-                <React.Fragment key={keyword.name}>
-                  {renderKeyword(keyword, true)}
-                </React.Fragment>
-              ))
-            : // Render as comma-separated list without reminder text when more than 2
-              standardKeywords.map((keyword, index) => (
-                <React.Fragment key={keyword.name}>
-                  {renderKeyword(keyword, !truncateKeywords)}
-                  {index < standardKeywords.length - 1 && (
-                    <span className="mr-1">,</span>
-                  )}
-                </React.Fragment>
-              ))}
+          {standardKeywords.map((keyword, index) => (
+            <React.Fragment key={keyword.name}>
+              {renderKeyword(keyword, !truncateKeywords)}
+              {truncateKeywords && index < standardKeywords.length - 1 && (
+                <span className="mr-1">,</span>
+              )}
+            </React.Fragment>
+          ))}
         </div>
       )}
       {textInputKeywords.map((keyword) => (
