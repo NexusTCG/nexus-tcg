@@ -15,7 +15,7 @@ export type ProfileDTO = {
   credits_refresh_date: string | null;
 };
 
-export type KeywordsDTO = {
+export type KeywordDTO = {
   id?: number | null;
   created_at?: string | null;
   name: string | null;
@@ -24,6 +24,8 @@ export type KeywordsDTO = {
   type: "persistent" | "reactive" | "active" | null;
   tip: string | null;
 };
+
+export type KeywordsDTO = KeywordDTO[];
 
 export type TermsDTO = {
   id?: number | null;

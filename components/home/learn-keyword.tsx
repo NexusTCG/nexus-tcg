@@ -3,14 +3,17 @@ import React from "react";
 import clsx from "clsx";
 // Data
 import { getKeywordsDTO } from "@/app/server/data/keywords-dto";
+// Types
+import { KeywordDTO, KeywordsDTO } from "@/app/lib/types/dto";
 // Icons
 import { MdOpenInNew } from "react-icons/md";
 
 export default async function LearnKeyword() {
-  const keywords = await getKeywordsDTO();
+  const keywords: KeywordsDTO | null = await getKeywordsDTO();
   if (!keywords || keywords.length === 0) return null;
 
-  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+  const randomKeyword: KeywordDTO =
+    keywords[Math.floor(Math.random() * keywords.length)];
   if (!randomKeyword) return null;
 
   return (

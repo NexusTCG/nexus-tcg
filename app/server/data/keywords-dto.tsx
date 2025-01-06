@@ -1,9 +1,9 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { createClient } from "@/app/utils/supabase/server";
-import { KeywordsDTO } from "@/app/lib/types/dto";
+import { KeywordDTO, KeywordsDTO } from "@/app/lib/types/dto";
 
-export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO[] | null> => {
+export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO | null> => {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
@@ -23,7 +23,7 @@ export const getKeywordsDTO = cache(async (): Promise<KeywordsDTO[] | null> => {
     }
 
     const mappedData = data.map(
-      (keyword): KeywordsDTO => ({
+      (keyword): KeywordDTO => ({
         name: keyword.name,
         syntax: keyword.syntax,
         reminder: keyword.reminder,

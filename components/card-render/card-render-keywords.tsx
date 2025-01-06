@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 // Utils
 import clsx from "clsx";
 // Types
-import { CardDTO, KeywordsDTO } from "@/app/lib/types/dto";
+import { CardDTO, KeywordDTO, KeywordsDTO } from "@/app/lib/types/dto";
 import { RenderedKeywordType } from "@/app/lib/types/components";
 // Components
 import {
@@ -27,7 +27,7 @@ export default function CardRenderKeywords({
   card,
   mode,
 }: CardRenderKeywordsProps) {
-  const [keywordData, setKeywordData] = useState<KeywordsDTO[]>([]);
+  const [keywordData, setKeywordData] = useState<KeywordsDTO>([]);
 
   useEffect(() => {
     async function fetchKeywordData() {
@@ -55,7 +55,9 @@ export default function CardRenderKeywords({
   }
 
   function renderKeyword(keyword: RenderedKeywordType, showReminder: boolean) {
-    const keywordInfo = keywordData.find((kw) => kw.name === keyword.name);
+    const keywordInfo = keywordData.find(
+      (kw: KeywordDTO) => kw.name === keyword.name
+    );
     if (!keywordInfo) return null;
 
     // Check if the keyword has text input or contains [N]

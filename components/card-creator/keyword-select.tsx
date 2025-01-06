@@ -7,7 +7,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 // Validation
-import { KeywordsDTO } from "@/app/lib/types/dto";
+import { KeywordDTO, KeywordsDTO } from "@/app/lib/types/dto";
 import { RenderedKeywordType } from "@/app/lib/types/components";
 // Components
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export default function KeywordSelect({
   truncateKeywords,
 }: KeywordSelectProps) {
   const [open, setOpen] = useState(false);
-  const [keywords, setKeywords] = useState<KeywordsDTO[] | null>(null);
+  const [keywords, setKeywords] = useState<KeywordsDTO | null>(null);
 
   const { control, watch, setValue } = useFormContext();
   const { append, remove } = useFieldArray({
@@ -86,7 +86,7 @@ export default function KeywordSelect({
     }
   }
 
-  function handleKeywordToggle(keyword: KeywordsDTO) {
+  function handleKeywordToggle(keyword: KeywordDTO) {
     // TODO: Change to object
     // const index = selectedKeywords.findIndex((kw: { id: string }) => kw.id === keyword);
 
@@ -111,7 +111,7 @@ export default function KeywordSelect({
 
   function renderKeyword(keyword: RenderedKeywordType) {
     const keywordData = keywords?.find(
-      (kw: KeywordsDTO) => kw.name === keyword.name
+      (kw: KeywordDTO) => kw.name === keyword.name
     );
     if (!keywordData) return keyword.name;
 
@@ -275,9 +275,11 @@ export default function KeywordSelect({
             <CommandEmpty>No keyword found.</CommandEmpty>
             {["persistent", "reactive", "active"].map((type) => {
               const filteredKeywords = keywords?.filter(
-                (keyword: KeywordsDTO) => {
+                (keyword: KeywordDTO) => {
                   if (cardType === "event") {
-                    return EVENT_KEYWORDS.includes(keyword.name || "");
+                    return EVENT_KEYWORDS.includes(
+                      keyword.name?.toLowerCase() || ""
+                    );
                   }
                   return keyword.type === type;
                 }
@@ -292,8 +294,8 @@ export default function KeywordSelect({
                 <>
                   <Separator />
                   {keywords
-                    ?.filter((keyword: KeywordsDTO) => keyword.type === type)
-                    .map((keyword: KeywordsDTO) => {
+                    ?.filter((keyword: KeywordDTO) => keyword.type === type)
+                    .map((keyword: KeywordDTO) => {
                       // const isSelected = selectedKeywords.some(
                       //   (kw: { id: string }) => kw.id === keyword.name
                       // );

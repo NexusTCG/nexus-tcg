@@ -5,7 +5,7 @@ import { useDebounce } from "use-debounce";
 // Utils
 import clsx from "clsx";
 // Validation
-import { KeywordsDTO } from "@/app/lib/types/dto";
+import { KeywordDTO } from "@/app/lib/types/dto";
 // Components
 import { Input } from "@/components/ui/input";
 import {
@@ -20,7 +20,7 @@ type KeywordProps = {
     name: string;
     input?: string;
   };
-  keywordData: KeywordsDTO;
+  keywordData: KeywordDTO;
   truncate: boolean;
   type: "persistent" | "reactive" | "active" | null;
   onInputChange?: (name: string, value: string) => void;
