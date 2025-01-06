@@ -42,7 +42,11 @@ export default function CardRenderKeywords({
     });
   }
 
-  function renderKeyword(keyword: RenderedKeywordType, showReminder: boolean) {
+  function renderKeyword(
+    keyword: RenderedKeywordType,
+    showReminder: boolean,
+    index?: number
+  ) {
     const keywordInfo = keywordData.find(
       (kw: KeywordDTO) => kw.name === keyword.name
     );
@@ -61,6 +65,11 @@ export default function CardRenderKeywords({
         mode === "initial" ? card.initialMode.name : card.anomalyMode.name
       ) || "";
 
+    let renderKeywordsWithLowerCase = false;
+    if (index && index > 0 && !showReminder) {
+      renderKeywordsWithLowerCase = true;
+    }
+
     return (
       <TooltipProvider key={keyword.name}>
         <Tooltip>
@@ -73,7 +82,9 @@ export default function CardRenderKeywords({
                   "text-green-700": keywordInfo.type === "active",
                 })}
               >
-                {keyword.name}
+                {renderKeywordsWithLowerCase
+                  ? keyword.name.toLowerCase()
+                  : keyword.name}
                 {hasInput && <span className="text-black font-medium">: </span>}
               </span>
               {hasInput && (
@@ -167,10 +178,14 @@ export default function CardRenderKeywords({
   return (
     <div className="w-full flex flex-col gap-1">
       {standardKeywords.length > 0 && (
-        <div className="flex flex-row flex-wrap gap-1">
+        <div
+          className={clsx("flex flex-row flex-wrap", {
+            "gap-1": !truncateKeywords,
+          })}
+        >
           {standardKeywords.map((keyword, index) => (
             <React.Fragment key={keyword.name}>
-              {renderKeyword(keyword, !truncateKeywords)}
+              {renderKeyword(keyword, !truncateKeywords, index)}
               {truncateKeywords && index < standardKeywords.length - 1 && (
                 <span>, </span>
               )}
