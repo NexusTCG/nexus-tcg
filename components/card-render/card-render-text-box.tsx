@@ -73,8 +73,23 @@ export default function CardRenderTextBox({
 
   // Memoize the truncation logic
   const { truncateContent, shouldShowLore } = useMemo(() => {
+    const estimatedLines = paragraphs.reduce((totalLines, paragraph) => {
+      const paragraphLines = Math.max(
+        1,
+        Math.ceil(paragraph.length / ONE_LINE_CHAR_LIMIT)
+      );
+      return totalLines + paragraphLines;
+    }, 0);
+
     if (!cardKeywords || !keywordData) {
-      return { truncateContent: false, shouldShowLore: true };
+      return {
+        truncateContent: false,
+        shouldShowLore: estimatedLines <= 5,
+      };
+    }
+
+    if (estimatedLines > 5) {
+      return { truncateContent: true, shouldShowLore: false };
     }
 
     // Truncate keywords if ALL these conditions are met:
