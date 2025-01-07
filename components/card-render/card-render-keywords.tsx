@@ -129,7 +129,7 @@ export default function CardRenderKeywords({
               {keywordInfo.reminder && showReminder && (
                 <span className="italic font-normal">
                   {" "}
-                  ({keywordInfo.reminder}).
+                  ({renderTextSegment(keywordInfo.reminder)}).
                 </span>
               )}
             </div>
@@ -138,9 +138,15 @@ export default function CardRenderKeywords({
             side="top"
             className="max-w-[200px] text-wrap break-words"
           >
-            <p className="text-xs italic">{keywordInfo.reminder}</p>
+            <p className="text-xs italic">
+              {keywordInfo.reminder
+                ? renderTextSegment(keywordInfo.reminder)
+                : ""}
+            </p>
             {keywordInfo.tip && (
-              <p className="text-xs mt-1 opacity-80">{keywordInfo.tip}</p>
+              <p className="text-xs mt-1 opacity-80">
+                {renderTextSegment(keywordInfo.tip)}
+              </p>
             )}
           </TooltipContent>
         </Tooltip>

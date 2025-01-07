@@ -215,15 +215,14 @@ export default function CardRenderTextBox({
                 .filter(Boolean);
 
               return (
-                <div key={paragraphIndex} className="mb-1">
+                <div
+                  key={paragraphIndex}
+                  className={clsx({
+                    "mb-1": paragraphIndex < paragraphs.length - 1,
+                  })}
+                >
                   {segments.map((segment, segmentIndex) => {
-                    // If this is a quoted segment (starts and ends with ")
-                    if (segment.startsWith('"') && segment.endsWith('"')) {
-                      // Process the quoted text as a single unit
-                      return <span key={segmentIndex}>{segment}</span>;
-                    }
-
-                    // For non-quoted text, process for abbreviations and parentheticals
+                    // For all text segments (quoted or not), process for abbreviations and parentheticals
                     const subSegments = segment.split(/(\{[^}]+\}|\([^)]+\))/g);
                     return subSegments.map((subSegment, subIndex) => {
                       // If it is an icon abbreviation, render the icon
@@ -252,7 +251,7 @@ export default function CardRenderTextBox({
                         );
                       }
 
-                      // Regular text segment
+                      // Regular text segment (may include quotes)
                       return (
                         <span key={`${segmentIndex}-${subIndex}`}>
                           {subSegment}
